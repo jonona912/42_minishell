@@ -1,0 +1,25 @@
+// function to simply seperate functions to executables
+// name of the executable
+// redirection struct (0 - no_redirection, 1 - input redirection, 2 - output redirection here-doc...)
+// // name of the redirection file *str
+// char **argv for the executable if any (always contains the name of the executable) 
+
+
+// if it needs to pipe its output to another command then pipe it then which of the pipes
+// if the result needs to be piped to another command
+special function to handle pipes???
+
+
+
+
+example:
+echo 'Today is $(date +%A)' | grep "Today is"
+
+node->value = echo
+	node->echo_node->value = 'Today is $(date +%A)'
+
+linked list of each token until a null is reached
+// size of current_token = length of the total string...
+
+
+store everything in token_lst

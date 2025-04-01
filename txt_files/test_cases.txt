@@ -1,0 +1,130 @@
+\\\\\\\\\\\\\\\\\ "strongly quoted" string ///////////////////
+
+echo 'Today is $(date +%A)'
+echo Today is $(date +%A)
+
+echo 'It'\''s a test' 
+echo 'This costs $100!'
+||||||||| NOT HANDLE ||||||||||||
+echo 'Line 1
+Line 2'  => not handle
+
+
+
+\\\\\\\\\\\\\\\\\ "weakly quoted" string //////////////////
+echo "Today is $(date +%A)"
+echo Today is $(date +%A)
+
+name="Alice"
+echo "Hello, $name"
+echo 'Hello, $name'
+
+echo "Sum: $((5 + 3))"
+
+file="My Document.txt"
+touch "$file"   # Creates one file: "My Document.txt"
+touch $file     # Creates two files: "My" and "Document.txt" (if they don’t exist)
+
+echo "*.txt"
+echo *.txt
+
+
+\\\\\\\\\\\\\\\\\ normal tests //////////////////
+echo "Hello, World!"
+ls
+ls -l
+ls -l minishell_files
+
+||||||||||||||||||||||| DON'T KNOW HOW MINISHELL NEEDS TO HANDLE ||||||||||||||||||||||||
+
+\\\\\\\\\\\\\\\\\\\ pipes //////////////////
+echo "Hello" | grep "Hello"
+ls -l minishell_files | grep objs
+ls -l minishell_files | grep objs | wc -w
+ls -l minishell_files | grep objs | wc -wc
+
+
+
+\\\\\\\\\\\\\\\\\\\\ redirect inputs //////////////////
+wc -l < test.txt 
+sort < test.txt
+sort < test.txt | wc -l
+sort < test.txt | grep z
+sort < test.txt | grep z | wc -l
+
+\\\\\\\\\\\\\\\\\\\\ redirect outputs //////////////////
+echo "Hello, World!" > output.txt
+ls -l > output.txt
+
+wc -l < test.txt > output.txt
+sort < test.txt > output.txt
+sort < test.txt | wc -l > output.txt
+sort < test.txt | grep z > output.txt
+sort < test.txt | grep z | wc -l > output.txt
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\ << here-doc //////////////////
+cat << EOF
+cat << EOF > output.txt
+cat << EOF | grep jonona > output.txt
+echo << EOF > output.txt
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\ >> redirect outputs in append mode ////////////
+cat << EOF >> output.txt
+cat << EOF | grep jonona >> output.txt
+echo << EOF >> output.txt
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Handle environment variables ////////////
+
+MY_VAR="Hello, World"
+echo $MY_VAR
+echo "${MY_VAR}"
+
+phrase="Hello   World"
+echo $phrase  # Unquoted → Tokens after splitting: "Hello", "World"
+echo "$phrase"  # Quoted → Token: "Hello   World" (preserves spaces)
+
+
+
+
+
+
+NINE_NUM=9 
+TWELVE_NUM=12
+echo $NINE_NUM 
+echo $TWELVE_NUM 
+echo $((NINE_NUM + TWELVE_NUM))
+
+NINE_NUM=9 
+THIRTEEN=13a
+echo $THIRTEEN
+echo $((NINE_NUM + THIRTEEN)) // probably it is converted by shell itself
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\ ERRORS ////////////
+echo < nonexistent_file
+echo 'Don't do this'  # Syntax error: The single quote in "Don't" closes the string early.
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\ echo ///////////////////////
+echo "Hello $USER" > file.txt
+echo "hello world" 
+....
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ cat ///////////////////////
+cat file.txt
+cat < file.txt -> behave the same
+
+cat > file.txt -> behaves differently
+
+echo "          $PATH"
+
+
+
+
+echo           asdlfjas                   lsdjf
+echo "         asdlfjas                   lsdjf"
