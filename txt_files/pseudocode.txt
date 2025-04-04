@@ -23,3 +23,50 @@ linked list of each token until a null is reached
 
 
 store everything in token_lst
+
+
+// if < (readirection met) then will have to change 
+
+cat < append | grep sth | wc -w > output.txt
+
+if < (readirection met) then will have to change
+
+	// if output is piped_out then create a pipe
+	inside fork()
+		// fd = open("append", O_RDONLY);
+		// dupe2(fd, STDIN_FILENO);
+		// close(fd);
+	
+
+
+
+
+Input: `echo "Hello $USER" > file.txt`
+
+1. Tokenization:
+   - Tokens: `echo`, `"Hello $USER"`, `>`, `file.txt`
+   - Stored as a linked list: `echo → "Hello $USER" → > → file.txt`.
+
+2. Expansion/Processing:
+   - `$USER` expands to a username (e.g., `alice`).
+   - Quotes are stripped: `Hello alice`.
+
+3. Conversion to Array:
+   - Final array: `["echo", "Hello alice", ">", "file.txt"]` (used for redirection and execution).
+
+Reads command
+Tokenization
+Command Identification
+Command Expansion
+Quote Removal
+Redirections
+Command Execution
+
+
+
+focus:
+
+ls -l
+
+cat<test.txt|grep second
+cat < test.txt | grep second

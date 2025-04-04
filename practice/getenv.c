@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int main() {
-    char *home = getenv("PATH"); // Get the PATH environment variable
+    char *home = getenv("SHLVL"); // Get the PATH environment variable
     if (home != NULL) {
         printf("Your home directory is: %s\n", home);
     } else {

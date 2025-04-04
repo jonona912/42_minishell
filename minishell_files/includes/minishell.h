@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/03/31 22:49:30 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/03 20:03:59 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,20 @@
 
 // # include <sys/types.h>
 
-typedef enum	e_token_type
+typedef enum	s_token_type
 {
 	// no token
-	TOKEN_NONE,
 	TOKEN_WORD,
 	TOKEN_PIPE,
-	TOKEN_REDIRECT_IN,
-	TOKEN_REDIRECT_OUT,
+	TOKEN_RED_IN,
+	TOKEN_RED_OUT,
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,
 	TOKEN_ENV_VAR,
 	TOKEN_SQUOTE,
 	TOKEN_DQUOTE,
 	TOKEN_SPACE
-}	t_cmd_lst_type;
+}	t_token_type;
 
 // make separate lists for tokens and commands
 typedef struct s_cmd_lst
@@ -51,7 +50,8 @@ typedef struct s_cmd_lst
 
 typedef struct s_token_lst
 {
-	char			*value;  
+	t_token_type	type;
+	char			*value;
 	struct s_token_lst	*next;
 }	t_token_lst;
 
@@ -95,10 +95,10 @@ t_cmd_lst	*ms_get_last_node(t_cmd_lst *head);
 void		ms_add_node_back(t_cmd_lst **head, t_cmd_lst *new_node);
 
 // ms_token_lst.c
-t_token_lst	*ms_token_new_node(char *value);
-void		ms_token_free_list(t_token_lst *head);
-t_token_lst	*ms_token_get_last_node(t_token_lst *head);
-void		ms_token_add_node_back(t_token_lst **head, t_token_lst *new_node);
+t_token_lst	*token_new_node(t_token_type type, char *value);
+void		token_free_list(t_token_lst *head);
+t_token_lst	*token_get_last_node(t_token_lst *head);
+void		token_add_node_back(t_token_lst **head, t_token_lst *new_node);
 
 ////////////// tokenizer ////////////
 // ms_tokenizer.c

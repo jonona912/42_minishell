@@ -1,19 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isspace.c                                       :+:      :+:    :+:   */
+/*   tokens_expansion.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/31 21:05:54 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/03 20:15:05 by zkhojazo         ###   ########.fr       */
+/*   Created: 2025/04/01 21:55:56 by zkhojazo          #+#    #+#             */
+/*   Updated: 2025/04/02 15:13:32 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/minishell.h"
 
-int	ft_isspace(int c)
+t_token_lst	*token_lst_expansion(t_token_lst *token_lst)
 {
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
-		|| c == '\r');
+	t_token_lst	*nxt;
+	t_token_lst	*new_node;
+
+
+	while (token_lst)
+	{
+		
+	}
+	return (token_lst);
 }

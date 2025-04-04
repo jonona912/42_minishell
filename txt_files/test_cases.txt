@@ -9,7 +9,15 @@ echo 'This costs $100!'
 echo 'Line 1
 Line 2'  => not handle
 
+Ansi-c quoting ===> https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html
+echo $'Line 1\nLine 2'
+echo 'Line 1\nLine 2'
+tabbed=$'item1\titem2'
+echo "$tabbed"
 
+echo 'I am \ $PATH' => a single quote may not appear inside
+
+echo "asdj $nonexistentvar" => 
 
 \\\\\\\\\\\\\\\\\ "weakly quoted" string //////////////////
 echo "Today is $(date +%A)"
@@ -46,7 +54,7 @@ ls -l minishell_files | grep objs | wc -wc
 
 
 \\\\\\\\\\\\\\\\\\\\ redirect inputs //////////////////
-wc -l < test.txt 
+wc -l < test.txt
 sort < test.txt
 sort < test.txt | wc -l
 sort < test.txt | grep z
@@ -128,3 +136,18 @@ echo "          $PATH"
 
 echo           asdlfjas                   lsdjf
 echo "         asdlfjas                   lsdjf"
+
+
+< append cat
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ strerr /////////////////////
+echohello 2> error.txt = handling error output
+
+
+
+
+
+
+
