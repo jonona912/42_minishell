@@ -1,10 +1,4 @@
 #include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <net/if.h>
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 
 int main() {
     int fd;
