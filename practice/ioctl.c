@@ -10,6 +10,7 @@ int main() {
     int fd;
     struct ifreq ifr;
 
+    char *str = "new line";
     // Create a socket (needed for network-related ioctls)
     fd = socket(AF_INET, SOCK_DGRAM, 0);
     if (fd == -1) {
