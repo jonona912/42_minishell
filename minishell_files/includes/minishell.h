@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/06 21:59:38 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/07 14:16:46 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,9 @@
 
 typedef enum	s_token_type
 {
-	// no token
 	TOKEN_WORD,
 	TOKEN_PIPE,
-	// TOKEN_RED_IN,
 	TOKEN_REDIRECTION_IN,
-	// TOKEN_RED_OUT,
 	TOKEN_REDIRECTION_OUT,
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,
