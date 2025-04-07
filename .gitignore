@@ -1,0 +1,5 @@
+.vscode/
+practice/
+txt_files/
+*.txt
+!test_cases.txt
