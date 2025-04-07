@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/07 13:52:10 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:57:25 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,16 @@
 
 #include "../../libft/libft.h"
 
+#define RED "\033[1;31m"
+#define RST "\033[0m"
+
+// # include <sys/types.h>
+
 typedef enum	s_token_type
 {
-	// no token
 	TOKEN_WORD,
 	TOKEN_PIPE,
-	// TOKEN_RED_IN,
 	TOKEN_REDIRECTION_IN,
-	// TOKEN_RED_OUT,
 	TOKEN_REDIRECTION_OUT,
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,
