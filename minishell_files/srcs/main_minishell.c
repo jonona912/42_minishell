@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_minishell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/07 12:25:12 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/07 14:22:39 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ int	main(void)
 			continue;
 		}
 		token_lst = ft_tokenize(line);
+		// next step -->
 		// token_lst = token_lst_exansion(token_lst);
 		ft_print_tokens(token_lst);
 		// expansion
@@ -144,6 +145,7 @@ int	main(void)
 		// ms_token_free_list(token_lst);
 		// execute_cmd(cmd_lst);
 		// add_history(line);
+		free(line);
 		free(line);
 	}
 	return (0);
@@ -169,10 +171,10 @@ void	ft_print_tokens(t_token_lst *token_lst)
 			case TOKEN_PIPE:
 				type_str = "PIPE";
 				break;
-			case TOKEN_RED_IN:
+			case TOKEN_REDIRECTION_IN:
 				type_str = "REDIRECT_IN";
 				break;
-			case TOKEN_RED_OUT:
+			case TOKEN_REDIRECTION_OUT:
 				type_str = "REDIRECT_OUT";
 				break;
 			case TOKEN_APPEND:
