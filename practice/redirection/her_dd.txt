@@ -1,7 +1,0 @@
-d
-a
-z
-b
-x
-c
-END
