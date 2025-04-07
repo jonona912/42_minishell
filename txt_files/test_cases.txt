@@ -118,6 +118,9 @@ echo 'Don't do this'  # Syntax error: The single quote in "Don't" closes the str
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\ echo ///////////////////////
 echo "Hello $USER" > file.txt
+
+
+
 echo "hello world" 
 ....
 

@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/03 20:03:59 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/06 21:59:38 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,20 @@
 
 #include "../../libft/libft.h"
 
-// # include <sys/types.h>
-
 typedef enum	s_token_type
 {
 	// no token
 	TOKEN_WORD,
 	TOKEN_PIPE,
-	TOKEN_RED_IN,
-	TOKEN_RED_OUT,
+	// TOKEN_RED_IN,
+	TOKEN_REDIRECTION_IN,
+	// TOKEN_RED_OUT,
+	TOKEN_REDIRECTION_OUT,
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,
 	TOKEN_ENV_VAR,
-	TOKEN_SQUOTE,
-	TOKEN_DQUOTE,
-	TOKEN_SPACE
+	TOKEN_S_QUOTE,
+	TOKEN_D_QUOTE,
 }	t_token_type;
 
 // make separate lists for tokens and commands
@@ -78,11 +77,45 @@ typedef struct s_tokenize_struct
 }	t_tokenize_struct;
 
 
+// parser grammar
+// precedence rules: redirection_ins or heredoc
+// redirection_outs or append
+
+// delimitor is pipe |
+// associativity: left: execution commands, right: next_node
+
+// Backus-Naur Form (BNF) grammar
 
 
+// EXPRESSION ::= TERM (e.g. a - b | a + b)
+// TERM ::= FACTOR (e.g. a * b | a / b)
+// FACTOR ::= (e.g. a | b | () )
 
+// AST node types
+typedef enum {
+    NODE_CMD_PIPE,
+	NODE_CMD,
+	NODE_REDIRECTION_IN,
+	NODE_REDIRECTION_OUT,
+	NODE_APPEND,
+	NODE_HEREDOC
+} t_node_type;
 
-
+// AST node structure
+typedef struct s_ast_node {
+    t_node_type type; // CMD_PIPE_IN / OUT  | Redirection
+    union {
+		struct {
+        	char *executable;
+			char **exec_argv;
+		} cmd;
+        struct {
+            t_token_type op;
+            struct s_ast_node* left_exec;
+            struct s_ast_node* right_cmd;
+        } binary_op;
+    } data;
+} t_ast_node;
 
 
 

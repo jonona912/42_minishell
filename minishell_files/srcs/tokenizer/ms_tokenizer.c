@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 21:43:18 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/03 21:28:07 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/06 19:51:37 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,9 @@ int	process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *
 int	handle_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i)
 {
 	if (line[*i] == '<')
-		return (process_redirection(vars, token_lst, line, i, TOKEN_RED_IN, 1));
+		return (process_redirection(vars, token_lst, line, i, TOKEN_REDIRECTION_IN , 1));
 	if (line[*i] == '>')
-		return (process_redirection(vars, token_lst, line, i, TOKEN_RED_OUT, 1));
+		return (process_redirection(vars, token_lst, line, i, TOKEN_REDIRECTION_OUT , 1));
 	if (line[*i] == '>' && line[*i + 1] == '>')
 		return (process_redirection(vars, token_lst, line, i, TOKEN_APPEND, 2));
 	if (line[*i] == '|')
