@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/03 20:03:59 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/05 18:26:00 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,15 @@
 #include <readline/history.h>
 #include <stdlib.h>
 #include <unistd.h>
-# include <sys/wait.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <termios.h>
 # include <fcntl.h> // for open
 
 #include "../../libft/libft.h"
+
+#define RED "\033[1;31m"
+#define RST "\033[0m"
 
 // # include <sys/types.h>
 
@@ -43,7 +48,7 @@ typedef enum	s_token_type
 // make separate lists for tokens and commands
 typedef struct s_cmd_lst
 {
-	char			*path;  
+	char			*path;
 	char			**av;
 	struct s_cmd_lst	*next;
 }	t_cmd_lst;
@@ -107,5 +112,3 @@ void		initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 t_token_lst	*ft_tokenize(char *line);
 
 #endif
-
-
