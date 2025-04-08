@@ -145,7 +145,7 @@ echo "         asdlfjas                   lsdjf"
 
 
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ strerr /////////////////////
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ strerr ///////////////////////////////
 echohello 2> error.txt = handling error output
 
 
@@ -154,3 +154,74 @@ echohello 2> error.txt = handling error output
 
 
 
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ BONUS //////////////////////////////
+Basics of && and ||
+&& (AND): Executes the command on the right only if the command on the left succeeds (returns an exit status of 0).
+|| (OR): Executes the command on the right only if the command on the left fails (returns a non-zero exit status).
+
+echo "Hello" && echo "World"
+
+
+In Bash, a command’s success or failure is determined by its exit status:
+0 means success.
+Non-zero (e.g., 1, 2, etc.) means failure.
+
+
+command1 && command2 || command3
+(command1 || command2) && command3
+command1 || (command2 && command3)
+((command1 || command2) && command3) || command4
+
+
+(ls file.txt && echo "File exists") || echo "File does not exist"
+
+(ls dir1 || ls dir2) && echo "At least one directory exists"
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ WILDCARDS ////////////////////////
+echo "Hello*"  # Matches files starting with "Hello"
+ls *.c
+ls*c
+ls "*.c"
+ls '*.c'
+ls pa* | grep ms_to*
+
+
+
+seperators = blanck_space, |, redirections, AND, OR
+
+
+		   > 
+        /     \
+   output.txt   |
+              /   \
+          wc -w    |
+                /     \
+             grep sth  |
+                      / \
+                   cat   < 
+                        / \
+                 input.txt  ε
+
+
+           >
+        /     \
+   output.txt   |
+              /   \
+          wc -w    (
+                /     \
+              cmd    |
+            /       / \
+                 cat   < 
+                        / \
+                 input.txt  ε
+
+
+
+      is_cmd or redirection
+         /            \
+    exec cmd1		   is_cmd (pipe)
+                /             \
+           exec cmd2
