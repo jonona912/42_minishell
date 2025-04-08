@@ -6,7 +6,7 @@
 #    By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/29 13:59:34 by zkhojazo          #+#    #+#              #
-#    Updated: 2025/04/01 12:15:09 by zkhojazo         ###   ########.fr        #
+#    Updated: 2025/04/08 12:52:19 by zkhojazo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,9 +17,9 @@ INCLUDE = minishell_files/includes/minishell.h
 
 SRCS_DIR = minishell_files/srcs
 LISTS_DIR = $(SRCS_DIR)/lists
-TOKENIZER_DIR = $(SRCS_DIR)/tokenizer
+PARSER_DIR = $(SRCS_DIR)/parser
 SRCS = main_minishell.c \
-		ms_command_lst.c \
+		ms_command_lst.c \ #not used
 		ms_token_lst.c \
 		ms_tokenizer.c
 
@@ -43,7 +43,7 @@ $(OBJS_DIR)/%.o: $(LISTS_DIR)/%.c
 	mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJS_DIR)/%.o: $(TOKENIZER_DIR)/%.c
+$(OBJS_DIR)/%.o: $(PARSER_DIR)/%.c
 	mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 

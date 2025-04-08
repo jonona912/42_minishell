@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/07 14:21:43 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:47:51 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,19 @@ typedef enum	s_token_type
 	TOKEN_ENV_VAR,
 	TOKEN_S_QUOTE,
 	TOKEN_D_QUOTE,
+	TOKEN_WILDCARD,
+	TOKEN_AND,
+	TOKEN_OR,
+	TOKEN_L_PAREN,
+	TOKEN_R_PAREN,
 }	t_token_type;
+
+typedef struct s_token_lst
+{
+	t_token_type	type;
+	char			*value;
+	struct s_token_lst	*next;
+}	t_token_lst;
 
 // make separate lists for tokens and commands
 typedef struct s_cmd_lst
@@ -50,13 +62,6 @@ typedef struct s_cmd_lst
 	char			**av;
 	struct s_cmd_lst	*next;
 }	t_cmd_lst;
-
-typedef struct s_token_lst
-{
-	t_token_type	type;
-	char			*value;
-	struct s_token_lst	*next;
-}	t_token_lst;
 
 typedef struct	s_command
 {
@@ -76,8 +81,7 @@ typedef struct s_tokenize_struct
 	char	*current_token;
 	int		is_s_quote;
 	int		is_d_quote;
-	int		is_redirection;
-	int		is_pipe;
+	int		is_parenthesis;
 }	t_tokenize_struct;
 
 
