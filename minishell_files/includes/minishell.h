@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/08 14:47:51 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:40:56 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,5 +146,10 @@ void		token_add_node_back(t_token_lst **head, t_token_lst *new_node);
 int			ft_append_char(char *str, char c);
 void		initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 t_token_lst	*ft_tokenize(char *line);
+
+
+int	ft_isblank(int c);
+int	ft_append_char(char *str, char c);
+void	initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 
 #endif
