@@ -189,6 +189,9 @@ ls '*.c'
 ls pa* | grep ms_to*
 
 
+cat "jfjffj.txt""test_cases.txt"
+
+
 
 seperators = blanck_space, |, redirections, AND, OR
 
