@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/08 18:15:40 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:58:05 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef enum	s_token_type
 	TOKEN_ENV_VAR,
 	TOKEN_S_QUOTE,
 	TOKEN_D_QUOTE,
-	TOKEN_WILDCARD,
+	TOKEN_WILDCARD, // not handled
 	TOKEN_AND,
 	TOKEN_OR,
 	TOKEN_L_PAREN,
