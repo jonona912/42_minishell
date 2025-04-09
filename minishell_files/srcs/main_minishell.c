@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/08 18:16:06 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/09 12:35:03 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,42 +152,26 @@ int	main(void)
 
 void	ft_print_tokens(t_token_lst *token_lst)
 {
-	t_token_lst	*temp;
-	int			token_count;
+	const char *token_type_str[] = {
+		"TOKEN_WORD",
+		"TOKEN_PIPE",
+		"TOKEN_REDIRECTION_IN",
+		"TOKEN_REDIRECTION_OUT",
+		"TOKEN_APPEND",
+		"TOKEN_HEREDOC",
+		"TOKEN_ENV_VAR",
+		"TOKEN_S_QUOTE",
+		"TOKEN_D_QUOTE",
+		"TOKEN_WILDCARD",
+		"TOKEN_AND",
+		"TOKEN_OR",
+		"TOKEN_L_PAREN",
+		"TOKEN_R_PAREN"
+	};
 
-	token_count = 0;
-	temp = token_lst;
-	while (temp)
+	while (token_lst)
 	{
-		char *type_str;
-
-		// Convert enum type to string
-		switch (temp->type)
-		{
-			case TOKEN_WORD:
-				type_str = "WORD";
-				break;
-			case TOKEN_PIPE:
-				type_str = "PIPE";
-				break;
-			case TOKEN_REDIRECTION_IN:
-				type_str = "REDIRECT_IN";
-				break;
-			case TOKEN_REDIRECTION_OUT:
-				type_str = "REDIRECT_OUT";
-				break;
-			case TOKEN_APPEND:
-				type_str = "APPEND";
-				break;
-			case TOKEN_HEREDOC:
-				type_str = "HEREDOC";
-				break;
-			default:
-				type_str = "UNKNOWN";
-				break;
-		}
-		printf("Type: %s\nToken %d: %s===========\n",type_str, token_count, temp->value);
-		token_count++;
-		temp = temp->next;
+		printf("Type : %s\nToken: \"%s\"\n\n", token_type_str[token_lst->type], token_lst->value);
+		token_lst = token_lst->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 21:43:18 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/09 11:19:06 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/09 12:51:52 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 	char *temp;
 	t_token_type	temp_token;
 	j = 0;
-	i = 0;
+	i = 1; // skip the first quote
 	while ((*dest)[j])
 		j++;
 	while (src[i] && (src[i] != delimiter))
@@ -113,7 +113,7 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 		(*dest)[j] = src[i];
 		j++;
 		i++;
-		if (src[i] && src[i] == delimiter && src[i + 1] == delimiter) // to handle this case cat "hell""$PATH"
+		if (src[i] && (src[i] == delimiter && src[i + 1] == delimiter)) // to handle this case cat "hell""$PATH"
 			i+= 2;
 	}
 	(*dest)[j] = '\0';
@@ -123,6 +123,7 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 		**dest = '\0';
 		temp_token = return_token_type(src + i);
 		token_add_node_back(token_lst, token_new_node(temp_token, temp));
+		i++;
 		return (i);
 	}
 	free (*dest);
@@ -137,9 +138,9 @@ int	handle_quotes(t_tokenize_struct *vars, char *line, t_token_lst **token_lst)
 
 	i = 0;
 	if (line[i] == '\"')
-		i += copy_token_till_delimiter(&vars->current_token, line + i + 1, '\"', token_lst);
+		i += copy_token_till_delimiter(&vars->current_token, line + i, '\"', token_lst);
 	if (line[i] == '\'')
-		i += copy_token_till_delimiter(&vars->current_token, line + i + 1, '\'', token_lst);
+		i += copy_token_till_delimiter(&vars->current_token, line + i, '\'', token_lst);
 	return (i);
 }
 
@@ -196,7 +197,7 @@ int handle_other_tokens(char *line, t_token_lst **token_lst)
 	return (0);
 }
 
-int create_word_token(t_tokenize_struct *vars, char *line, t_token_lst **token_lst)
+int	create_word_token(char *current_token, char *line, t_token_lst **token_lst)
 {
 	int		i;
 	char	*temp;
@@ -204,14 +205,14 @@ int create_word_token(t_tokenize_struct *vars, char *line, t_token_lst **token_l
 	i = 0;
 	while (line[i] && !ft_isblank(line[i]) && ft_strchr("<>|&()$\"\'", line[i]) == NULL)
 	{
-		ft_append_char(vars->current_token, line[i]); // change ft_append_char
+		ft_append_char(current_token, line[i]); // change ft_append_char
 		i++;
 	}
-	if (vars->current_token[0] != '\0')
+	if (current_token[0] != '\0')
 	{
-		temp = ft_strdup(vars->current_token);
+		temp = ft_strdup(current_token);
 		token_add_node_back(token_lst, token_new_node(0, temp));
-		vars->current_token[0] = '\0';
+		current_token[0] = '\0';
 	}
 	return (i);
 }
@@ -235,9 +236,8 @@ t_token_lst	*ft_tokenize(char *line)
 		i += handle_other_tokens(line + i, &token_lst);
 		while (ft_isblank(line[i]))
 			i++;
-		i+= create_word_token(&vars, line + i, &token_lst);
+		i+= create_word_token(vars.current_token, line + i, &token_lst);
 		// if none of the chars are special char copy the string until next space as a word token
 	}
 	return (token_lst);
 }
-
