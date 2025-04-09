@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/09 12:33:52 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/09 18:02:00 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,6 @@
 # include <fcntl.h> // for open
 
 #include "../../libft/libft.h"
-
-#define RED "\033[1;31m"
-#define RST "\033[0m"
 
 // # include <sys/types.h>
 
@@ -82,6 +79,7 @@ typedef struct s_tokenize_struct
 	int		is_s_quote;
 	int		is_d_quote;
 	int		is_parenthesis;
+	int		paren_counter;
 }	t_tokenize_struct;
 
 
@@ -148,8 +146,8 @@ void		initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 t_token_lst	*ft_tokenize(char *line);
 
 
-int	ft_isblank(int c);
-int	ft_append_char(char *str, char c);
-void	initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
+int		ft_isblank(int c);
+int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
+int		process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step);
 
 #endif

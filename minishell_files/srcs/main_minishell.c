@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_minishell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/09 12:35:03 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/09 14:48:57 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ int	main(void)
 		line = readline("minishell> ");
 		if (!line)
 		{
-			write(1, RED "exit\n" RST, sizeof(RED "exit\n" RST) - 1);
+			write(1, "exit\n", 5);
 			free(line);
 			break;
 		}
