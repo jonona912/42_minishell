@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+         #
+#    By: opopov <opopov@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/29 13:59:34 by zkhojazo          #+#    #+#              #
-#    Updated: 2025/04/09 11:19:50 by zkhojazo         ###   ########.fr        #
+#    Updated: 2025/04/09 18:47:47 by opopov           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,6 +62,7 @@
 
 
 NAME = minishell
+TESTER = token_tester
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 INCLUDE = minishell_files/includes/minishell.h
@@ -73,37 +74,55 @@ SRCS = main_minishell.c \
 		$(PARSER_DIR)/token_lst_functions.c \
 		$(PARSER_DIR)/tokenizer.c
 
-# simplify libft
-LIBFT_DIR = libft
-LIBFT = libft.a
+# Test files
+TEST_DIR = tests
+TEST_SRC = $(TEST_DIR)/token_tester.c
 
 OBJS_DIR = minishell_files/objs
 OBJS = $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
+TEST_OBJ = $(addprefix $(OBJS_DIR)/, $(TEST_SRC:.c=.o))
+
+# simplify libft
+LIBFT_DIR = libft
+LIBFT = libft.a
 
 all: $(NAME)
 
 $(NAME): $(OBJS) $(INCLUDE) $(LIBFT_DIR)/$(LIBFT)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT_DIR)/$(LIBFT) -lreadline
 
+$(TESTER): $(TEST_OBJ) $(filter-out $(OBJS_DIR)/main_minishell.o, $(OBJS)) $(LIBFT_DIR)/$(LIBFT)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBFT_DIR)/$(LIBFT) -lreadline
+
 # Rule for source files in SRCS_DIR
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
-	mkdir -p $(OBJS_DIR)
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Rule for source files in PARSER_DIR
 $(OBJS_DIR)/$(PARSER_DIR)/%.o: $(PARSER_DIR)/%.c
-	mkdir -p $(OBJS_DIR)/$(PARSER_DIR)
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Rule for test files
+$(OBJS_DIR)/$(TEST_DIR)/%.o: $(TEST_DIR)/%.c
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT_DIR)/$(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
+
+test: $(TESTER)
+	./$(TESTER)
 
 clean:
 	rm -rf $(OBJS_DIR)
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) $(TESTER)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
+
+.PHONY: all clean fclean re test
