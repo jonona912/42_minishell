@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 21:43:18 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/09 18:03:55 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/10 15:46:49 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 		i++;
 		if (src[i] && (src[i] == delimiter && src[i + 1] == delimiter)) // to handle this case cat "hell""$PATH"
 			i+= 2;
+
 	}
 	(*dest)[j] = '\0';
 	if (src[i] == delimiter)
@@ -77,18 +78,31 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 	free (*dest);
 	token_free_list(*token_lst);
 	ft_putstr_fd("Error: unmatched quotes\n", 2);
-	exit(1);
+	return (-1);
 }
 
 int	handle_quotes(t_tokenize_struct *vars, char *line, t_token_lst **token_lst)
 {
 	int	i;
+	int	temp;
 
 	i = 0;
 	if (line[i] == '\"')
-		i += copy_token_till_delimiter(&vars->current_token, line + i, '\"', token_lst);
+	{
+		temp = i;
+		temp += copy_token_till_delimiter(&vars->current_token, line + i, '\"', token_lst);
+		if (temp < i)
+			return (-1);
+		i = temp;
+	}
 	if (line[i] == '\'')
-		i += copy_token_till_delimiter(&vars->current_token, line + i, '\'', token_lst);
+	{
+		temp = i;
+		temp += copy_token_till_delimiter(&vars->current_token, line + i, '\'', token_lst);
+		if (temp < i)
+			return (-1);
+		i = temp;
+	}
 	return (i);
 }
 
@@ -188,6 +202,7 @@ t_token_lst	*ft_tokenize(char *line)
 	t_token_lst			*token_lst;
 	t_tokenize_struct	vars;
 	int					i;
+	int					temp;
 
 	initialize_tokenize_struct(&vars, line);
 	token_lst = NULL;
@@ -196,8 +211,11 @@ t_token_lst	*ft_tokenize(char *line)
 	{
 		while (ft_isblank(line[i]))
 			i++;
-		// i += handle_parenthesis(&vars, line + i, &token_lst);
-		i += handle_quotes(&vars, line + i, &token_lst);
+		temp = i;
+		temp += handle_quotes(&vars, line + i, &token_lst);
+		if (temp < i)
+			return (NULL);
+		i = temp;
 		if (line[i] == '\0')
 			break ;
 		i += handle_other_tokens(line + i, &token_lst, &vars);
@@ -209,68 +227,7 @@ t_token_lst	*ft_tokenize(char *line)
 	if (vars.paren_counter != 0)
 	{
 		ft_putstr_fd("Error: unmatched parenthesis", 2);
-		exit (1); // change code later
+		return (NULL); // change code later
 	}
 	return (token_lst);
 }
-
-
-// int	handle_parenthesis(t_tokenize_struct *vars, char *line, t_token_lst **token_lst)
-// {
-// 	int		i;
-// 	char	*temp;
-
-// 	i = 0;
-// 	if (line[i] == '(')
-// 	{
-// 		if (vars->current_token[0] != '\0')
-// 		{
-// 			temp = ft_strdup(vars->current_token);
-// 			if (!temp)
-// 			{
-// 				ft_putstr_fd("Error: failed allocation memory", 2);
-// 				exit(1); // change code later
-// 			}
-// 			token_add_node_back(token_lst, token_new_node(TOKEN_WORD, temp));
-// 			vars->current_token[0] = '\0';
-// 		}
-// 		temp = ft_strdup("(");
-// 		if (!temp)
-// 		{
-// 			ft_putstr_fd("Error: failed allocation memory", 2);
-// 			exit(1); // change code later
-// 		}
-// 		token_add_node_back(token_lst, token_new_node(TOKEN_L_PAREN, temp));
-// 		vars->paren_counter++;
-// 		i++;
-// 	}
-// 	if (line[i] == ')')
-// 	{
-// 		if (vars->current_token[0] != '\0')
-// 		{
-// 			temp = ft_strdup(vars->current_token);
-// 			if (!temp)
-// 			{
-// 				ft_putstr_fd("Error: failed allocation memory", 2);
-// 				exit(1); // change code later
-// 			}
-// 			token_add_node_back(token_lst, token_new_node(TOKEN_WORD, temp));
-// 			vars->current_token[0] = '\0';
-// 		}
-// 		if (vars->paren_counter == 0)
-// 		{
-// 			ft_putstr_fd("Error: unmatched parenthesis", 2);
-// 			exit (1); // change code later
-// 		}
-// 		temp = ft_strdup(")");
-// 		if (!temp)
-// 		{
-// 			ft_putstr_fd("Error: failed allocation memory", 2);
-// 			exit(1); // change code later
-// 		}
-// 		token_add_node_back(token_lst, token_new_node(TOKEN_R_PAREN, temp));
-// 		vars->paren_counter--;
-// 		i++;
-// 	}
-// 	return (i);
-// }

@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/09 14:48:57 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/10 15:48:31 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,12 @@ int	main(void)
 			continue;
 		}
 		token_lst = ft_tokenize(line);
+		if (!token_lst)
+		{
+			// redact later
+			write(1, "\n", 1);
+			continue;
+		}
 		// next step -->
 		// token_lst = token_lst_exansion(token_lst);
 		ft_print_tokens(token_lst);
