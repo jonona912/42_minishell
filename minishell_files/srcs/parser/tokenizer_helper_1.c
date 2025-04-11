@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 12:16:52 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/10 15:01:44 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/11 13:18:26 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_isblank(int c)
 {
-	return (c == ' ' || c == '\t' || c == '\n');
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
 }
 
 int	ft_append_char(char *str, char c)
