@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_token_lst.c                                     :+:      :+:    :+:   */
+/*   token_lst_functions.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 21:12:14 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/06 19:50:18 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:54:42 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,11 @@ void	token_free_list(t_token_lst *head)
 	while (head)
 	{
 		temp = head->next;
-		free(head->value);
+		if (head->value)
+		{
+			free(head->value);
+			head->value = NULL;
+		}
 		free(head);
 		head = temp;
 	}

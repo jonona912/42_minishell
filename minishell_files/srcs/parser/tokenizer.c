@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 21:43:18 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/10 15:46:49 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/12 11:51:25 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,14 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 	int	i;
 	int	j;
 	char *temp;
-	t_token_type	temp_token;
+	t_token_lst	*temp_lst;
 	j = 0;
 	i = 1; // skip the first quote
 	while ((*dest)[j])
 		j++;
 	while (src[i] && (src[i] != delimiter))
 	{
-		(*dest)[j] = src[i];
-		j++;
-		i++;
+		(*dest)[j++] = src[i++];
 		if (src[i] && (src[i] == delimiter && src[i + 1] == delimiter)) // to handle this case cat "hell""$PATH"
 			i+= 2;
 
@@ -67,16 +65,19 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 		if (!temp)
 		{
 			ft_putstr_fd("Error: failed allocation memory", 2);
-			exit(1); // change code later
+			return (-1); // change code later (redacted)
 		}
 		**dest = '\0';
-		temp_token = return_token_type(src + i);
-		token_add_node_back(token_lst, token_new_node(temp_token, temp));
-		i++;
-		return (i);
+		temp_lst = token_new_node(return_token_type(src + i), temp);
+		if (!temp_lst)
+		{
+			free(temp);
+			ft_putstr_fd("Error: failed allocation memory", 2);
+			return (-1); //change code later
+		}
+		token_add_node_back(token_lst, temp_lst);
+		return (++i);
 	}
-	free (*dest);
-	token_free_list(*token_lst);
 	ft_putstr_fd("Error: unmatched quotes\n", 2);
 	return (-1);
 }
@@ -106,29 +107,38 @@ int	handle_quotes(t_tokenize_struct *vars, char *line, t_token_lst **token_lst)
 	return (i);
 }
 
-int send_paren_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token_type, t_tokenize_struct *vars)
+int	send_paren_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token_type, t_tokenize_struct *vars)
 {
-	char *temp;
+	char		*temp;
+	t_token_lst	*temp_lst;
 
+	temp_lst = NULL;
 	temp = ft_strdup(str);
 	if (!temp)
 	{
 		ft_putstr_fd("Error: failed allocation memory", 2);
-		exit(1); // change code later
+		return (-1); // change code later (redacted)
 	}
 	if (str[0] == '(')
 		vars->paren_counter++;
-	if (str[0] == ')')
+	else if (str[0] == ')')
 	{
 		if (vars->paren_counter == 0)
 		{
 			free(temp);
 			ft_putstr_fd("Error: unmatched parenthesis", 2);
-			exit (1); // change code later
+			return (-1); // change code later (redacted)
 		}
 		vars->paren_counter--;
 	}
-	token_add_node_back(token_lst, token_new_node(token_type, temp));
+	temp_lst = token_new_node(token_type, temp);
+	if (!temp_lst)
+	{
+		free(temp);
+		ft_putstr_fd("Error: failed allocation memory", 2);
+		return (-1); //change code later
+	}
+	token_add_node_back(token_lst, temp_lst);
 	return (1);
 }
 
@@ -142,7 +152,7 @@ int send_str_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token
 		if (!temp)
 		{
 			ft_putstr_fd("Error: failed allocation memory", 2);
-			exit(1); // change code later
+			return (-1); // change code later (redacted)
 		}
 		token_add_node_back(token_lst, token_new_node(token_type, temp));
 	}
@@ -181,8 +191,10 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst)
 {
 	int		i;
 	char	*temp;
+	t_token_lst	*temp_lst;
 
 	i = 0;
+	temp_lst = NULL;
 	while (line[i] && !ft_isblank(line[i]) && ft_strchr("<>|&()$\"\'", line[i]) == NULL)
 	{
 		ft_append_char(current_token, line[i]); // change ft_append_char
@@ -191,7 +203,19 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst)
 	if (current_token[0] != '\0')
 	{
 		temp = ft_strdup(current_token);
-		token_add_node_back(token_lst, token_new_node(0, temp));
+		if (!temp)
+		{
+			ft_putstr_fd("Error: failed allocation memory", 2);
+			return (-1); // change code later
+		}
+		temp_lst = token_new_node(0, temp);
+		if (!temp_lst)
+		{
+			free(temp);
+			ft_putstr_fd("Error: failed allocation memory", 2);
+			return (-1); // change code later
+		}
+		token_add_node_back(token_lst, temp_lst);
 		current_token[0] = '\0';
 	}
 	return (i);
@@ -211,22 +235,41 @@ t_token_lst	*ft_tokenize(char *line)
 	{
 		while (ft_isblank(line[i]))
 			i++;
-		temp = i;
-		temp += handle_quotes(&vars, line + i, &token_lst);
-		if (temp < i)
+		temp = handle_quotes(&vars, line + i, &token_lst);
+		if (temp < 0)
+		{
+			free(vars.current_token);
+			token_free_list(token_lst);
 			return (NULL);
-		i = temp;
+		}
+		i += temp;
 		if (line[i] == '\0')
 			break ;
-		i += handle_other_tokens(line + i, &token_lst, &vars);
+		temp = handle_other_tokens(line + i, &token_lst, &vars);
+		if (temp < 0)
+		{
+			free(vars.current_token);
+			token_free_list(token_lst);
+			return (NULL);
+		}
+		i += temp;
 		while (ft_isblank(line[i]))
 			i++;
-		i+= create_word_token(vars.current_token, line + i, &token_lst);
+		temp = create_word_token(vars.current_token, line + i, &token_lst);
+		if (temp < 0)
+		{
+			token_free_list(token_lst);
+			free(vars.current_token);
+			return (NULL);
+		}
+		i += temp;
 		// if none of the chars are special char copy the string until next space as a word token
 	}
+	free(vars.current_token);
 	if (vars.paren_counter != 0)
 	{
 		ft_putstr_fd("Error: unmatched parenthesis", 2);
+		token_free_list(token_lst);
 		return (NULL); // change code later
 	}
 	return (token_lst);

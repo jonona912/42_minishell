@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/10 15:48:31 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/11 12:51:52 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,6 @@ int	main(void)
 		if (!line)
 		{
 			write(1, "exit\n", 5);
-			free(line);
 			break;
 		}
 		if (signal_received)
@@ -140,6 +139,7 @@ int	main(void)
 		if (!token_lst)
 		{
 			// redact later
+			free(line);
 			write(1, "\n", 1);
 			continue;
 		}
@@ -151,6 +151,7 @@ int	main(void)
 		// ms_token_free_list(token_lst);
 		// execute_cmd(cmd_lst);
 		// add_history(line);
+		token_free_list(token_lst);
 		free(line);
 	}
 	return (0);
