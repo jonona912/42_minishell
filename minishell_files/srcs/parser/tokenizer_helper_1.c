@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 12:16:52 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/11 13:18:26 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/12 11:57:11 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int	handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst)
 	return (0);
 }
 
-
 int	process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step)
 {
 	char	*temp;
@@ -79,8 +78,6 @@ void	initialize_tokenize_struct(t_tokenize_struct *vars, char *line) // should r
 		exit(1); ;
 	}
 	vars->current_token[0] = '\0';
-	vars->is_s_quote = 0;
-	vars->is_d_quote = 0;
 	vars->is_parenthesis = 0;
 	vars->paren_counter = 0;
 }

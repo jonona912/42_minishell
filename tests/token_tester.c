@@ -425,6 +425,12 @@ t_test_case test_cases[] = {
         "Type : TOKEN_ENV_VAR\nToken: \"$\"\n"
         "Type : TOKEN_S_QUOTE\nToken: \"\"\n"
     },
+    {"'$'",  // ANSI-C quoting (bash extension)
+        "Type : TOKEN_S_QUOTE\nToken: \"$\"\n"
+    },
+    {"\"$\"",  // ANSI-C quoting (bash extension)
+        "Type : TOKEN_D_QUOTE\nToken: \"$\"\n"
+    },
     {"echo \"hello",  // Unclosed quote
         ""
     },
