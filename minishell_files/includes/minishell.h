@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/10 16:47:04 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/12 23:08:21 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,27 +52,6 @@ typedef struct s_token_lst
 	struct s_token_lst	*next;
 }	t_token_lst;
 
-// make separate lists for tokens and commands
-typedef struct s_cmd_lst
-{
-	char			*path;
-	char			**av;
-	struct s_cmd_lst	*next;
-}	t_cmd_lst;
-
-typedef struct	s_command
-{
-	char **tokens;
-	char *current_cmd_lst;
-	char *input_file;
-	char *output_file;
-	struct s_command *next;
-	int	quote;
-	int	redirection;
-	int	pipe;
-}	t_command;
-
-
 typedef struct s_tokenize_struct
 {
 	char	*current_token;
@@ -83,55 +62,103 @@ typedef struct s_tokenize_struct
 }	t_tokenize_struct;
 
 
-// parser grammar
-// precedence rules: redirection_ins or heredoc
-// redirection_outs or append
 
-// delimitor is pipe |
-// associativity: left: execution commands, right: next_node
+// // make separate lists for tokens and commands
+// typedef struct s_cmd_lst
+// {
+// 	char			*path;
+// 	char			**av;
+// 	struct s_cmd_lst	*next;
+// }	t_cmd_lst;
 
-// Backus-Naur Form (BNF) grammar
+// typedef struct	s_command
+// {
+// 	char **tokens;
+// 	char *current_cmd_lst;
+// 	char *input_file;
+// 	char *output_file;
+// 	struct s_command *next;
+// 	int	quote;
+// 	int	redirection;
+// 	int	pipe;
+// }	t_command;
 
 
-// EXPRESSION ::= TERM (e.g. a - b | a + b)
-// TERM ::= FACTOR (e.g. a * b | a / b)
-// FACTOR ::= (e.g. a | b | () )
 
-// AST node types
 typedef enum {
-    NODE_CMD_PIPE,
 	NODE_CMD,
-	NODE_REDIRECTION_IN,
-	NODE_REDIRECTION_OUT,
-	NODE_APPEND,
-	NODE_HEREDOC
+	NODE_PIPE,
+	NODE_AND,
+	NODE_OR
 } t_node_type;
 
+
+
+
+// // AST node structure
+// typedef struct s_ast_node
+// {
+// 	t_node_type type; // CMD or PIPE
+// 	union {
+// 		struct
+// 		{
+// 			char *executable;
+// 			char **exec_argv;
+// 			t_redirection *redirs;
+// 		} cmd;
+// 		struct 
+// 		{
+// 			t_token_type op; // not needed probably
+// 			int		pipe_fd[2]; // also not used
+// 			struct s_ast_node* left;
+// 			struct s_ast_node* right;
+// 		} binary_op;
+// 	} data;
+// } t_ast_node;
+
+// Structure for a single redirection or heredoc
+typedef struct s_redir_lst {
+    t_token_type type;      // REDIR_INPUT, REDIR_OUTPUT, REDIR_APPEND, REDIR_HEREDOC
+    char *target;           // File path (e.g., "input.txt") or heredoc delimiter (e.g., "EOF")
+    struct s_redir_lst *next; // Linked list for multiple redirections
+} t_redir_lst;
+
 // AST node structure
-typedef struct s_ast_node {
-    t_node_type type; // CMD_PIPE_IN / OUT  | Redirection
-    union {
-		struct {
-        	char *executable;
+typedef struct s_ast_node
+{
+	t_node_type type; // CMD or PIPE
+	union {
+		struct
+		{
+			char *executable;
 			char **exec_argv;
+			t_redir_lst *redirs;
 		} cmd;
-        struct {
-            t_token_type op;
-            struct s_ast_node* left_exec;
-            struct s_ast_node* right_cmd;
-        } binary_op;
-    } data;
+		struct 
+		{
+			struct s_ast_node* left;
+			struct s_ast_node* right;
+		} binary_op;
+	} data;
 } t_ast_node;
+
+// typedef struct s_pid_lst
+// {
+// 	pid_t				pid;
+// 	struct s_pid_lst	*next;
+// }	t_pid_lst;
+
+
 
 
 
 
 ///////////// lists /////////////
 // ms_command_lst.c
-t_cmd_lst	*ms_new_node(char *value, char **argv);
-void		ms_free_list(t_cmd_lst *head);
-t_cmd_lst	*ms_get_last_node(t_cmd_lst *head);
-void		ms_add_node_back(t_cmd_lst **head, t_cmd_lst *new_node);
+// t_cmd_lst	*ms_new_node(char *value, char **argv);
+// void		ms_free_list(t_cmd_lst *head);
+// t_cmd_lst	*ms_get_last_node(t_cmd_lst *head);
+// void		ms_add_node_back(t_cmd_lst **head, t_cmd_lst *new_node);
 
 // ms_token_lst.c
 t_token_lst	*token_new_node(t_token_type type, char *value);
@@ -149,5 +176,31 @@ t_token_lst	*ft_tokenize(char *line);
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step);
+
+
+
+/////////////////////// parser_2 /////////////////////////
+
+// ast_binary_tree_function.c
+t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
+t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
+
+// parser.c
+t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
+
+// redirection_functions.c
+t_redir_lst *new_redir_node(t_token_type type, char *target);
+void add_redir_back(t_redir_lst **lst, t_redir_lst *new_node);
+void free_redir_list(t_redir_lst **lst);
+
+
+
+
+
+
+///////////////////// execute ////////////////////////
+// int execute(t_ast_node *ast_head, int pipe_direction, int pipe_fd[2]);
+void run_pipeline(t_ast_node *ast_head);
+
 
 #endif
