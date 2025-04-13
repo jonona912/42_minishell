@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/12 23:08:21 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/13 22:59:29 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ typedef enum {
 	NODE_CMD,
 	NODE_PIPE,
 	NODE_AND,
-	NODE_OR
+	NODE_OR,
+	NODE_SUBSHELL
 } t_node_type;
 
 
@@ -186,6 +187,7 @@ t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv
 t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
 
 // parser.c
+int	is_redirection(t_token_type type);
 t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
 
 // redirection_functions.c

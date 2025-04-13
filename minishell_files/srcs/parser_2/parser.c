@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:51:03 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/12 23:19:33 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/13 23:26:19 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int	is_redirection(t_token_type type)
 
 t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst)
 {
-	t_token_type redir_type;
-	t_redir_lst	*redir_node;
-	char		*temp_str;
+	t_token_type	redir_type;
+	t_redir_lst		*redir_node;
+	char			*temp_str;
 
 	redir_node = NULL;
 	while (token_lst && token_lst->next && is_redirection(token_lst->type)) // what if just < with nothing?????
@@ -44,7 +44,6 @@ t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst)
 		token_lst = token_lst->next;
 	}
 	return (token_lst);
-		
 }
 
 t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
@@ -66,7 +65,7 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
 		}
 		(*ast_node)->data.cmd.executable = ft_strjoin("/bin/", token_lst->value);
 		current_token = token_lst;
-		while (current_token && current_token->type == TOKEN_WORD)
+		while (current_token && current_token->type == TOKEN_WORD) // you can copy, double quote, single quote
 		{
 			ctr++;
 			current_token = current_token->next;
@@ -88,6 +87,30 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
 		}
 		return (token_lst);
 	}
+	// if (token_lst && token_lst->type == TOKEN_L_PAREN)
+	// {
+	// 	token_lst = token_lst->next;
+	// 	token_lst = parse_pipe(token_lst, ast_node);
+	// 	if (token_lst->type != TOKEN_R_PAREN)
+	// 		return (printf("Error: no left parent\n"), NULL); // handle error
+	// }
+	return (token_lst);
+}
+
+t_token_lst	*parse_subshell(t_token_lst *token_lst, t_ast_node **ast_node)
+{
+	t_ast_node	*left;
+	t_ast_node	*right;
+
+	right = NULL;
+	token_lst = parse_word(token_lst, ast_node);
+	while (token_lst && token_lst->type == TOKEN_L_PAREN)
+	{
+		token_lst = token_lst->next;
+		token_lst = parse_pipe(token_lst, ast_node);
+		if (token_lst->type != TOKEN_R_PAREN)
+			return (printf("Error: no left parent\n"), NULL);
+	}
 	return (token_lst);
 }
 
@@ -95,8 +118,6 @@ t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node)
 {
 	t_ast_node	*left;
 	t_ast_node	*right;
-	// t_token_type	node_type;
-	// t_token_lst	current_token;
 
 	right = NULL;
 	token_lst = parse_word(token_lst, ast_node);
