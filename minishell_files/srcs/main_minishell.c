@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/13 12:34:58 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/14 09:07:42 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,6 @@ int	main(void)
 		if (!line)
 		{
 			write(1, "exit\n", 5);
-			free(line);
 			break;
 		}
 		if (signal_received)
@@ -146,6 +145,7 @@ int	main(void)
 		if (!token_lst)
 		{
 			// redact later
+			free(line);
 			write(1, "\n", 1);
 			continue;
 		}
