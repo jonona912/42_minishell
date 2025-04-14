@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/10 16:47:04 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/14 15:53:43 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <termios.h>
+#include <limits.h>
 # include <fcntl.h> // for open
 
 #include "../../libft/libft.h"
@@ -149,5 +150,6 @@ t_token_lst	*ft_tokenize(char *line);
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step);
+int		ft_setenv(char *name, char *value, int overwrite);
 
 #endif
