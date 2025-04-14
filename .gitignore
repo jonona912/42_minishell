@@ -6,3 +6,4 @@ txt_files/
 *.o
 *.a
 minishell
+a.out

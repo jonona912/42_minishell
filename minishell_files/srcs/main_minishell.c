@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main_minishell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/11 12:51:52 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/14 09:07:42 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 void	ft_print_tokens(t_token_lst *token_lst);
-
+void	print_ast(t_ast_node *node);
 // int	ms_count_argv(t_token_lst *token_lst)
 // {
 // 	int	count;
@@ -124,7 +124,13 @@ int	main(void)
 	while (1)
 	{
 		signal_received = 0;
-		line = readline("minishell> ");
+		line = readline("\033[0;35mminishell> \033[0m");
+		add_history(line);
+		if (ft_strcmp(line, "") == 0)
+		{
+			free(line);
+			continue;
+		}
 		if (!line)
 		{
 			write(1, "exit\n", 5);
@@ -145,13 +151,20 @@ int	main(void)
 		}
 		// next step -->
 		// token_lst = token_lst_exansion(token_lst);
-		ft_print_tokens(token_lst);
+		// ft_print_tokens(token_lst);
+		t_ast_node *head = NULL;
+		parse_pipe(token_lst, &head);
+		run_pipeline(head);
+		// print_ast(head);
+		// int pipe_fd_temp[2];
+
+		// execute(head, 0, pipe_fd_temp);
 		// expansion
 		// cmd_lst = ms_create_cmd_lst(token_lst);
 		// ms_token_free_list(token_lst);
 		// execute_cmd(cmd_lst);
 		// add_history(line);
-		token_free_list(token_lst);
+		rl_on_new_line();
 		free(line);
 	}
 	return (0);
@@ -181,4 +194,44 @@ void	ft_print_tokens(t_token_lst *token_lst)
 		printf("Type : %s\nToken: \"%s\"\n\n", token_type_str[token_lst->type], token_lst->value);
 		token_lst = token_lst->next;
 	}
+}
+
+void	print_ast(t_ast_node *node)
+{
+    if (!node)
+        return;
+
+    // If the node is a binary operation, traverse left, print the operator, then traverse right
+    if (node->type == NODE_PIPE)
+    {
+        print_ast(node->data.binary_op.left);
+        printf("PIPE\n");
+        print_ast(node->data.binary_op.right);
+    }
+    else if (node->type == NODE_CMD)
+    {
+        // Print the command and its arguments
+        printf("CMD: %s\n", node->data.cmd.executable);
+        if (node->data.cmd.exec_argv)
+        {
+            for (int i = 0; node->data.cmd.exec_argv[i]; i++)
+                printf("ARG[%d]: %s\n", i, node->data.cmd.exec_argv[i]);
+        }
+    }
+    // else if (node->type == NODE_REDIRECTION_IN)
+    // {
+    //     printf("REDIRECTION_IN\n");
+    // }
+    // else if (node->type == NODE_REDIRECTION_OUT)
+    // {
+    //     printf("REDIRECTION_OUT\n");
+    // }
+    // else if (node->type == NODE_APPEND)
+    // {
+    //     printf("APPEND\n");
+    // }
+    // else if (node->type == NODE_HEREDOC)
+    // {
+    //     printf("HEREDOC\n");
+    // }
 }

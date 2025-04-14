@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: opopov <opopov@student.42.fr>              +#+  +:+       +#+         #
+#    By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/29 13:59:34 by zkhojazo          #+#    #+#              #
-#    Updated: 2025/04/09 18:47:47 by opopov           ###   ########.fr        #
+#    Updated: 2025/04/12 23:08:48 by zkhojazo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,10 +69,17 @@ INCLUDE = minishell_files/includes/minishell.h
 
 SRCS_DIR = minishell_files/srcs
 PARSER_DIR = $(SRCS_DIR)/parser
+PARSER_2_DIR = $(SRCS_DIR)/parser_2
+EXECUTE_DIR = $(SRCS_DIR)/execution
+
 SRCS = main_minishell.c \
 		$(PARSER_DIR)/tokenizer_helper_1.c \
 		$(PARSER_DIR)/token_lst_functions.c \
-		$(PARSER_DIR)/tokenizer.c
+		$(PARSER_DIR)/tokenizer.c \
+		$(PARSER_2_DIR)/ast_binary_tree_functions.c \
+		$(PARSER_2_DIR)/parser.c \
+		$(PARSER_2_DIR)/redirection_functions.c \
+		$(EXECUTE_DIR)/execution.c
 
 # Test files
 TEST_DIR = tests
@@ -101,6 +108,15 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 
 # Rule for source files in PARSER_DIR
 $(OBJS_DIR)/$(PARSER_DIR)/%.o: $(PARSER_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Rule for source files in PARSER_DIR
+$(OBJS_DIR)/$(PARSER_2_DIR)/%.o: $(PARSER_2_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJS_DIR)/$(EXECUTE_DIR)/%.o: $(EXECUTE_DIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
