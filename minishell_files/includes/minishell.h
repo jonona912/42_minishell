@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:00:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/13 22:59:29 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/14 22:57:45 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ typedef enum	s_token_type
 	TOKEN_AND,
 	TOKEN_OR,
 	TOKEN_L_PAREN,
-	TOKEN_R_PAREN,
+	TOKEN_R_PAREN
 }	t_token_type;
 
 typedef struct s_token_lst
 {
-	t_token_type	type;
-	char			*value;
+	t_token_type		type;
+	char				*value;
 	struct s_token_lst	*next;
 }	t_token_lst;
 
@@ -90,32 +90,9 @@ typedef enum {
 	NODE_PIPE,
 	NODE_AND,
 	NODE_OR,
-	NODE_SUBSHELL
+	// NODE_GROUP
 } t_node_type;
 
-
-
-
-// // AST node structure
-// typedef struct s_ast_node
-// {
-// 	t_node_type type; // CMD or PIPE
-// 	union {
-// 		struct
-// 		{
-// 			char *executable;
-// 			char **exec_argv;
-// 			t_redirection *redirs;
-// 		} cmd;
-// 		struct 
-// 		{
-// 			t_token_type op; // not needed probably
-// 			int		pipe_fd[2]; // also not used
-// 			struct s_ast_node* left;
-// 			struct s_ast_node* right;
-// 		} binary_op;
-// 	} data;
-// } t_ast_node;
 
 // Structure for a single redirection or heredoc
 typedef struct s_redir_lst {
@@ -141,7 +118,7 @@ typedef struct s_ast_node
 			struct s_ast_node* right;
 		} binary_op;
 	} data;
-} t_ast_node;
+}	t_ast_node;
 
 // typedef struct s_pid_lst
 // {
@@ -189,6 +166,7 @@ t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node
 // parser.c
 int	is_redirection(t_token_type type);
 t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
+t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node);
 
 // redirection_functions.c
 t_redir_lst *new_redir_node(t_token_type type, char *target);
@@ -202,7 +180,7 @@ void free_redir_list(t_redir_lst **lst);
 
 ///////////////////// execute ////////////////////////
 // int execute(t_ast_node *ast_head, int pipe_direction, int pipe_fd[2]);
-void run_pipeline(t_ast_node *ast_head);
+int	run_pipeline(t_ast_node *ast_head);
 
 
 #endif

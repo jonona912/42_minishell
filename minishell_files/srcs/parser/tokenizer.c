@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 21:43:18 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/12 11:51:25 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/14 22:12:08 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ t_token_type return_token_type(char *str)
 	return (0);
 }
 
+// changing this here 
 int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_lst **token_lst)
 {
 	int	i;
@@ -48,9 +49,10 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 	char *temp;
 	t_token_lst	*temp_lst;
 	j = 0;
-	i = 1; // skip the first quote
+	i = 0; // skip the first quote
 	while ((*dest)[j])
 		j++;
+	(*dest)[j++] = src[i++];
 	while (src[i] && (src[i] != delimiter))
 	{
 		(*dest)[j++] = src[i++];
@@ -61,6 +63,8 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 	(*dest)[j] = '\0';
 	if (src[i] == delimiter)
 	{
+		(*dest)[j] = delimiter;
+		(*dest)[++j] = '\0';
 		temp = ft_strdup(*dest); // if malloc fails???? (free everything, report failure and return)
 		if (!temp)
 		{

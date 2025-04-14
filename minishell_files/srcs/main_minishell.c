@@ -6,86 +6,13 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/14 09:07:42 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/14 23:17:17 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 void	ft_print_tokens(t_token_lst *token_lst);
-void	print_ast(t_ast_node *node);
-// int	ms_count_argv(t_token_lst *token_lst)
-// {
-// 	int	count;
-
-// 	count = 0;
-// 	while (token_lst && ft_strcmp(token_lst->value, "|") != 0)
-// 	{
-// 		count++;
-// 		token_lst = token_lst->next;
-// 	}
-// 	return (count);
-// }
-
-// t_cmd_lst	*ms_create_cmd_lst(t_token_lst *token_lst) // forget about pipes for now
-// {
-// 	t_cmd_lst	*cmd_lst;
-// 	int			argv_count;
-// 	int			i;
-// 	char		*path;
-// 	char		**temp_argv;
-// 	i = 0;
-
-// 	cmd_lst = NULL;
-// 	if (!token_lst)
-// 		return (NULL);
-// 	argv_count = ms_count_argv(token_lst);
-// 	temp_argv = (char **)malloc(sizeof(char *) * (argv_count + 1));
-// 	if (!temp_argv)
-// 		return (NULL); // improve
-// 	if (i == 0)
-// 		path = ft_strjoin("/bin/", token_lst->value);
-// 	while (token_lst && ft_strcmp(token_lst->value, "|") != 0)
-// 	{
-// 		temp_argv[i] = ft_strdup(token_lst->value);
-// 		if (!temp_argv[i])
-// 			return (NULL); // improve
-// 		i++;
-// 		token_lst = token_lst->next;
-// 	}
-// 	temp_argv[i] = NULL;
-// 	t_cmd_lst *new_node = ms_new_node(path, temp_argv);
-// 	if (!new_node)
-// 		return (NULL); // improve
-// 	ms_add_node_back(&cmd_lst, new_node);
-// 	return (cmd_lst);
-// }
-
-// int	execute_cmd(t_cmd_lst *cmd_lst)
-// {
-// 	int		status;
-// 	pid_t	pid;
-
-// 	status = 0;
-// 	if (!cmd_lst)
-// 		return (-1);
-// 	pid = fork();
-// 	if (pid == 0)
-// 	{
-// 		if (execve(cmd_lst->path, cmd_lst->av, NULL) == -1)
-// 		{
-// 			perror("execve");
-// 			exit(EXIT_FAILURE);
-// 		}
-// 	}
-// 	else if (pid < 0)
-// 	{
-// 		perror("fork");
-// 		return (1);
-// 	}
-// 	else
-// 		waitpid(pid, &status, 0);
-// 	return (status);
-// }
+void print_ast(t_ast_node *root);
 
 volatile int signal_received = 0;
 
@@ -110,8 +37,9 @@ void signal_handler(int signum)
 int	main(void)
 {
 	t_token_lst *token_lst;
-	// t_cmd_lst	*cmd_lst;
+	t_ast_node *head;
 
+	head = NULL;
 	char	*line;
 	struct sigaction sa;
 	setup_terminal();
@@ -124,7 +52,8 @@ int	main(void)
 	while (1)
 	{
 		signal_received = 0;
-		line = readline("\033[0;35mminishell> \033[0m");
+		// line = readline("\033[0;35mminishell> \033[0m");
+		line = readline("minishel> ");
 		add_history(line);
 		if (ft_strcmp(line, "") == 0)
 		{
@@ -149,21 +78,14 @@ int	main(void)
 			write(1, "\n", 1);
 			continue;
 		}
-		// next step -->
-		// token_lst = token_lst_exansion(token_lst);
 		// ft_print_tokens(token_lst);
-		t_ast_node *head = NULL;
-		parse_pipe(token_lst, &head);
-		run_pipeline(head);
-		// print_ast(head);
-		// int pipe_fd_temp[2];
-
-		// execute(head, 0, pipe_fd_temp);
-		// expansion
-		// cmd_lst = ms_create_cmd_lst(token_lst);
+		parse_or(token_lst, &head);
+		print_ast(head);
+		int exec_result = run_pipeline(head);
+		printf("exec_result = %d\n", exec_result);
+		
 		// ms_token_free_list(token_lst);
-		// execute_cmd(cmd_lst);
-		// add_history(line);
+		add_history(line);
 		rl_on_new_line();
 		free(line);
 	}
@@ -196,42 +118,109 @@ void	ft_print_tokens(t_token_lst *token_lst)
 	}
 }
 
-void	print_ast(t_ast_node *node)
-{
-    if (!node)
-        return;
+// void	print_ast(t_ast_node *node)
+// {
+//     if (!node)
+//         return;
 
-    // If the node is a binary operation, traverse left, print the operator, then traverse right
-    if (node->type == NODE_PIPE)
-    {
-        print_ast(node->data.binary_op.left);
-        printf("PIPE\n");
-        print_ast(node->data.binary_op.right);
+//     // If the node is a binary operation, traverse left, print the operator, then traverse right
+//     if (node->type == NODE_PIPE)
+//     {
+//         print_ast(node->data.binary_op.left);
+//         printf("PIPE\n");
+//         print_ast(node->data.binary_op.right);
+//     }
+//     else if (node->type == NODE_CMD)
+//     {
+//         // Print the command and its arguments
+//         printf("CMD: %s\n", node->data.cmd.executable);
+//         if (node->data.cmd.exec_argv)
+//         {
+//             for (int i = 0; node->data.cmd.exec_argv[i]; i++)
+//                 printf("ARG[%d]: %s\n", i, node->data.cmd.exec_argv[i]);
+//         }
+//     }
+// }
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void print_redirections(t_redir_lst *redirs) {
+    if (!redirs) return;
+    printf(" redirs=[");
+    while (redirs) {
+        printf("%s->%s", 
+               redirs->type == TOKEN_REDIRECTION_IN ? "<" :
+               redirs->type == TOKEN_REDIRECTION_OUT ? ">" :
+               redirs->type == TOKEN_APPEND ? ">>" : "<<",
+               redirs->target);
+        redirs = redirs->next;
+        if (redirs) printf(", ");
     }
-    else if (node->type == NODE_CMD)
-    {
-        // Print the command and its arguments
-        printf("CMD: %s\n", node->data.cmd.executable);
-        if (node->data.cmd.exec_argv)
-        {
-            for (int i = 0; node->data.cmd.exec_argv[i]; i++)
-                printf("ARG[%d]: %s\n", i, node->data.cmd.exec_argv[i]);
-        }
+    printf("]");
+}
+
+void print_ast_node(t_ast_node *node, int indent)
+{
+    if (!node) return;
+
+    // Indentation
+    for (int i = 0; i < indent; i++) printf("  ");
+
+    switch (node->type) {
+        case NODE_CMD:
+            printf("CommandNode(");
+            printf("%s", node->data.cmd.executable);
+            
+            // Print arguments if they exist
+            if (node->data.cmd.exec_argv && node->data.cmd.exec_argv[0]) {
+                printf(", args=[");
+                for (char **arg = node->data.cmd.exec_argv; *arg; arg++) {
+                    printf("%s", *arg);
+                    if (*(arg + 1)) printf(", ");
+                }
+                printf("]");
+            }
+            
+            // Print redirections
+            print_redirections(node->data.cmd.redirs);
+            printf(")");
+            break;
+
+        case NODE_PIPE:
+            printf("PipeNode(\n");
+            print_ast_node(node->data.binary_op.left, indent + 1);
+            printf(",\n");
+            print_ast_node(node->data.binary_op.right, indent + 1);
+            printf("\n");
+            for (int i = 0; i < indent; i++) printf("  ");
+            printf(")");
+            break;
+
+        case NODE_AND:
+            printf("AndNode(\n");
+            print_ast_node(node->data.binary_op.left, indent + 1);
+            printf(",\n");
+            print_ast_node(node->data.binary_op.right, indent + 1);
+            printf("\n");
+            for (int i = 0; i < indent; i++) printf("  ");
+            printf(")");
+            break;
+
+        case NODE_OR:
+            printf("OrNode(\n");
+            print_ast_node(node->data.binary_op.left, indent + 1);
+            printf(",\n");
+            print_ast_node(node->data.binary_op.right, indent + 1);
+            printf("\n");
+            for (int i = 0; i < indent; i++) printf("  ");
+            printf(")");
+            break;
     }
-    // else if (node->type == NODE_REDIRECTION_IN)
-    // {
-    //     printf("REDIRECTION_IN\n");
-    // }
-    // else if (node->type == NODE_REDIRECTION_OUT)
-    // {
-    //     printf("REDIRECTION_OUT\n");
-    // }
-    // else if (node->type == NODE_APPEND)
-    // {
-    //     printf("APPEND\n");
-    // }
-    // else if (node->type == NODE_HEREDOC)
-    // {
-    //     printf("HEREDOC\n");
-    // }
+}
+
+// Wrapper function for cleaner output
+void print_ast(t_ast_node *root) {
+    print_ast_node(root, 0);
+    printf("\n");
 }

@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:51:03 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/14 09:56:08 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/14 21:52:18 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,13 @@ int	is_redirection(t_token_type type)
 		|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
 }
 
-t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst)
+int	is_quote_or_word(t_token_type type)
+{
+	return (type == TOKEN_S_QUOTE || type == TOKEN_D_QUOTE
+		|| type == TOKEN_WORD);
+}
+
+t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst) // redirections can store s_quotes and d_quotes (tokens)
 {
 	t_token_type	redir_type;
 	t_redir_lst		*redir_node;
@@ -31,6 +37,10 @@ t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst)
 	{
 		redir_type = token_lst->type;
 		token_lst = token_lst->next;
+		if (!token_lst || !is_quote_or_word(token_lst->type))
+		{
+			return NULL; // Error: Redirection without target cat <
+		}
 		temp_str = ft_strdup(token_lst->value);
 		if (!temp_str)
 			return (NULL); // handle error
@@ -48,8 +58,6 @@ t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst)
 
 t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
 {
-	// t_ast_node	*left;
-	// t_ast_node	*right;
 	t_token_lst	*current_token;
 	int			ctr;
 
@@ -87,29 +95,13 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
 		}
 		return (token_lst);
 	}
-	// if (token_lst && token_lst->type == TOKEN_L_PAREN)
-	// {
-	// 	token_lst = token_lst->next;
-	// 	token_lst = parse_pipe(token_lst, ast_node);
-	// 	if (token_lst->type != TOKEN_R_PAREN)
-	// 		return (printf("Error: no left parent\n"), NULL); // handle error
-	// }
-	return (token_lst);
-}
-
-t_token_lst	*parse_subshell(t_token_lst *token_lst, t_ast_node **ast_node)
-{
-	t_ast_node	*left;
-	t_ast_node	*right;
-
-	right = NULL;
-	token_lst = parse_word(token_lst, ast_node);
-	while (token_lst && token_lst->type == TOKEN_L_PAREN)
+	if (token_lst && token_lst->type == TOKEN_L_PAREN)
 	{
 		token_lst = token_lst->next;
-		token_lst = parse_pipe(token_lst, ast_node);
+		token_lst = parse_or(token_lst, ast_node);
 		if (token_lst->type != TOKEN_R_PAREN)
-			return (printf("Error: no left parent\n"), NULL);
+			return (printf("Error: no left parent\n"), NULL); // handle error
+		token_lst = token_lst->next;
 	}
 	return (token_lst);
 }
@@ -123,28 +115,43 @@ t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node)
 	token_lst = parse_word(token_lst, ast_node);
 	while (token_lst && token_lst->type == TOKEN_PIPE)
 	{
-		// node_type = token_lst->type;
 		token_lst = parse_word(token_lst->next, &right);
 		left = *ast_node;
 		*ast_node = create_binary_op_node(NODE_PIPE, left, right);
 		right = NULL;
 	}
 	return (token_lst);
-	// if the next one is pipe, create a pipe node
 }
 
-// t_token_lst	*parse_commands(t_token_lst *token_lst, t_ast_node **ast_node)
-// {
-// 	t_ast_node	*left;
-// 	t_ast_node	*right;
-// 	t_token_lst	current_token;
+t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node)
+{
+	t_ast_node	*left;
+	t_ast_node	*right;
 
-// 	current_token = parse_pipe(token_lst, ast_node);
-// 	while (token_lst)
-// 	{
-		
-// 	}
-// }
+	right = NULL;
+	token_lst = parse_pipe(token_lst, ast_node);
+	while (token_lst && token_lst->type == TOKEN_AND)
+	{
+		token_lst = parse_pipe(token_lst->next, &right);
+		left = *ast_node;
+		*ast_node = create_binary_op_node(NODE_AND, left, right);
+		right = NULL;
+	}
+	return (token_lst);
+}
 
+t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node)
+{
+	t_ast_node	*left;
+	t_ast_node	*right;
 
-
+	right = NULL;
+	token_lst= parse_and(token_lst, ast_node);
+	while (token_lst && token_lst->type == TOKEN_OR)
+	{
+		token_lst = parse_and(token_lst->next, &right);
+		left = *ast_node;
+		*ast_node = create_binary_op_node(NODE_OR, left, right);
+	}
+	return (token_lst);
+}
