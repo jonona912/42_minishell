@@ -170,7 +170,7 @@ int		ft_setenv(char *name, char *value, int overwrite);
 void	ft_echo(char **argv);
 void	ft_pwd();
 int		ft_exit(char **argv);
-void	ft_env(char **argv);
+void	ft_env();
 int		ft_cd (char **argv);
 int		ft_export(char **argv);
 int		ft_unset(char **argv);
