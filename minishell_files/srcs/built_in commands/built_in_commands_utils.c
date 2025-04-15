@@ -1,16 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built-in_commands_utils.c                          :+:      :+:    :+:   */
+/*   built_in_commands_utils.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 13:35:38 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/14 17:46:09 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/15 09:54:32 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../includes/minishell.h"
+#include "../../includes/minishell.h"
+
+// char	*dollar_token(char *input, int exit_status)
+// {
+// 	char	*res;
+// 	int		i;
+
+// 	if (!input)
+// 		return (NULL);
+// 	while (input[i])
+// 	{
+
+// 		i++;
+// 	}
+// }
 
 char *ft_strjoin3(char *s1, char *s2, char *s3)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_minishell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/14 09:07:42 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/14 18:51:28 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ int	main(void)
 	while (1)
 	{
 		signal_received = 0;
-		line = readline("\033[0;35mminishell> \033[0m");
+		line = readline("minishell> ");
 		add_history(line);
 		if (ft_strcmp(line, "") == 0)
 		{

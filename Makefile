@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+         #
+#    By: opopov <opopov@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/29 13:59:34 by zkhojazo          #+#    #+#              #
-#    Updated: 2025/04/12 23:08:48 by zkhojazo         ###   ########.fr        #
+#    Updated: 2025/04/15 09:52:33 by opopov           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,18 +68,21 @@ CFLAGS = -Wall -Wextra -Werror -g
 INCLUDE = minishell_files/includes/minishell.h
 
 SRCS_DIR = minishell_files/srcs
+TOKENIZER_DIR = $(SRCS_DIR)/tokenizer
 PARSER_DIR = $(SRCS_DIR)/parser
-PARSER_2_DIR = $(SRCS_DIR)/parser_2
 EXECUTE_DIR = $(SRCS_DIR)/execution
+COMMANDS_DIR = $(SRCS_DIR)/built_in_commands
 
 SRCS = main_minishell.c \
-		$(PARSER_DIR)/tokenizer_helper_1.c \
-		$(PARSER_DIR)/token_lst_functions.c \
-		$(PARSER_DIR)/tokenizer.c \
-		$(PARSER_2_DIR)/ast_binary_tree_functions.c \
-		$(PARSER_2_DIR)/parser.c \
-		$(PARSER_2_DIR)/redirection_functions.c \
-		$(EXECUTE_DIR)/execution.c
+		$(TOKENIZER_DIR)/tokenizer_helper_1.c \
+		$(TOKENIZER_DIR)/token_lst_functions.c \
+		$(TOKENIZER_DIR)/tokenizer.c \
+		$(PARSER_DIR)/ast_binary_tree_functions.c \
+		$(PARSER_DIR)/parser.c \
+		$(PARSER_DIR)/redirection_functions.c \
+		$(EXECUTE_DIR)/execution.c \
+		$(COMMANDS_DIR)/command1.c \
+		$(COMMANDS_DIR)/command2.c
 
 # Test files
 TEST_DIR = tests
@@ -106,13 +109,13 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Rule for source files in PARSER_DIR
-$(OBJS_DIR)/$(PARSER_DIR)/%.o: $(PARSER_DIR)/%.c
+# Rule for source files in TOKENIZER_DIR
+$(OBJS_DIR)/$(TOKENIZER_DIR)/%.o: $(TOKENIZER_DIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Rule for source files in PARSER_DIR
-$(OBJS_DIR)/$(PARSER_2_DIR)/%.o: $(PARSER_2_DIR)/%.c
+$(OBJS_DIR)/$(PARSER_DIR)/%.o: $(PARSER_DIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:51:03 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/14 09:56:08 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/14 19:45:53 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
 
 t_token_lst	*parse_subshell(t_token_lst *token_lst, t_ast_node **ast_node)
 {
-	t_ast_node	*left;
+	// t_ast_node	*left;
 	t_ast_node	*right;
 
 	right = NULL;
@@ -142,9 +142,6 @@ t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node)
 // 	current_token = parse_pipe(token_lst, ast_node);
 // 	while (token_lst)
 // 	{
-		
+
 // 	}
 // }
-
-
-

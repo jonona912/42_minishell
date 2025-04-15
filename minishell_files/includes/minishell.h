@@ -96,7 +96,7 @@ typedef enum {
 // 			char **exec_argv;
 // 			t_redirection *redirs;
 // 		} cmd;
-// 		struct 
+// 		struct
 // 		{
 // 			t_token_type op; // not needed probably
 // 			int		pipe_fd[2]; // also not used
@@ -124,7 +124,7 @@ typedef struct s_ast_node
 			char **exec_argv;
 			t_redir_lst *redirs;
 		} cmd;
-		struct 
+		struct
 		{
 			struct s_ast_node* left;
 			struct s_ast_node* right;
@@ -167,8 +167,13 @@ int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step);
 int		ft_setenv(char *name, char *value, int overwrite);
-
-
+void	ft_echo(char **argv);
+void	ft_pwd();
+int		ft_exit(char **argv);
+void	ft_env(char **argv);
+int		ft_cd (char **argv);
+int		ft_export(char **argv);
+int		ft_unset(char **argv);
 
 /////////////////////// parser_2 /////////////////////////
 
