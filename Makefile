@@ -6,7 +6,7 @@
 #    By: opopov <opopov@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/29 13:59:34 by zkhojazo          #+#    #+#              #
-#    Updated: 2025/04/15 10:19:13 by opopov           ###   ########.fr        #
+#    Updated: 2025/04/15 12:43:23 by opopov           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,6 +81,7 @@ SRCS = main_minishell.c \
         $(PARSER_DIR)/parser.c \
         $(PARSER_DIR)/redirection_functions.c \
         $(EXECUTE_DIR)/execution.c \
+		$(EXECUTE_DIR)/execution_utils.c \
         $(COMMANDS_DIR)/built_in_commands_utils.c \
         $(COMMANDS_DIR)/built_in_commands.c
 

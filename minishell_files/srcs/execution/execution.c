@@ -3,41 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 19:54:11 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/13 22:56:44 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/15 13:28:31 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int dup2_fd(int fd, int std_fd_fileno)
-{
-	if (fd == -1)
-	{
-		perror("open redirection in");
-		return (-1);
-	}
-	if (dup2(fd, std_fd_fileno) == -1)
-	{
-		perror("dup2 redirection in");
-		return (-1);
-	}
-	return (0);
-}
-
-int	ms_strcmp_until(char *s1, char *s2, char c)
-{
-	int	i;
-
-	i = 0;
-	if (!s1 || !s2)
-		return (-1);
-	while (*(s1 + i) && *(s2 + i) && *(s1 + i) != c && *(s1 + i) == *(s2 + i))
-		i++;
-	return (*(s1 + i) - *(s2 + i));
-}
 
 int	handle_heredoc(char *end_delimitor, int in_fd) // here if single quotes, then you can strip it and // handle cat << ''
 {
@@ -62,7 +35,21 @@ int	handle_heredoc(char *end_delimitor, int in_fd) // here if single quotes, the
 
 int run_heredoc(char *end_delimitor, int *in_fd, int *out_fd)
 {
-    int pipe_fd[2];
+	int pipe_fd[2];
+	int	is_interprete;
+	char	*temp;
+
+	temp = end_delimitor;
+	is_interprete = 1;
+	if (end_delimitor == NULL)
+		return (-1);
+	if (*end_delimitor == '\"' || *end_delimitor == '\'')
+	{
+		end_delimitor = ft_strtrim(end_delimitor, "\"\'");
+		if (!end_delimitor)
+			return (-1);
+		is_interprete = 0;
+	}
     if (pipe(pipe_fd) == -1)
     {
         perror("pipe");
@@ -74,10 +61,12 @@ int run_heredoc(char *end_delimitor, int *in_fd, int *out_fd)
         close(pipe_fd[1]);
         return (-1);
     }
-	if (*out_fd == -20)
+	if (*out_fd == -20) // clean
 		*out_fd = pipe_fd[0];
     close(pipe_fd[1]);
     *in_fd = pipe_fd[0];
+	if (!is_interprete)
+		free(end_delimitor);
     return (0);
 }
 
@@ -85,7 +74,6 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd, int *out_fd)
 {
 	int		fd;
 	t_redir_lst	*traverse_redir_lst;
-
 
 	traverse_redir_lst = redir_lst;
 	while (traverse_redir_lst)
@@ -125,10 +113,37 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd, int *out_fd)
 	}
 	return (0);
 }
+#include <errno.h>
 
-int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, pid_t *pids, int *pid_count)
+int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int *pid_count)
 {
-    pid_t fork_pid = fork();
+	int	saved_in;
+	int	saved_out;
+	int	res;
+	pid_t fork_pid;
+
+	if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
+	{
+		saved_in = dup(STDIN_FILENO);
+		saved_out = dup(STDOUT_FILENO);
+		if (in_fd != -1)
+		{
+			dup2(in_fd, STDIN_FILENO);
+			close(in_fd);
+		}
+		if (out_fd != -1)
+		{
+			dup2(out_fd, STDOUT_FILENO);
+			close(out_fd);
+		}
+		res = execute_builtin(ast_node->data.cmd.exec_argv);
+		dup2(saved_in, STDIN_FILENO);
+		dup2(saved_out, STDOUT_FILENO);
+		close(saved_in);
+		close(saved_out);
+		return (res);
+	}
+    fork_pid = fork();
     if (fork_pid == -1)
     {
         perror("fork");
@@ -139,14 +154,14 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, pid_t *pids, int *p
         if (ast_node->data.cmd.redirs && is_redirection(ast_node->data.cmd.redirs->type))
         {
             if (handle_redirection_fd(ast_node->data.cmd.redirs, &in_fd, &out_fd) == -1)
-                exit(1);
+                exit (1);
         }
         if (in_fd != -1)
         {
             if (dup2(in_fd, STDIN_FILENO) == -1)
             {
                 perror("dup2 in_fd");
-                exit(1);
+                exit (1);
             }
             close(in_fd);
         }
@@ -155,7 +170,7 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, pid_t *pids, int *p
             if (dup2(out_fd, STDOUT_FILENO) == -1)
             {
                 perror("dup2 out_fd");
-                exit(1);
+                exit (1);
             }
             close(out_fd);
         }
@@ -164,30 +179,47 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, pid_t *pids, int *p
 			if (execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL) == -1)
 			{
 				perror("execve");
-				exit(1);
 			}
+			exit(1);
 		}
 		else
-			exit(0);
+			exit (1);
     }
-    pids[*pid_count] = fork_pid;
-    (*pid_count)++;
-    if (in_fd != -1)
-        close(in_fd);
-    if (out_fd != -1)
-        close(out_fd);
-    return (1);
+	else {
+		// Parent process:
+		// pids[*pid_count] = fork_pid;
+		// (*pid_count)++;
+		if (in_fd != -1) close(in_fd);
+		if (out_fd != -1) close(out_fd);
+
+		// Wait for child to exit and check its status.
+		int status;
+		waitpid(fork_pid, &status, 0);
+
+		// Return 0 if child failed, 1 if succeeded.
+		// return (WIFEXITED(status) && (WEXITSTATUS(status) == 0));
+		// return (WEXITSTATUS(status));
+		return (WIFEXITED(status));
+		// 		WIFSIGNALED(status)
+		// returns true if the child process was terminated by a signal.
+		// WTERMSIG(status)
+		// returns the number of the signal that caused the child process to terminate. This macro should only be employed if WIFSIGNALED returned tru
+		// WSTOPSIG(status)
+	}
+	// pids[*pid_count] = fork_pid;
+	// (*pid_count)++;
+	// if (in_fd != -1)
+	// 	close(in_fd);
+	// if (out_fd != -1)
+	// 	close(out_fd);
+	// return (1);
 }
 
-// // pipefd: An array of two integers. After a successful call:
-// // pipefd[0] is the file descriptor for the read end of the pipe.
-// // pipefd[1] is the file descriptor for the write end of the pipe.
-// Execute the AST, collecting PIDs
-int	execute(t_ast_node *ast_head, int in_fd, int out_fd, pid_t *pids, int *pid_count)
+int	execute(t_ast_node *ast_head, int in_fd, int out_fd) //, pid_t *pids, int *pid_count)
 {
 	if (ast_head->type == NODE_CMD)
 	{
-		return execute_cmd(ast_head, in_fd, out_fd, pids, pid_count);
+		return execute_cmd(ast_head, in_fd, out_fd);//, pids, pid_count);
 	}
 	else if (ast_head->type == NODE_PIPE)
 	{
@@ -197,22 +229,41 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, pid_t *pids, int *pid_c
 			perror("pipe");
 			return (-1);
 		}
-		if (execute(ast_head->data.binary_op.left, in_fd, pipe_fd[1], pids, pid_count) == -1)
+		if (execute(ast_head->data.binary_op.left, in_fd, pipe_fd[1]) == -1) // , pids, pid_count
 			return (-1);
-		if (execute(ast_head->data.binary_op.right, pipe_fd[0], out_fd, pids, pid_count) == -1)
+		if (execute(ast_head->data.binary_op.right, pipe_fd[0], out_fd) == -1) // , pids, pid_count
 			return (-1);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 		return (1);
 	}
+	else if (ast_head->type == NODE_AND)
+	{
+		int status = execute(ast_head->data.binary_op.left, -1, -1); // , pids, pid_count
+		if (status)
+			status = execute(ast_head->data.binary_op.right, -1, -1); // , pids, pid_count
+		return (status);
+	}
+	else if (ast_head->type == NODE_OR)
+	{
+		int status = execute(ast_head->data.binary_op.left, -1, -1); // , pids, pid_count
+		if (!status)
+			status = execute(ast_head->data.binary_op.right, -1, -1); // , pids, pid_count
+		return (status);
+	}
 	return (-1);
 }
 
-void run_pipeline(t_ast_node *ast_head)
+int	run_pipeline(t_ast_node *ast_head) // run pipeline can return the exit status of the last command
 {
-	pid_t pids[10];
-	int pid_count = 0;
-	execute(ast_head, -1, -1, pids, &pid_count);
-	for (int i = 0; i < pid_count; i++)
-		waitpid(pids[i], NULL, 0);
+	// pid_t pids[10];
+	// int pid_count = 0;
+	return (execute(ast_head, -1, -1));//, pids, &pid_count);
+	// for (int i = 0; i < pid_count; i++)
+	// 	waitpid(pids[i], NULL, 0);
+	// return (0); // success but change it to return the exit status of the last command
 }
+
+
+// if NODE_AND -- exec right if left success
+// if NODE_OR -- exec right if left fails

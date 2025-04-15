@@ -5,108 +5,86 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/14 13:35:38 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/15 09:54:32 by opopov           ###   ########.fr       */
+/*   Created: 2025/04/15 17:13:35 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/15 19:22:05 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// char	*dollar_token(char *input, int exit_status)
-// {
-// 	char	*res;
-// 	int		i;
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
-// 	if (!input)
-// 		return (NULL);
-// 	while (input[i])
-// 	{
+extern char **environ;
 
-// 		i++;
-// 	}
-// }
-
-char *ft_strjoin3(char *s1, char *s2, char *s3)
+int ft_putenv(char *str)
 {
-	char	*tmp;
-	char	*res;
-	if (!s1 || !s2 || !s3)
-		return (NULL);
+	char	*eq_str;
+	int		name_len;
+	int		i;
+	int		env_y;
+	char	**new_env;
 
-	tmp = ft_strjoin(s1, s2);
-	if (!tmp)
-		return (NULL);
-	res = ft_strjoin(tmp, s3);
-	free(tmp);
-	return (res);
-}
-
-int	ft_setenv(char *name, char *value, int overwrite)
-{
-	extern char	**environ;
-	int			name_len;
-	int			value_len;
-	int			i;
-	char		*tmp;
-	int			env_y;
-	char		**env_2;
-
-	if (!name || !value || ft_strchr(name, '=') != NULL)
-	{
-		ft_putstr_fd("Error: invalid syntax for setenv\n", 2);
+	if (!str || !ft_strchr(str, '='))
 		return (1);
-	}
-	name_len = ft_strlen(name);
-	value_len = ft_strlen(value);
-
-	// search for existing variable
+	eq_str = ft_strchr(str, '=');
+	name_len = eq_str - str;
 	i = 0;
 	while (environ[i])
 	{
-		if (strncmp(environ[i], name, name_len) == 0 &&
-			environ[i][name_len] == '=')
+		if (ft_strncmp(environ[i], str, name_len) == 0 && environ[i][name_len] == '=')
 		{
-			if (!overwrite)
-				return 0;
-			tmp = ft_strjoin3(name, "=", value);
-			if (!tmp)
-			{
-				ft_putstr_fd("Error: failed allocation memory\n", 2);
-				return (1);
-			}
-			free(environ[i]);
-			environ[i] = tmp;
+			environ[i] = str;
 			return (0);
 		}
 		i++;
 	}
-
-	// add new variable
 	env_y = 0;
-	while (environ[env_y])
-		env_y++;
-	env_2 = (char **)malloc((env_y + 2) * sizeof(char *));
-	if (!env_2)
-	{
-		ft_putstr_fd("Error: failed allocation memory\n", 2);
+	while (environ[env_y]) env_y++;
+	new_env = (char **) malloc(sizeof(char *) * (env_y + 2));
+	if (!new_env)
 		return (1);
-	}
 	i = 0;
-	// copy variables
 	while (i < env_y)
 	{
-		env_2[i] = environ[i];
+		new_env[i] = environ[i];
 		i++;
 	}
-	tmp = ft_strjoin3(name, "=", value);
+	new_env[env_y] = str;
+	new_env[env_y + 1] = NULL;
+	environ = new_env; // Point to the new array
+	return 0;
+}
+
+
+int	ft_setenv(char *name, char *value, int overwrite)
+{
+	char	*current_value;
+	char	*tmp;
+	int		len;
+
+	tmp = NULL;
+	if (!name || !value || ft_strchr(name, '='))
+		return (1);
+	current_value = getenv(name);
+	if (current_value && !overwrite)
+		return (0);
+	len = ft_strlen(name) + ft_strlen(value) + 2;
+	tmp = malloc(len);
 	if (!tmp)
 	{
-		free(env_2);
-		ft_putstr_fd("Error: failed allocation memory\n", 2);
+		perror("Error: Failed allocation memory");
 		return (1);
 	}
-	env_2[env_y] = tmp;
-	env_2[env_y + 1] = NULL;
-	environ = env_2;
+	ft_strlcpy(tmp, name, len);
+	ft_strlcat(tmp, "=", len);
+	ft_strlcat(tmp, value, len);
+	if (ft_putenv(tmp))
+	{
+		free(tmp);
+		perror("Error: putenv failed");
+		return (1);
+	}
 	return (0);
 }

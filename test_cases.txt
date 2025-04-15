@@ -3,7 +3,7 @@
 echo 'Today is $(date +%A)'
 echo Today is $(date +%A)
 
-echo 'It'\''s a test' 
+echo 'It'\''s a test'
 echo 'This costs $100!'
 ||||||||| NOT HANDLE ||||||||||||
 echo 'Line 1
@@ -17,7 +17,7 @@ echo "$tabbed"
 
 echo 'I am \ $PATH' => a single quote may not appear inside
 
-echo "asdj $nonexistentvar" => 
+echo "asdj $nonexistentvar" =>
 
 \\\\\\\\\\\\\\\\\ "weakly quoted" string //////////////////
 echo "Today is $(date +%A)"
@@ -97,13 +97,13 @@ echo "$phrase"  # Quoted → Token: "Hello   World" (preserves spaces)
 
 
 
-NINE_NUM=9 
+NINE_NUM=9
 TWELVE_NUM=12
-echo $NINE_NUM 
-echo $TWELVE_NUM 
+echo $NINE_NUM
+echo $TWELVE_NUM
 echo $((NINE_NUM + TWELVE_NUM))
 
-NINE_NUM=9 
+NINE_NUM=9
 THIRTEEN=13a
 echo $THIRTEEN
 echo $((NINE_NUM + THIRTEEN)) // probably it is converted by shell itself
@@ -121,7 +121,7 @@ echo "Hello $USER" > file.txt
 
 
 
-echo "hello world" 
+echo "hello world"
 ....
 
 
@@ -196,7 +196,7 @@ cat "jfjffj.txt""test_cases.txt"
 seperators = blanck_space, |, redirections, AND, OR
 
 
-		   > 
+		   >
         /     \
    output.txt   |
               /   \
@@ -204,7 +204,7 @@ seperators = blanck_space, |, redirections, AND, OR
                 /     \
              grep sth  |
                       / \
-                   cat   < 
+                   cat   <
                         / \
                  input.txt  ε
 
@@ -217,7 +217,7 @@ seperators = blanck_space, |, redirections, AND, OR
                 /     \
               cmd    |
             /       / \
-                 cat   < 
+                 cat   <
                         / \
                  input.txt  ε
 
@@ -228,3 +228,24 @@ seperators = blanck_space, |, redirections, AND, OR
     exec cmd1		   is_cmd (pipe)
                 /             \
            exec cmd2
+
+
+
+
+
+
+ls
+$? = 0 (SUCCESS)
+
+
+grep "pattern" file.txt
+status=$?
+echo "Exit status was $status"
+
+ls -a | fasdf
+$? = 127
+
+ls -a | ls -re
+$? = 2
+
+handle SHLVL environment (export). cannot go over 999!!!!
