@@ -228,3 +228,24 @@ seperators = blanck_space, |, redirections, AND, OR
     exec cmd1		   is_cmd (pipe)
                 /             \
            exec cmd2
+
+
+
+
+
+
+ls
+$? = 0 (SUCCESS)
+
+
+grep "pattern" file.txt
+status=$?
+echo "Exit status was $status"
+
+ls -a | fasdf
+$? = 127
+
+ls -a | ls -re
+$? = 2
+
+handle SHLVL environment (export). cannot go over 999!!!!
