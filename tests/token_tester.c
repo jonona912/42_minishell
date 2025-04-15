@@ -347,14 +347,11 @@ t_test_case test_cases[] = {
 
     //error cases parenthesis
     {"(echo hello",
-        ""
-    },
+        ""},
     {"echo hello)",
-        ""
-    },
+        ""},
     {"((echo hello)",
-        ""
-    },
+        ""},
 
     // Edge cases
     {"", ""},  // Empty input
@@ -375,71 +372,54 @@ t_test_case test_cases[] = {
     "Type : TOKEN_ENV_VAR\nToken: \"$\"\n"},
     {"cmd\targ",  // Tab separator
         "Type : TOKEN_WORD\nToken: \"cmd\"\n"
-        "Type : TOKEN_WORD\nToken: \"arg\"\n"
-    },
+        "Type : TOKEN_WORD\nToken: \"arg\"\n"},
     {"cmd\narg",  // Newline separator
         "Type : TOKEN_WORD\nToken: \"cmd\"\n"
-        "Type : TOKEN_WORD\nToken: \"arg\"\n"
-    },
+        "Type : TOKEN_WORD\nToken: \"arg\"\n"},
     {"cmd \t \n arg",  // Mixed whitespace
         "Type : TOKEN_WORD\nToken: \"cmd\"\n"
-        "Type : TOKEN_WORD\nToken: \"arg\"\n"
-    },
+        "Type : TOKEN_WORD\nToken: \"arg\"\n"},
     {"\"\"",  // Empty double quotes
         "Type : TOKEN_D_QUOTE\nToken: \"\"\n"
     },
     {"''",  // Empty single quotes
-        "Type : TOKEN_S_QUOTE\nToken: \"\"\n"
-    },
+        "Type : TOKEN_S_QUOTE\nToken: \"\"\n"},
     {"\" \"",  // Space in quotes
-        "Type : TOKEN_D_QUOTE\nToken: \" \"\n"
-    },
+        "Type : TOKEN_D_QUOTE\nToken: \" \"\n"},
     {"'\\''",  // Escaped single quote in single quotes
-        ""
-    },
+        ""},
     {">",  // Lone redirection
-        "Type : TOKEN_REDIRECTION_OUT\nToken: \">\"\n"
-    },
+        "Type : TOKEN_REDIRECTION_OUT\nToken: \">\"\n"},
     {"2>",  // Lone FD redirection
         "Type : TOKEN_WORD\nToken: \"2\"\n"
-        "Type : TOKEN_REDIRECTION_OUT\nToken: \">\"\n"
-    },
+        "Type : TOKEN_REDIRECTION_OUT\nToken: \">\"\n"},
     {"<>file",  // Special redirection
         "Type : TOKEN_REDIRECTION_IN\nToken: \"<\"\n"
         "Type : TOKEN_REDIRECTION_OUT\nToken: \">\"\n"
-        "Type : TOKEN_WORD\nToken: \"file\"\n"
-    },
+        "Type : TOKEN_WORD\nToken: \"file\"\n"},
     {";;",  // Double semicolon
-        "Type : TOKEN_WORD\nToken: \";;\"\n"
-    },
+        "Type : TOKEN_WORD\nToken: \";;\"\n"},
     {"|||",  // Triple pipe
         "Type : TOKEN_OR\nToken: \"||\"\n"
-        "Type : TOKEN_PIPE\nToken: \"|\"\n"
-    },
+        "Type : TOKEN_PIPE\nToken: \"|\"\n"},
     {"\"\"\"\"\"\"",  // Triple empty quotes
         "Type : TOKEN_D_QUOTE\nToken: \"\"\n"
         "Type : TOKEN_D_QUOTE\nToken: \"\"\n"
-        "Type : TOKEN_D_QUOTE\nToken: \"\"\n"
-    },
+        "Type : TOKEN_D_QUOTE\nToken: \"\"\n"},
     {"$''",  // ANSI-C quoting (bash extension)
         "Type : TOKEN_ENV_VAR\nToken: \"$\"\n"
-        "Type : TOKEN_S_QUOTE\nToken: \"\"\n"
-    },
+        "Type : TOKEN_S_QUOTE\nToken: \"\"\n"},
     {"'$'",  // ANSI-C quoting (bash extension)
-        "Type : TOKEN_S_QUOTE\nToken: \"$\"\n"
-    },
+        "Type : TOKEN_S_QUOTE\nToken: \"$\"\n"},
     {"\"$\"",  // ANSI-C quoting (bash extension)
-        "Type : TOKEN_D_QUOTE\nToken: \"$\"\n"
-    },
+        "Type : TOKEN_D_QUOTE\nToken: \"$\"\n"},
     {"echo \"hello",  // Unclosed quote
-        ""
-    },
+        ""},
     {"echo hello # comment",  // Comment handling
         "Type : TOKEN_WORD\nToken: \"echo\"\n"
         "Type : TOKEN_WORD\nToken: \"hello\"\n"
         "Type : TOKEN_WORD\nToken: \"#\"\n"
-        "Type : TOKEN_WORD\nToken: \"comment\"\n"
-    },
+        "Type : TOKEN_WORD\nToken: \"comment\"\n"},
     {NULL, NULL} // End marker
 };
 
