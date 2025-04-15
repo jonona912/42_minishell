@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_in_commands.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:35:48 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/14 18:52:33 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/15 11:15:52 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	ft_exit(char **argv)
 	exit(0);
 }
 
-void	ft_env(char **argv)
+void	ft_env()
 {
 	extern char	**environ;
 	int			i;
@@ -94,7 +94,7 @@ int	ft_cd (char **argv)
 			tmp = getenv("OLDPWD");
 		if (!tmp)
 		{
-			ft_putchar_fd("Error: OLDPWD is not set\n", 2);
+			ft_putstr_fd("Error: OLDPWD is not set\n", 2);
 			return (1);
 		}
 	}
@@ -130,10 +130,6 @@ int	ft_export(char **argv)
 {
 	extern char	**environ;
 	char	*equal;
-	int		i;
-	int		env_y;
-	char	**env_2;
-	char	*tmp;
 
 	if (!argv[1])
 	{

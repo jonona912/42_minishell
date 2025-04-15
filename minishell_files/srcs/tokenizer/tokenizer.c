@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 21:43:18 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/14 22:12:08 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/15 17:37:30 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,5 +276,6 @@ t_token_lst	*ft_tokenize(char *line)
 		token_free_list(token_lst);
 		return (NULL); // change code later
 	}
+	token_add_node_back(&token_lst, token_new_node(TOKEN_END, NULL)); // add this to the end of the list
 	return (token_lst);
 }

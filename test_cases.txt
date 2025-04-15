@@ -1,3 +1,102 @@
+============================= TESTS DONE ===============================
+\\\\\\\\\\\\\\\\\\\ pipes //////////////////
+echo "Hello" | grep "Hello"
+ls -l minishell_files | grep objs
+ls -l minishell_files | grep objs | wc -w
+ls -l minishell_files | grep objs | wc -wc
+
+\\\\\\\\\\\\\\\\\\\\ redirect inputs //////////////////
+wc -l < test.txt
+sort < test.txt
+sort < test.txt | wc -l
+sort < test.txt | grep z
+sort < test.txt | grep z | wc -l
+
+\\\\\\\\\\\\\\\\\\\\ redirect outputs //////////////////
+
+ls -l > output.txt
+
+wc -l < test.txt > output.txt
+sort < test.txt > output.txt
+sort < test.txt | wc -l > output.txt
+sort < test.txt | grep z > output.txt
+sort < test.txt | grep z | wc -l > output.txt
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\ << here-doc //////////////////
+cat << EOF
+cat << EOF > output.txt
+cat << EOF | grep jonona > output.txt
+
+cat << EOF >> output.txt
+cat << EOF | grep jonona >> output.txt
+
+cat <<
+cat << ""
+<< EOF 
+
+
+TEST AND / OR
+
+(ls -a | grep mini) || (ls -l | grep mini)
+(ls -a | grep mini) && (ls -l | grep mini)
+
+(ls -a | grep mini > output.txt) || (ls -l | grep mini > output.txt)
+(ls -a | grep mini > output.txt) && (ls -l | grep mini >> output.txt)
+
+ls -a | grep mini > output.txt || ls -l | grep mini > output.txt
+ls -a | grep mini > output.txt && ls -l | grep mini >> output.txt
+
+(ls -a | grep mini) > output.txt || (ls -l | grep mini) > output.txt
+(ls -a | grep mini) > output.txt && (ls -l | grep mini) >> output.txt
+
+(ls -a | grep mini | wc -l) > output.txt && (ls -l | grep w | wc -l) >> output.txt
+(ls -a | grep mini | wc -l) > output.txt || (ls -l | grep w | wc -l) >> output.txt
+
+< input.txt (cat | grep jnn) > output.txt && (ls -l | grep mini) >> output.txt
+
+< input.txt cat | grep jnn > output.txt && (ls -l | grep mini) >> output.txt
+
+
+
+
+
+==================================== TESTS DONE =======================================
+** first check token_lst
+** then handle in parser most probably (yep.......)
+
+cat *.txt
+ls *.txt
+
+ls [first char *]
+ls [* last char]
+ls [* only]
+ls [* in the middle]
+ls [*nonexistent ending] [*existant end] (probably * nonexistant ending is send as a single argument)
+
+ls
+ls [* ending of filr or directory] (if directory then print all files in the directory, however the subject says it shouldn't be handled)  [DO NOT HANDLE]
+
+
+echo << EOF >> output.txt
+echo "Hello, World!" > output.txt
+echo << EOF > output.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \\\\\\\\\\\\\\\\\ "strongly quoted" string ///////////////////
 
 echo 'Today is $(date +%A)'
@@ -45,42 +144,7 @@ ls -l minishell_files
 
 ||||||||||||||||||||||| DON'T KNOW HOW MINISHELL NEEDS TO HANDLE ||||||||||||||||||||||||
 
-\\\\\\\\\\\\\\\\\\\ pipes //////////////////
-echo "Hello" | grep "Hello"
-ls -l minishell_files | grep objs
-ls -l minishell_files | grep objs | wc -w
-ls -l minishell_files | grep objs | wc -wc
 
-
-
-\\\\\\\\\\\\\\\\\\\\ redirect inputs //////////////////
-wc -l < test.txt
-sort < test.txt
-sort < test.txt | wc -l
-sort < test.txt | grep z
-sort < test.txt | grep z | wc -l
-
-\\\\\\\\\\\\\\\\\\\\ redirect outputs //////////////////
-echo "Hello, World!" > output.txt
-ls -l > output.txt
-
-wc -l < test.txt > output.txt
-sort < test.txt > output.txt
-sort < test.txt | wc -l > output.txt
-sort < test.txt | grep z > output.txt
-sort < test.txt | grep z | wc -l > output.txt
-
-
-\\\\\\\\\\\\\\\\\\\\\\\\\ << here-doc //////////////////
-cat << EOF
-cat << EOF > output.txt
-cat << EOF | grep jonona > output.txt
-echo << EOF > output.txt
-
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\ >> redirect outputs in append mode ////////////
-cat << EOF >> output.txt
-cat << EOF | grep jonona >> output.txt
-echo << EOF >> output.txt
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\ Handle environment variables ////////////
 

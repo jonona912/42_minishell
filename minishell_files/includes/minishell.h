@@ -31,7 +31,8 @@ typedef enum	s_token_type
 	TOKEN_AND,
 	TOKEN_OR,
 	TOKEN_L_PAREN,
-	TOKEN_R_PAREN
+	TOKEN_R_PAREN,
+	TOKEN_END
 }	t_token_type;
 
 typedef struct s_token_lst
@@ -71,7 +72,6 @@ typedef struct s_tokenize_struct
 // 	int	redirection;
 // 	int	pipe;
 // }	t_command;
-
 
 
 typedef enum {
@@ -152,15 +152,23 @@ int		ft_cd (char **argv);
 int		ft_export(char **argv);
 int		ft_unset(char **argv);
 
-/////////////////////// parser_2 /////////////////////////
+/////////////////////// parser /////////////////////////
 
 // ast_binary_tree_function.c
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
 t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
 
-// parser.c
+// parser_helper_1.c
+t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst);
+int	is_quote_or_word(t_token_type type);
 int	is_redirection(t_token_type type);
+
+// parser_parse_word.c
+t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node);
+
+// parser.c
 t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
+t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node);
 t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node);
 
 // redirection_functions.c
@@ -168,10 +176,12 @@ t_redir_lst *new_redir_node(t_token_type type, char *target);
 void add_redir_back(t_redir_lst **lst, t_redir_lst *new_node);
 void free_redir_list(t_redir_lst **lst);
 
+// return_executable_path.c
+char *return_executable_path(const char *name);
 
 
-
-
+// wildcard_functions.c
+t_token_lst *wildcard_function(char *wildcard_str);
 
 ///////////////////// execute ////////////////////////
 // int execute(t_ast_node *ast_head, int pipe_direction, int pipe_fd[2]);

@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/15 10:18:08 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/15 23:39:20 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void signal_handler(int signum)
 int	main(void)
 {
 	t_token_lst *token_lst;
+	t_token_lst	*token_lst_check;
 	t_ast_node *head;
 
 	head = NULL;
@@ -79,13 +80,23 @@ int	main(void)
 			continue;
 		}
 		// ft_print_tokens(token_lst);
-		parse_or(token_lst, &head);
-		print_ast(head);
-		int exec_result = run_pipeline(head);
-		printf("exec_result = %d\n", exec_result);
+		wildcard_function(line);
+		add_history(line);
+		token_lst_check = parse_or(token_lst, &head);
+		if (!token_lst_check)
+		{
+			// handle error
+			// write(1, "Error: parsing failed\n", 22);
+			token_free_list(token_lst);
+			free(line);
+			continue ;
+		}
+		// print_ast(head);
+		run_pipeline(head);
+		// printf("exec_result = %d\n", exec_result);
 		
 		// ms_token_free_list(token_lst);
-		add_history(line);
+
 		rl_on_new_line();
 		free(line);
 	}

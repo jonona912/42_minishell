@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 20:42:44 by zkhojazo          #+#    #+#             */
-/*   Updated: 2024/11/17 12:04:46 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/15 23:53:47 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(const char *str)
 	size_t	ctr;
 
 	ctr = 0;
+	if (!str)
+		return (0);
 	while (*str)
 	{
 		ctr++;
