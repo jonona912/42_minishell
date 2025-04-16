@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/15 23:39:20 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/16 16:30:51 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	main(void)
 			continue;
 		}
 		// ft_print_tokens(token_lst);
-		wildcard_function(line);
+		// wildcard_function(line);
 		add_history(line);
 		token_lst_check = parse_or(token_lst, &head);
 		if (!token_lst_check)

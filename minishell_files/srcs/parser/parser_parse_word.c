@@ -46,7 +46,7 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
 		ctr = 0;
 		while (token_lst && token_lst->type == TOKEN_WORD)
 		{
-			if (ft_strchr(token_lst->value, '*'))
+			// if (ft_strchr(token_lst->value, '*'))
 			
 			(*ast_node)->data.cmd.exec_argv[ctr] = ft_strdup(token_lst->value);
 			token_lst = token_lst->next;
