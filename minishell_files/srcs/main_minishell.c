@@ -1,16 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main_minishell.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/29 14:01:59 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/16 16:30:51 by zkhojazo         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/minishell.h"
+
 void	ft_print_tokens(t_token_lst *token_lst);
 void print_ast(t_ast_node *root);
 
@@ -128,30 +117,6 @@ void	ft_print_tokens(t_token_lst *token_lst)
 		token_lst = token_lst->next;
 	}
 }
-
-// void	print_ast(t_ast_node *node)
-// {
-//     if (!node)
-//         return;
-
-//     // If the node is a binary operation, traverse left, print the operator, then traverse right
-//     if (node->type == NODE_PIPE)
-//     {
-//         print_ast(node->data.binary_op.left);
-//         printf("PIPE\n");
-//         print_ast(node->data.binary_op.right);
-//     }
-//     else if (node->type == NODE_CMD)
-//     {
-//         // Print the command and its arguments
-//         printf("CMD: %s\n", node->data.cmd.executable);
-//         if (node->data.cmd.exec_argv)
-//         {
-//             for (int i = 0; node->data.cmd.exec_argv[i]; i++)
-//                 printf("ARG[%d]: %s\n", i, node->data.cmd.exec_argv[i]);
-//         }
-//     }
-// }
 
 #include <stdio.h>
 #include <stdlib.h>
