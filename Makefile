@@ -16,6 +16,7 @@ SRCS = main_minishell.c \
 		$(TOKENIZER_DIR)/tokenizer.c \
 		$(PARSER_DIR)/ast_binary_tree_functions.c \
 		$(PARSER_DIR)/parser.c \
+		$(PARSER_DIR)/parser_utils.c \
 		$(PARSER_DIR)/parser_helper_1.c \
 		$(PARSER_DIR)/parser_parse_word.c \
 		$(PARSER_DIR)/return_executable_path.c \

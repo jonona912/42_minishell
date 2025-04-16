@@ -23,7 +23,7 @@ void signal_handler(int signum)
 	rl_redisplay();
 }
 
-int	main(void)
+int	main(void) // asdf
 {
 	t_token_lst *token_lst;
 	t_token_lst	*token_lst_check;
@@ -44,16 +44,16 @@ int	main(void)
 		signal_received = 0;
 		// line = readline("\033[0;35mminishell> \033[0m");
 		line = readline("minishel> ");
+		if (!line)
+		{
+			write(1, "exit\n", 5);
+			break;
+		}
 		add_history(line);
 		if (ft_strcmp(line, "") == 0)
 		{
 			free(line);
 			continue;
-		}
-		if (!line)
-		{
-			write(1, "exit\n", 5);
-			break;
 		}
 		if (signal_received)
 		{
@@ -83,7 +83,7 @@ int	main(void)
 		// print_ast(head);
 		run_pipeline(head);
 		// printf("exec_result = %d\n", exec_result);
-		
+
 		// ms_token_free_list(token_lst);
 
 		rl_on_new_line();
@@ -125,7 +125,7 @@ void print_redirections(t_redir_lst *redirs) {
     if (!redirs) return;
     printf(" redirs=[");
     while (redirs) {
-        printf("%s->%s", 
+        printf("%s->%s",
                redirs->type == TOKEN_REDIRECTION_IN ? "<" :
                redirs->type == TOKEN_REDIRECTION_OUT ? ">" :
                redirs->type == TOKEN_APPEND ? ">>" : "<<",
@@ -147,7 +147,7 @@ void print_ast_node(t_ast_node *node, int indent)
         case NODE_CMD:
             printf("CommandNode(");
             printf("%s", node->data.cmd.executable);
-            
+
             // Print arguments if they exist
             if (node->data.cmd.exec_argv && node->data.cmd.exec_argv[0]) {
                 printf(", args=[");
@@ -157,7 +157,7 @@ void print_ast_node(t_ast_node *node, int indent)
                 }
                 printf("]");
             }
-            
+
             // Print redirections
             print_redirections(node->data.cmd.redirs);
             printf(")");

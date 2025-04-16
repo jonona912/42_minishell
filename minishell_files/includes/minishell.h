@@ -98,7 +98,7 @@ typedef struct s_ast_node
 		struct
 		{
 			char *executable;
-			char **exec_argv;
+			char **exec_argv; // $path 
 			t_redir_lst *redirs;
 		} cmd;
 		struct
@@ -170,6 +170,7 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node);
 t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
 t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node);
 t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node);
+char		*arg_return(t_token_lst *lst);
 
 // redirection_functions.c
 t_redir_lst *new_redir_node(t_token_type type, char *target);
