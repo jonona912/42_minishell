@@ -1,7 +1,7 @@
 #include "../includes/minishell.h"
 
 void	ft_print_tokens(t_token_lst *token_lst);
-void print_ast(t_ast_node *root);
+void	print_ast(t_ast_node *root);
 
 volatile int signal_received = 0;
 
@@ -25,6 +25,9 @@ void signal_handler(int signum)
 
 int	main(void) // asdf
 {
+	int prev_status;
+
+	prev_status = 0;
 	t_token_lst *token_lst;
 	t_token_lst	*token_lst_check;
 	t_ast_node *head;
@@ -81,7 +84,7 @@ int	main(void) // asdf
 			continue ;
 		}
 		// print_ast(head);
-		run_pipeline(head);
+		prev_status = run_pipeline(head);
 		// printf("exec_result = %d\n", exec_result);
 
 		// ms_token_free_list(token_lst);
@@ -96,19 +99,20 @@ void	ft_print_tokens(t_token_lst *token_lst)
 {
 	const char *token_type_str[] = {
 		"TOKEN_WORD",
+		"TOKEN_S_QUOTE",
+		"TOKEN_D_QUOTE",
+		"TOKEN_WILDCARD",
 		"TOKEN_PIPE",
 		"TOKEN_REDIRECTION_IN",
 		"TOKEN_REDIRECTION_OUT",
 		"TOKEN_APPEND",
 		"TOKEN_HEREDOC",
 		"TOKEN_ENV_VAR",
-		"TOKEN_S_QUOTE",
-		"TOKEN_D_QUOTE",
-		"TOKEN_WILDCARD",
 		"TOKEN_AND",
 		"TOKEN_OR",
 		"TOKEN_L_PAREN",
-		"TOKEN_R_PAREN"
+		"TOKEN_R_PAREN",
+		"TOKEN_END"
 	};
 
 	while (token_lst)
