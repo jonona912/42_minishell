@@ -3,41 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:43:08 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/15 13:26:10 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/16 16:44:57 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	dup2_fd(int fd, int std_fd_fileno)
-{
-	if (fd == -1)
-	{
-		perror("open redirection in");
-		return (-1);
-	}
-	if (dup2(fd, std_fd_fileno) == -1)
-	{
-		perror("dup2 redirection in");
-		return (-1);
-	}
-	return (0);
-}
+// int	dup2_fd(int fd, int std_fd_fileno)
+// {
+// 	if (fd == -1)
+// 	{
+// 		perror("open redirection in");
+// 		return (-1);
+// 	}
+// 	if (dup2(fd, std_fd_fileno) == -1)
+// 	{
+// 		perror("dup2 redirection in");
+// 		return (-1);
+// 	}
+// 	return (0);
+// }
 
-int	ms_strcmp_until(char *s1, char *s2, char c)
-{
-	int	i;
+// int	ms_strcmp_until(char *s1, char *s2, char c)
+// {
+// 	int	i;
 
-	i = 0;
-	if (!s1 || !s2)
-		return (-1);
-	while (*(s1 + i) && *(s2 + i) && *(s1 + i) != c && *(s1 + i) == *(s2 + i))
-		i++;
-	return (*(s1 + i) - *(s2 + i));
-}
+// 	i = 0;
+// 	if (!s1 || !s2)
+// 		return (-1);
+// 	while (*(s1 + i) && *(s2 + i) && *(s1 + i) != c && *(s1 + i) == *(s2 + i))
+// 		i++;
+// 	return (*(s1 + i) - *(s2 + i));
+// }
 
 int	builtin_check(char *cmd)
 {

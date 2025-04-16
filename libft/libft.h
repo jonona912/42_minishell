@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:50:36 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/03/31 21:08:56 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/15 12:47:16 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(char *src);
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin_three(char const *s1, char const *s2, char const *s3);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlen(const char *str);
@@ -60,6 +61,7 @@ char	*ft_strstr_last(const char *big, const char *little);
 char	*ft_strrchr(const char *s, int c);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strcpy(char *dest, const char *src);
 // ft_numbers
 int		ft_atoi(const char *nptr);
 

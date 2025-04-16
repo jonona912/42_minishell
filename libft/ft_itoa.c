@@ -6,26 +6,26 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 13:10:10 by zkhojazo          #+#    #+#             */
-/*   Updated: 2024/12/31 23:55:39 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/15 12:47:33 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char	*ft_strcpy(char *dest, const char *src)
-{
-	char	*ret;
+// static char	*ft_strcpy(char *dest, const char *src)
+// {
+// 	char	*ret;
 
-	ret = dest;
-	while (*src)
-	{
-		*dest = *src;
-		src++;
-		dest++;
-	}
-	*dest = '\0';
-	return (ret);
-}
+// 	ret = dest;
+// 	while (*src)
+// 	{
+// 		*dest = *src;
+// 		src++;
+// 		dest++;
+// 	}
+// 	*dest = '\0';
+// 	return (ret);
+// }
 
 static int	ft_numlen(int n)
 {

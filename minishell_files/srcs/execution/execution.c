@@ -1,16 +1,39 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   execution.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/06 19:54:11 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/15 13:28:31 by opopov           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes/minishell.h"
+
+void	print_error(const char *message)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd((char *)message, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	perror("");
+}
+
+int dup2_fd(int fd, int std_fd_fileno, const char *file_name)
+{
+	if (fd == -1)
+	{
+		print_error(file_name);
+		return (-1);
+	}
+	if (dup2(fd, std_fd_fileno) == -1)
+	{
+		print_error(file_name);
+		return (-1);
+	}
+	return (0);
+}
+
+int	ms_strcmp_until(char *s1, char *s2, char c)
+{
+	int	i;
+
+	i = 0;
+	if (!s1 || !s2)
+		return (-1);
+	while (*(s1 + i) && *(s2 + i) && *(s1 + i) != c && *(s1 + i) == *(s2 + i))
+		i++;
+	return (*(s1 + i) - *(s2 + i));
+}
 
 int	handle_heredoc(char *end_delimitor, int in_fd) // here if single quotes, then you can strip it and // handle cat << ''
 {
@@ -33,7 +56,7 @@ int	handle_heredoc(char *end_delimitor, int in_fd) // here if single quotes, the
 	return (1);
 }
 
-int run_heredoc(char *end_delimitor, int *in_fd, int *out_fd)
+int run_heredoc(char *end_delimitor, int *in_fd)//, int *out_fd)
 {
 	int pipe_fd[2];
 	int	is_interprete;
@@ -61,8 +84,6 @@ int run_heredoc(char *end_delimitor, int *in_fd, int *out_fd)
         close(pipe_fd[1]);
         return (-1);
     }
-	if (*out_fd == -20) // clean
-		*out_fd = pipe_fd[0];
     close(pipe_fd[1]);
     *in_fd = pipe_fd[0];
 	if (!is_interprete)
@@ -70,7 +91,7 @@ int run_heredoc(char *end_delimitor, int *in_fd, int *out_fd)
     return (0);
 }
 
-int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd, int *out_fd)
+int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
 {
 	int		fd;
 	t_redir_lst	*traverse_redir_lst;
@@ -80,7 +101,7 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd, int *out_fd)
 	{
 		if (traverse_redir_lst->type == TOKEN_HEREDOC)
 		{
-			if (run_heredoc(traverse_redir_lst->target, in_fd, out_fd) == -1)
+			if (run_heredoc(traverse_redir_lst->target, in_fd) == -1)
 				return (-1);
 			break ;
 		}
@@ -91,21 +112,21 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd, int *out_fd)
 		if (redir_lst->type == TOKEN_APPEND)
 		{
 			fd = open(redir_lst->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			if (dup2_fd(fd, STDOUT_FILENO) == -1)
+			if (dup2_fd(fd, STDOUT_FILENO, redir_lst->target) == -1)
 				return (-1);
 			close(fd);
 		}
 		else if (redir_lst->type == TOKEN_REDIRECTION_OUT)
 		{
 			fd = open(redir_lst->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (dup2_fd(fd, STDOUT_FILENO) == -1)
+			if (dup2_fd(fd, STDOUT_FILENO, redir_lst->target) == -1)
 				return (-1);
 			close(fd);
 		}
 		else if (redir_lst->type == TOKEN_REDIRECTION_IN)
 		{
 			fd = open(redir_lst->target, O_RDONLY);
-			if (dup2_fd(fd, STDIN_FILENO) == -1)
+			if (dup2_fd(fd, STDIN_FILENO, redir_lst->target) == -1)
 				return (-1);
 			close(fd);
 		}
@@ -113,6 +134,7 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd, int *out_fd)
 	}
 	return (0);
 }
+
 #include <errno.h>
 
 int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int *pid_count)
@@ -153,7 +175,7 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int
     {
         if (ast_node->data.cmd.redirs && is_redirection(ast_node->data.cmd.redirs->type))
         {
-            if (handle_redirection_fd(ast_node->data.cmd.redirs, &in_fd, &out_fd) == -1)
+            if (handle_redirection_fd(ast_node->data.cmd.redirs, &in_fd) == -1)
                 exit (1);
         }
         if (in_fd != -1)
