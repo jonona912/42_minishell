@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   built_in_commands.c                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/12 15:35:48 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/14 18:52:33 by opopov           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes/minishell.h"
 
 void	ft_echo(char **argv)
@@ -19,8 +7,12 @@ void	ft_echo(char **argv)
 
 	n = 0;
 	i = 1;
+	if (!argv[i])
+		return ;
 	while (ft_strcmp(argv[i], "-n") == 0)
 	{
+		if (!argv[i + 1])
+			return ;
 		n = 1;
 		i++;
 	}
@@ -54,7 +46,7 @@ int	ft_exit(char **argv)
 	exit(0);
 }
 
-void	ft_env(char **argv)
+void	ft_env()
 {
 	extern char	**environ;
 	int			i;
@@ -63,6 +55,7 @@ void	ft_env(char **argv)
 	while (environ[i])
 	{
 		write(1, environ[i], ft_strlen(environ[i]));
+		write(1, "\n", 1);
 		i++;
 	}
 }
@@ -94,7 +87,7 @@ int	ft_cd (char **argv)
 			tmp = getenv("OLDPWD");
 		if (!tmp)
 		{
-			ft_putchar_fd("Error: OLDPWD is not set\n", 2);
+			ft_putstr_fd("Error: OLDPWD is not set\n", 2);
 			return (1);
 		}
 	}
@@ -130,27 +123,35 @@ int	ft_export(char **argv)
 {
 	extern char	**environ;
 	char	*equal;
-	int		i;
-	int		env_y;
-	char	**env_2;
-	char	*tmp;
+	char	*name;
+	int		name_len;
 
 	if (!argv[1])
 	{
-		ft_env(argv);
+		ft_env();
 		return (0);
 	}
 	equal = ft_strchr(argv[1], '=');
-	if (!equal)
+	if (!equal || equal == argv[1])
 	{
-		ft_putstr_fd("Error: invalit syntax input\n", 2);
+		perror("Error: invalid syntax input");
 		return (1);
 	}
-	if (ft_setenv(argv[1], equal + 1, 1))
+	name_len = equal - argv[1];
+	name = (char *) malloc(name_len + 1);
+	if (!name)
 	{
-		ft_putstr_fd("Error: invalit syntax input\n", 2);
+		perror("Error: memory allocation failed");
 		return (1);
 	}
+	ft_strlcpy(name, argv[1], name_len + 1);
+	if (ft_setenv(name, equal + 1, 1))
+	{
+		perror("Error: invalid syntax input");
+		free(name);
+		return (1);
+	}
+	free(name);
 	return (0);
 }
 

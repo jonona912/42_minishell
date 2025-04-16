@@ -3,41 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 19:54:11 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/14 23:26:25 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/04/15 13:28:31 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int dup2_fd(int fd, int std_fd_fileno)
-{
-	if (fd == -1)
-	{
-		perror("open redirection in");
-		return (-1);
-	}
-	if (dup2(fd, std_fd_fileno) == -1)
-	{
-		perror("dup2 redirection in");
-		return (-1);
-	}
-	return (0);
-}
-
-int	ms_strcmp_until(char *s1, char *s2, char c)
-{
-	int	i;
-
-	i = 0;
-	if (!s1 || !s2)
-		return (-1);
-	while (*(s1 + i) && *(s2 + i) && *(s1 + i) != c && *(s1 + i) == *(s2 + i))
-		i++;
-	return (*(s1 + i) - *(s2 + i));
-}
 
 int	handle_heredoc(char *end_delimitor, int in_fd) // here if single quotes, then you can strip it and // handle cat << ''
 {
@@ -144,7 +117,33 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd, int *out_fd)
 
 int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int *pid_count)
 {
-    pid_t fork_pid = fork();
+	int	saved_in;
+	int	saved_out;
+	int	res;
+	pid_t fork_pid;
+
+	if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
+	{
+		saved_in = dup(STDIN_FILENO);
+		saved_out = dup(STDOUT_FILENO);
+		if (in_fd != -1)
+		{
+			dup2(in_fd, STDIN_FILENO);
+			close(in_fd);
+		}
+		if (out_fd != -1)
+		{
+			dup2(out_fd, STDOUT_FILENO);
+			close(out_fd);
+		}
+		res = execute_builtin(ast_node->data.cmd.exec_argv);
+		dup2(saved_in, STDIN_FILENO);
+		dup2(saved_out, STDOUT_FILENO);
+		close(saved_in);
+		close(saved_out);
+		return (res);
+	}
+    fork_pid = fork();
     if (fork_pid == -1)
     {
         perror("fork");
@@ -192,11 +191,11 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int
 		// (*pid_count)++;
 		if (in_fd != -1) close(in_fd);
 		if (out_fd != -1) close(out_fd);
-		
+
 		// Wait for child to exit and check its status.
 		int status;
 		waitpid(fork_pid, &status, 0);
-		
+
 		// Return 0 if child failed, 1 if succeeded.
 		// return (WIFEXITED(status) && (WEXITSTATUS(status) == 0));
 		// return (WEXITSTATUS(status));

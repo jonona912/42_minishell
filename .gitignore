@@ -3,6 +3,7 @@ practice/
 txt_files/
 *.txt
 !test_cases.txt
+!test_cases_commands.txt
 *.o
 *.a
 minishell

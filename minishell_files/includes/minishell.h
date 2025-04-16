@@ -147,7 +147,7 @@ int		ft_setenv(char *name, char *value, int overwrite);
 void	ft_echo(char **argv);
 void	ft_pwd();
 int		ft_exit(char **argv);
-void	ft_env(char **argv);
+void	ft_env();
 int		ft_cd (char **argv);
 int		ft_export(char **argv);
 int		ft_unset(char **argv);
@@ -176,6 +176,9 @@ void free_redir_list(t_redir_lst **lst);
 ///////////////////// execute ////////////////////////
 // int execute(t_ast_node *ast_head, int pipe_direction, int pipe_fd[2]);
 int	run_pipeline(t_ast_node *ast_head);
-
+int	dup2_fd(int fd, int std_fd_fileno);
+int	ms_strcmp_until(char *s1, char *s2, char c);
+int	builtin_check(char *cmd);
+int	execute_builtin(char **argv);
 
 #endif

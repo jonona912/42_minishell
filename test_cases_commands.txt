@@ -1,0 +1,41 @@
+Built in commands test_cases
+HANDLE:
+
+echo
+echo dfgfg
+echo -n
+echo -n -n -n
+echo -n -n -n fdgsdf
+
+cd
+cd abbbb
+cd ~
+cd -
+cd libft
+cd ..
+cd -~
+cd ~-
+
+pwd
+pwd sdfsdfsdf
+
+exit
+exit255
+exit 255 // don't exit if we have more arguments
+
+env
+enbvsdfsdf
+env 22323
+
+export
+export =
+export MY_VAR=123
+export MY_VAR= //can change result to empty
+
+unset
+unset sdfsdfsdf
+unset MY_VAR
+
+
+FAILS:
+Everything that is not a words (parenthesis, quotes, etc)
