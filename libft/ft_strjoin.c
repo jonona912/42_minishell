@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 12:48:00 by zkhojazo          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/04/15 14:20:12 by opopov           ###   ########.fr       */
-=======
-/*   Updated: 2025/04/15 12:42:29 by zkhojazo         ###   ########.fr       */
->>>>>>> parser_and_execution_more
+/*   Updated: 2025/04/16 16:59:36 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

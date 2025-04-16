@@ -33,7 +33,7 @@ cat << EOF | grep jonona >> output.txt
 
 cat <<
 cat << ""
-<< EOF 
+<< EOF
 
 
 TEST AND / OR
@@ -84,7 +84,7 @@ echo << EOF > output.txt
 
 
 
-
+cat sjdf*.txt$PATH
 
 
 

@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 20:42:44 by zkhojazo          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/04/15 14:20:18 by opopov           ###   ########.fr       */
-=======
-/*   Updated: 2025/04/15 23:53:47 by zkhojazo         ###   ########.fr       */
->>>>>>> parser_and_execution_more
+/*   Updated: 2025/04/16 16:59:58 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

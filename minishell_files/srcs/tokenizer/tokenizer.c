@@ -155,6 +155,10 @@ int handle_other_tokens(char *line, t_token_lst **token_lst, t_tokenize_struct *
 {
 	int	i;
 
+	if (!line)
+		return (-1);
+	if (line[0] == '\0')
+		return (0);
 	i = 0;
 	if (line[i] == '<' && line[i + 1] == '<')
 		return (send_str_to_token_lst("<<", token_lst, TOKEN_HEREDOC));
@@ -174,41 +178,110 @@ int handle_other_tokens(char *line, t_token_lst **token_lst, t_tokenize_struct *
 		return (send_paren_to_token_lst("(", token_lst, TOKEN_L_PAREN, vars));
 	if (line[i] == ')')
 		return (send_paren_to_token_lst(")", token_lst, TOKEN_R_PAREN, vars));
-	if (line[i] == '$')
-		return (send_str_to_token_lst("$", token_lst, TOKEN_ENV_VAR));
+	// if (line[i] == '$')
+	// 	return (send_str_to_token_lst("$", token_lst, TOKEN_ENV_VAR));
+	return (0);
+}
+
+int	copy_until_special_char(char *current_token, char *line, char *char_set)
+{
+	int	i;
+
+	i = 0;
+	while (line[i] && !ft_isblank(line[i]) && ft_strchr(char_set, line[i]) == NULL)
+	{
+		ft_append_char(current_token, line[i]); // change ft_append_char
+		i++;
+	}
+	return (i);
+}
+
+int	append_to_token(t_token_type type, char *current_token, t_token_lst **token_lst)
+{
+	char		*temp;
+	t_token_lst	*temp_lst;
+
+	temp = ft_strdup(current_token);
+	if (!temp)
+	{
+		ft_putstr_fd("Error: failed allocation memory", 2);
+		return (-1); // change code later
+	}
+	temp_lst = token_new_node(type, temp);
+	if (!temp_lst)
+	{
+		free(temp);
+		ft_putstr_fd("Error: failed allocation memory", 2);
+		return (-1); // change code later
+	}
+	token_add_node_back(token_lst, temp_lst);
+	current_token[0] = '\0';
 	return (0);
 }
 
 int	create_word_token(char *current_token, char *line, t_token_lst **token_lst)
 {
 	int		i;
-	char	*temp;
-	t_token_lst	*temp_lst;
 
-	i = 0;
-	temp_lst = NULL;
-	while (line[i] && !ft_isblank(line[i]) && ft_strchr("<>|&()$\"\'", line[i]) == NULL)
+	i = copy_until_special_char(current_token, line, "<>|&()\"\'");
+	if (current_token[0] != '\0')
 	{
-		ft_append_char(current_token, line[i]); // change ft_append_char
-		i++;
+		if (append_to_token(TOKEN_WORD, current_token, token_lst) == -1)
+			return (-1);
+	}
+	return (i);
+}
+
+int handle_env_var(char *current_token, char *line, t_token_lst **token_lst)
+{
+	int	i;
+
+	if (!line)
+		return (-1);
+	if (line[0] == '\0')
+		return (0);
+	i = 0;
+	if (*line == '$')
+	{
+		i = copy_until_special_char(current_token, line , "<>|&()\"\'");
 	}
 	if (current_token[0] != '\0')
 	{
-		temp = ft_strdup(current_token);
-		if (!temp)
+		if (append_to_token(TOKEN_ENV_VAR, current_token, token_lst) == -1)
+			return (-1);
+	}
+	return (i);
+}
+
+int	handle_wildcard(char *current_token, char *line, t_token_lst **token_lst)
+{
+	int	i;
+	int	flag;
+
+	flag = 0;
+	if (!line)
+		return (-1);
+	if (line[0] == '\0')
+		return (0);
+	i = 0;
+	while (line[i] && !ft_isblank(line[i]) && ft_strchr("<>|&()\"\'", line[i]) == NULL)
+	{
+		if (line[i] == '*')
 		{
-			ft_putstr_fd("Error: failed allocation memory", 2);
-			return (-1); // change code later
+			flag = 1;
+			break ;
 		}
-		temp_lst = token_new_node(0, temp);
-		if (!temp_lst)
+		i++;
+	}
+	i = 0;
+	if (flag)
+	{
+		i = copy_until_special_char(current_token, line , "<>|&()\"\'");
+		if (current_token[0] != '\0')
 		{
-			free(temp);
-			ft_putstr_fd("Error: failed allocation memory", 2);
-			return (-1); // change code later
+			if (append_to_token(TOKEN_WILDCARD, current_token, token_lst) == -1)
+				return (-1);
 		}
-		token_add_node_back(token_lst, temp_lst);
-		current_token[0] = '\0';
 	}
 	return (i);
 }
@@ -247,6 +320,22 @@ t_token_lst	*ft_tokenize(char *line)
 		i += temp;
 		while (ft_isblank(line[i]))
 			i++;
+		temp = handle_env_var(vars.current_token, line + i, &token_lst);
+		if (temp < 0)
+		{
+			free(vars.current_token);
+			token_free_list(token_lst);
+			return (NULL);
+		}
+		i += temp;
+		temp = handle_wildcard(vars.current_token, line + i, &token_lst);
+		if (temp < 0)
+		{
+			free(vars.current_token);
+			token_free_list(token_lst);
+			return (NULL);
+		}
+		i += temp;
 		temp = create_word_token(vars.current_token, line + i, &token_lst);
 		if (temp < 0)
 		{

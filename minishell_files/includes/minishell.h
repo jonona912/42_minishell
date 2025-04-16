@@ -19,15 +19,15 @@
 typedef enum	s_token_type
 {
 	TOKEN_WORD,
+	TOKEN_S_QUOTE,
+	TOKEN_D_QUOTE,
+	TOKEN_WILDCARD, // not handled
 	TOKEN_PIPE,
 	TOKEN_REDIRECTION_IN,
 	TOKEN_REDIRECTION_OUT,
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,
 	TOKEN_ENV_VAR,
-	TOKEN_S_QUOTE,
-	TOKEN_D_QUOTE,
-	TOKEN_WILDCARD, // not handled
 	TOKEN_AND,
 	TOKEN_OR,
 	TOKEN_L_PAREN,
@@ -98,7 +98,7 @@ typedef struct s_ast_node
 		struct
 		{
 			char *executable;
-			char **exec_argv;
+			char **exec_argv; 
 			t_redir_lst *redirs;
 		} cmd;
 		struct

@@ -68,7 +68,7 @@ int	main(void)
 			write(1, "\n", 1);
 			continue;
 		}
-		// ft_print_tokens(token_lst);
+		ft_print_tokens(token_lst);
 		// wildcard_function(line);
 		add_history(line);
 		token_lst_check = parse_or(token_lst, &head);
@@ -96,19 +96,20 @@ void	ft_print_tokens(t_token_lst *token_lst)
 {
 	const char *token_type_str[] = {
 		"TOKEN_WORD",
+		"TOKEN_S_QUOTE",
+		"TOKEN_D_QUOTE",
+		"TOKEN_WILDCARD",
 		"TOKEN_PIPE",
 		"TOKEN_REDIRECTION_IN",
 		"TOKEN_REDIRECTION_OUT",
 		"TOKEN_APPEND",
 		"TOKEN_HEREDOC",
 		"TOKEN_ENV_VAR",
-		"TOKEN_S_QUOTE",
-		"TOKEN_D_QUOTE",
-		"TOKEN_WILDCARD",
 		"TOKEN_AND",
 		"TOKEN_OR",
 		"TOKEN_L_PAREN",
-		"TOKEN_R_PAREN"
+		"TOKEN_R_PAREN",
+		"TOKEN_END"
 	};
 
 	while (token_lst)
