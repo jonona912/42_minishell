@@ -39,3 +39,25 @@ unset MY_VAR
 
 FAILS:
 Everything that is not a words (parenthesis, quotes, etc)
+
+
+
+|||||||||||||||||||||||||||||||||||| $Commands |||||||||||||||||||||||||||||||||||||||||
+
+PASSED:
+echo $USER
+echo $USER dfgdfgdf
+echo sdfsdfsdf $USER dfgdfgdf
+
+echo $fail
+///// extra space ///////
+echo $fail dfgdfg
+echo dsdfsdf $fail dfgdfg
+
+echo "$USER"
+echo "$USER dfgdfgdf"
+echo "sfdsfdsfd $USER dfgdfgdf"
+
+echo "$fail"
+echo "$fail dfgdfg"
+echo "dsdfsdf $fail dfgdfg"

@@ -137,34 +137,10 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
 
 #include <errno.h>
 
-int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int *pid_count)
+int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, pid_t *pids, int *pid_count)
 {
-	int	saved_in;
-	int	saved_out;
-	int	res;
 	pid_t fork_pid;
 
-	if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
-	{
-		saved_in = dup(STDIN_FILENO);
-		saved_out = dup(STDOUT_FILENO);
-		if (in_fd != -1)
-		{
-			dup2(in_fd, STDIN_FILENO);
-			close(in_fd);
-		}
-		if (out_fd != -1)
-		{
-			dup2(out_fd, STDOUT_FILENO);
-			close(out_fd);
-		}
-		res = execute_builtin(ast_node->data.cmd.exec_argv);
-		dup2(saved_in, STDIN_FILENO);
-		dup2(saved_out, STDOUT_FILENO);
-		close(saved_in);
-		close(saved_out);
-		return (res);
-	}
     fork_pid = fork();
     if (fork_pid == -1)
     {
@@ -196,7 +172,11 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int
             }
             close(out_fd);
         }
-		if (ast_node->data.cmd.executable)
+		if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
+		{
+			exit(execute_builtin(ast_node->data.cmd.exec_argv, shell));
+		}
+		else if (ast_node->data.cmd.executable)
 		{
 			if (execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL) == -1)
 			{
@@ -237,11 +217,11 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int
 	// return (1);
 }
 
-int	execute(t_ast_node *ast_head, int in_fd, int out_fd) //, pid_t *pids, int *pid_count)
+int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell) //, pid_t *pids, int *pid_count)
 {
 	if (ast_head->type == NODE_CMD)
 	{
-		return execute_cmd(ast_head, in_fd, out_fd);//, pids, pid_count);
+		return execute_cmd(ast_head, in_fd, out_fd, shell);//, pids, pid_count);
 	}
 	else if (ast_head->type == NODE_PIPE)
 	{
@@ -251,9 +231,9 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd) //, pid_t *pids, int *p
 			perror("pipe");
 			return (-1);
 		}
-		if (execute(ast_head->data.binary_op.left, in_fd, pipe_fd[1]) == -1) // , pids, pid_count
+		if (execute(ast_head->data.binary_op.left, in_fd, pipe_fd[1], shell) == -1) // , pids, pid_count
 			return (-1);
-		if (execute(ast_head->data.binary_op.right, pipe_fd[0], out_fd) == -1) // , pids, pid_count
+		if (execute(ast_head->data.binary_op.right, pipe_fd[0], out_fd, shell) == -1) // , pids, pid_count
 			return (-1);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
@@ -261,26 +241,26 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd) //, pid_t *pids, int *p
 	}
 	else if (ast_head->type == NODE_AND)
 	{
-		int status = execute(ast_head->data.binary_op.left, -1, -1); // , pids, pid_count
+		int status = execute(ast_head->data.binary_op.left, -1, -1, shell); // , pids, pid_count
 		if (status)
-			status = execute(ast_head->data.binary_op.right, -1, -1); // , pids, pid_count
+			status = execute(ast_head->data.binary_op.right, -1, -1, shell); // , pids, pid_count
 		return (status);
 	}
 	else if (ast_head->type == NODE_OR)
 	{
-		int status = execute(ast_head->data.binary_op.left, -1, -1); // , pids, pid_count
+		int status = execute(ast_head->data.binary_op.left, -1, -1, shell); // , pids, pid_count
 		if (!status)
-			status = execute(ast_head->data.binary_op.right, -1, -1); // , pids, pid_count
+			status = execute(ast_head->data.binary_op.right, -1, -1, shell); // , pids, pid_count
 		return (status);
 	}
 	return (-1);
 }
 
-int	run_pipeline(t_ast_node *ast_head) // run pipeline can return the exit status of the last command
+int	run_pipeline(t_ast_node *ast_head, t_shell *shell) // run pipeline can return the exit status of the last command
 {
 	// pid_t pids[10];
 	// int pid_count = 0;
-	return (execute(ast_head, -1, -1));//, pids, &pid_count);
+	return (execute(ast_head, -1, -1, shell));//, pids, &pid_count);
 	// for (int i = 0; i < pid_count; i++)
 	// 	waitpid(pids[i], NULL, 0);
 	// return (0); // success but change it to return the exit status of the last command

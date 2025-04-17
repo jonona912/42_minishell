@@ -16,6 +16,13 @@
 
 // # include <sys/types.h>
 
+typedef struct s_shell
+{
+	char	**env;
+	int		last_status;
+}	t_shell;
+
+
 typedef enum	s_token_type
 {
 	TOKEN_WORD,
@@ -143,14 +150,14 @@ t_token_lst	*ft_tokenize(char *line);
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step);
-int		ft_setenv(char *name, char *value, int overwrite);
+int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
 void	ft_echo(char **argv);
 void	ft_pwd();
 int		ft_exit(char **argv);
-void	ft_env();
-int		ft_cd (char **argv);
-int		ft_export(char **argv);
-int		ft_unset(char **argv);
+void	ft_env(t_shell *shell);
+int		ft_cd (char **argv, t_shell *shell);
+int		ft_export(char **argv, t_shell *shell);
+int		ft_unset(char **argv, t_shell *shell);
 
 /////////////////////// parser /////////////////////////
 
@@ -170,7 +177,7 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node);
 t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
 t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node);
 t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node);
-char		*arg_return(t_token_lst *lst);
+char		*arg_return(char *value, t_token_type type);
 
 // redirection_functions.c
 t_redir_lst *new_redir_node(t_token_type type, char *target);
@@ -186,10 +193,10 @@ t_token_lst *wildcard_function(char *wildcard_str);
 
 ///////////////////// execute ////////////////////////
 // int execute(t_ast_node *ast_head, int pipe_direction, int pipe_fd[2]);
-int	run_pipeline(t_ast_node *ast_head);
+int	run_pipeline(t_ast_node *ast_head, t_shell *shell);
 // int	dup2_fd(int fd, int std_fd_fileno);
 int	ms_strcmp_until(char *s1, char *s2, char c);
 int	builtin_check(char *cmd);
-int	execute_builtin(char **argv);
+int	execute_builtin(char **argv, t_shell *shell);
 
 #endif

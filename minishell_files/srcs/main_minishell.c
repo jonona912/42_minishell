@@ -23,10 +23,31 @@ void signal_handler(int signum)
 	rl_redisplay();
 }
 
-int	main(void) // asdf
+char	**copy_env(char **envp)
 {
+	int		count = 0;
+	char	**copy;
+
+	while (envp[count])
+		count++;
+	copy = malloc(sizeof(char *) * (count + 1));
+	if (!copy)
+		return (NULL);
+	for (int i = 0; i < count; i++)
+		copy[i] = ft_strdup(envp[i]);
+	copy[count] = NULL;
+	return (copy);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	(void)argv;
+	(void)argc;
+	t_shell shell;
 	int prev_status;
 
+	shell.env = copy_env(envp);
+	shell.last_status = 0;
 	prev_status = 0;
 	t_token_lst *token_lst;
 	t_token_lst	*token_lst_check;
@@ -83,8 +104,8 @@ int	main(void) // asdf
 			free(line);
 			continue ;
 		}
-		// print_ast(head);
-		prev_status = run_pipeline(head);
+		print_ast(head);
+		prev_status = run_pipeline(head, &shell);
 		// printf("exec_result = %d\n", exec_result);
 
 		// ms_token_free_list(token_lst);

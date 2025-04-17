@@ -6,8 +6,6 @@ char	*dollar_execute(char *name)
 
 	if (!name)
 		return (NULL);
-	// if (ft_strcmp(name, "?") == 0)
-	// 	return (ft_itoa(exit_status));
 	res = getenv(name);
 	if (!res)
 		return (NULL);
@@ -21,15 +19,6 @@ char	*name_finder(char *value, int pos)
 
 	i = 0;
 	pos++;
-	// if (value[pos] == '?')
-	// {
-	// 	name = (char *)malloc(2 * sizeof(char));
-	// 	if (!name)
-	// 		return (NULL);
-	// 	name[0] = '?';
-	// 	name[1] = '\0';
-	// 	return (name);
-	// }
 	while (value[pos + i] && (ft_isalnum(value[pos + i]) || value[pos + i] == '_'))
 		i++;
 	if (i == 0)
@@ -53,68 +42,90 @@ char *ft_strjoin_char(const char *s1, char c)
 	return str;
 }
 
+char	*dollar_check(char *value, int *i)
+{
+	char	*name;
+	char	*tmp;
+	char	*new;
+	int		name_len;
+
+	name = name_finder(value, *i); // value = $USER -> name = USER
+	if (!name)
+	{
+		(*i)++;
+		return (ft_strdup("$"));
+	}
+	name_len = ft_strlen(name);
+	tmp = dollar_execute(name);
+	if (!tmp)
+	{
+		(*i) += name_len + 1;
+		return (ft_strdup(""));
+	}
+	new = ft_strdup(tmp);
+	// free(tmp);
+	*i += name_len + 1;
+	// free(name);
+	return (new);
+}
+
 char *arg_word_return(char *value)
 {
-	int i = 0;
-	char *res;
-	char *tmp;
-	char *tmp_name;
-	char *var_value;
+	int		i;
+	char	*res;
+	char	*tmp;
+	char	*new;
 
+	if (!value)
+		return (NULL);
 	res = ft_strdup("");
+	if (!res)
+		return (NULL);
+	i = 0;
 	while (value[i])
 	{
-		if (value[i] == '$' && value[i + 1])
+		if (value[i] == '$' && value[i + 1] && !ft_isspace(value[i + 1]))
 		{
-			tmp_name = name_finder(value, i);
-			if (!tmp_name)
-			{
-				free(res);
-				return (NULL);
-			}
-			var_value = dollar_execute(tmp_name);
-			free(tmp_name);
-			if (var_value)
-			{
-				tmp = ft_strjoin(res, var_value);
-				free(res);
-				res = tmp;
-				free(var_value);
-			}
-			i += ft_strlen(tmp_name) + 1;
+			tmp = dollar_check(value, &i);
+			// if (tmp == '\0')
+			// {
+
+			// }
+			new = ft_strjoin(res, tmp);
+			// free(tmp);
+			// free(res);
+			res = new;
 			continue;
 		}
 		tmp = ft_strjoin_char(res, value[i]);
-		free(res);
+		// free(res);
 		res = tmp;
 		i++;
 	}
 	return (res);
 }
 
-
 char	*arg_d_quote_return(char *value)
 {
 	char	*res;
+	char	*tmp;
 
 	if (!value)
 		return (NULL);
-	res = ft_strtrim(value, "\"");
-	res = arg_word_return(res);
-	if (!res)
-		return (NULL);
+	tmp = ft_strtrim(value, "\"");
+	res = arg_word_return(tmp);
 	return (res);
 }
 
-char	*arg_return(t_token_lst *lst)
+char	*arg_return(char *value, t_token_type type)
 {
-	if (!lst || !lst->value)
+	if (!value)
 		return (NULL);
-	if (lst->type == TOKEN_D_QUOTE)
-		return (arg_d_quote_return(lst->value));
-	if (lst->type == TOKEN_S_QUOTE)
-		return (ft_strtrim(lst->value, "\'"));
-	if (lst->type == TOKEN_ENV_VAR)
-		return (arg_word_return(lst->value));
-	return (ft_strdup(lst->value));
+	if (type == TOKEN_D_QUOTE)
+		return (arg_d_quote_return(value));
+	if (type == TOKEN_S_QUOTE)
+		return (ft_strtrim(value, "\'"));
+	if (type == TOKEN_ENV_VAR || type == TOKEN_WORD)
+		return (arg_word_return(value));
+	return (ft_strdup(value));
 }

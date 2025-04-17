@@ -92,7 +92,8 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 	{
 		// if (ft_strchr(token_lst->value, '*'))
 
-		(*ast_node)->data.cmd.exec_argv[ctr] = arg_return(token_lst);
+		(*ast_node)->data.cmd.exec_argv[ctr] = arg_return(token_lst->value, token_lst->type);
+		// (*ast_node)->data.cmd.exec_argv[ctr] = ft_strdup(token_lst->value);
 		if (!(*ast_node)->data.cmd.exec_argv[ctr])
 			return (NULL); // handle strdup failure
 		token_lst = token_lst->next;
