@@ -139,10 +139,9 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
 
 int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, pid_t *pids, int *pid_count)
 {
-	// int		res;
-	(void)shell;
+	int		res;
 	pid_t	fork_pid;
-	int		status;
+	// int		status;
 
 	fork_pid = fork();
 	if (fork_pid == -1)
@@ -175,18 +174,17 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, 
 			}
 			close(out_fd);
 		}
-		// if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
-		// {
-		// 	res = execute_builtin(ast_node->data.cmd.exec_argv, shell);
-		// 	exit (res);
-		// }
+		if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
+		{
+			res = execute_builtin(ast_node->data.cmd.exec_argv, shell);
+			exit (res);
+		}
 		if (ast_node->data.cmd.executable)
 		{
 			if (execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL) == -1)
 			{
 				perror("execve");
 			}
-			printf("failed\n");
 			exit(1);
 		}
 		else
@@ -197,7 +195,7 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, 
 			close(in_fd);
 		if (out_fd != -1)
 			close(out_fd);
-		waitpid(fork_pid, &status, 0);
+		waitpid(fork_pid, &shell->last_status, 0);
 		return (1);
 	}
 }
