@@ -73,7 +73,7 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 
 	(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value);
 	if (!(*ast_node)->data.cmd.executable)
-		return (perror("minishell:"), NULL);
+		return (perror("minishell:>"), NULL);
 	current_token = token_lst;
 	ctr = 0;
 	while (current_token && current_token->type == TOKEN_WORD) // you can copy, double quote, single quote

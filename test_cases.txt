@@ -92,6 +92,8 @@ cat sjdf*.txt$PATH
 
 |||||||||||||||||||||||||||||||||||||||| ISUES ||||||||||||||||||||||||||||||||||||||
 ls "fasdf"
+execute ./minishell and ./minishell second time and 
+     then Ctrl + D  (wrong printing) and another Ctrl + D give seg fault
 
 
 
