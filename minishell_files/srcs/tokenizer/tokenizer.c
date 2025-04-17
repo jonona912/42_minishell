@@ -1,5 +1,10 @@
 #include "../../includes/minishell.h"
 
+int	is_not_special_char(char c)
+{
+	return (c && !ft_isblank(c) && ft_strchr("<>|&()\"\'", c) == NULL);
+}
+
 t_token_type return_token_type(char *str)
 {
 	if (*str == '<')
@@ -134,7 +139,7 @@ int	send_paren_to_token_lst(char *str, t_token_lst **token_lst, t_token_type tok
 	return (1);
 }
 
-int send_str_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token_type)
+int	send_str_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token_type)
 {
 	char	*temp;
 
@@ -253,34 +258,49 @@ int handle_env_var(char *current_token, char *line, t_token_lst **token_lst)
 	return (i);
 }
 
+// create tokens for each match of wildcard
+// if nothing is matched then just send the string as a word token
+
+
+int	is_wildcard_present(char *line)
+{
+	int	i;
+
+	if (!line || line[0] == '\0')
+		return (0);
+	i = 0;
+	while (is_not_special_char(line[i]))
+	{
+		if (line[i] == '\0')
+			return (0);
+		if (line[i] == '*')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	handle_wildcard(char *current_token, char *line, t_token_lst **token_lst)
 {
 	int	i;
-	int	flag;
+	t_token_lst	*temp_lst;
 
-	flag = 0;
-	if (!line)
-		return (-1);
-	if (line[0] == '\0')
-		return (0);
 	i = 0;
-	while (line[i] && !ft_isblank(line[i]) && ft_strchr("<>|&()\"\'", line[i]) == NULL)
+	if (is_wildcard_present(line))
 	{
-		if (line[i] == '*')
+		temp_lst = wildcard_function(line, &i);
+		if (temp_lst)
 		{
-			flag = 1;
-			break ;
+			token_add_node_back(token_lst, temp_lst);
 		}
-		i++;
-	}
-	i = 0;
-	if (flag)
-	{
-		i = copy_until_special_char(current_token, line , "<>|&()\"\'");
-		if (current_token[0] != '\0')
+		else
 		{
-			if (append_to_token(TOKEN_WILDCARD, current_token, token_lst) == -1)
-				return (-1);
+			i = copy_until_special_char(current_token, line , "<>|&()\"\'");
+			if (current_token[0] != '\0')
+			{
+				if (append_to_token(TOKEN_WORD, current_token, token_lst) == -1)
+					return (-1);
+			}
 		}
 	}
 	return (i);

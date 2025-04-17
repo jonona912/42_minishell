@@ -6,7 +6,7 @@
 #    By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/25 12:09:45 by zkhojazo          #+#    #+#              #
-#    Updated: 2025/04/15 12:45:39 by zkhojazo         ###   ########.fr        #
+#    Updated: 2025/04/17 10:56:23 by zkhojazo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,12 +27,12 @@ SRCS = ft_atoi.c ft_bzero.c ft_calloc.c \
 		ft_lstdelone_bonus.c ft_lstiter_bonus.c ft_lstlast_bonus.c \
 		ft_lstmap_bonus.c ft_lstnew_bonus.c ft_lstsize_bonus.c \
 		ft_strcmp.c ft_strstr.c ft_strstr_last.c ft_free_double_ptr.c \
-		ft_isspace.c ft_strcpy.c ft_strjoin_three.c
+		ft_isspace.c ft_strcpy.c ft_strjoin_three.c ft_strstr_first.c
 
 OBJS_DIR = objs
 OBJS = $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
 
-CFLAGS = -Wall -Wextra -Werror -fPIC
+CFLAGS = -Wall -Wextra -Werror -g -fPIC
 CC = cc
 all: $(NAME)
 

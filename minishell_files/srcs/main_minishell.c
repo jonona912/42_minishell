@@ -68,7 +68,7 @@ int	main(void)
 			write(1, "\n", 1);
 			continue;
 		}
-		ft_print_tokens(token_lst);
+		// ft_print_tokens(token_lst);
 		// wildcard_function(line);
 		add_history(line);
 		token_lst_check = parse_or(token_lst, &head);

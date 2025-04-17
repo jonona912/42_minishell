@@ -11,6 +11,9 @@
 #include <termios.h>
 #include <limits.h>
 # include <fcntl.h> // for open
+#include <dirent.h>
+#include <sys/stat.h>
+
 
 #include "../../libft/libft.h"
 
@@ -73,7 +76,6 @@ typedef struct s_tokenize_struct
 // 	int	pipe;
 // }	t_command;
 
-
 typedef enum {
 	NODE_CMD,
 	NODE_PIPE,
@@ -115,9 +117,27 @@ typedef struct s_ast_node
 // 	struct s_pid_lst	*next;
 // }	t_pid_lst;
 
+typedef enum
+{
+	WILDCARD_START,
+	WILDCARD_END,
+	WILDCARD_ONLY,
+	WILDCARD_NONE
+} t_wildcard_type;
+
+typedef struct s_wildcard_type_string
+{
+	t_wildcard_type type;
+	char *data;
+}	t_wildcard_type_string;
 
 
-
+typedef struct s_read_dir
+{
+	DIR *dir;
+	struct dirent *entry;
+	struct stat file_stat;
+}	t_read_dir;
 
 
 ///////////// lists /////////////
@@ -138,7 +158,7 @@ void		token_add_node_back(t_token_lst **head, t_token_lst *new_node);
 int			ft_append_char(char *str, char c);
 void		initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 t_token_lst	*ft_tokenize(char *line);
-
+int	is_not_special_char(char c);
 
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
@@ -181,7 +201,7 @@ char *return_executable_path(const char *name);
 
 
 // wildcard_functions.c
-t_token_lst *wildcard_function(char *wildcard_str);
+t_token_lst *wildcard_function(char *line, int *char_ctr);
 
 ///////////////////// execute ////////////////////////
 // int execute(t_ast_node *ast_head, int pipe_direction, int pipe_fd[2]);
@@ -190,5 +210,6 @@ int	run_pipeline(t_ast_node *ast_head);
 int	ms_strcmp_until(char *s1, char *s2, char c);
 int	builtin_check(char *cmd);
 int	execute_builtin(char **argv);
+
 
 #endif
