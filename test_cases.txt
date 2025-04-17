@@ -58,24 +58,26 @@ ls -a | grep mini > output.txt && ls -l | grep mini >> output.txt
 < input.txt cat | grep jnn > output.txt && (ls -l | grep mini) >> output.txt
 
 
-
-
-
-==================================== TESTS DONE =======================================
-** first check token_lst
-** then handle in parser most probably (yep.......)
-
-cat *.txt
-ls *.txt
+\\\\\\\\\\\\\\\\\\\\\\\\\\\ wildcards /////////////////////////////////
+FORMAT HANDLED
 
 ls [first char *]
 ls [* last char]
 ls [* only]
-ls [* in the middle]
-ls [*nonexistent ending] [*existant end] (probably * nonexistant ending is send as a single argument)
+ls *.txt
+cat *.txt
+echo ****t
+echo ****
+echo mini*
+echo mini*******************
+ls mini*
 
-ls
-ls [* ending of filr or directory] (if directory then print all files in the directory, however the subject says it shouldn't be handled)  [DO NOT HANDLE]
+cat *.txt > output.txt
+cat inp* > output.txt
+
+
+
+==================================== END OF SUCCESSFUL TESTS =======================================
 
 
 echo << EOF >> output.txt
@@ -88,7 +90,8 @@ cat sjdf*.txt$PATH
 
 
 
-
+|||||||||||||||||||||||||||||||||||||||| ISUES ||||||||||||||||||||||||||||||||||||||
+ls "fasdf"
 
 
 
@@ -313,3 +316,8 @@ ls -a | ls -re
 $? = 2
 
 handle SHLVL environment (export). cannot go over 999!!!!
+
+
+
+
+WORKING ON WILDCARDA (sth*** and **** left)
