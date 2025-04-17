@@ -139,7 +139,8 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
 
 int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, pid_t *pids, int *pid_count)
 {
-	pid_t fork_pid;
+    int     res;
+    pid_t   fork_pid;
 
     fork_pid = fork();
     if (fork_pid == -1)
@@ -172,49 +173,40 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, 
             }
             close(out_fd);
         }
-		if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
-		{
-			exit(execute_builtin(ast_node->data.cmd.exec_argv, shell));
-		}
-		else if (ast_node->data.cmd.executable)
-		{
-			if (execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL) == -1)
-			{
-				perror("execve");
-			}
-			exit(1);
-		}
-		else
-			exit (1);
+        if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
+        {
+            res = execute_builtin(ast_node->data.cmd.exec_argv, shell);
+            exit (res);
+        }
+        else if (ast_node->data.cmd.executable)
+        {
+            if (execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL) == -1)
+            {
+                perror("execve");
+            }
+            exit(1);
+        }
+        else
+            exit (2);
     }
-	else {
-		// Parent process:
-		// pids[*pid_count] = fork_pid;
-		// (*pid_count)++;
-		if (in_fd != -1) close(in_fd);
-		if (out_fd != -1) close(out_fd);
+    else {
+        if (in_fd != -1)
+			close(in_fd);
+        if (out_fd != -1)
+			close(out_fd);
+        int status;
+        waitpid(fork_pid, &status, 0);
 
-		// Wait for child to exit and check its status.
-		int status;
-		waitpid(fork_pid, &status, 0);
-
-		// Return 0 if child failed, 1 if succeeded.
-		// return (WIFEXITED(status) && (WEXITSTATUS(status) == 0));
-		// return (WEXITSTATUS(status));
-		return (WIFEXITED(status));
-		// 		WIFSIGNALED(status)
-		// returns true if the child process was terminated by a signal.
-		// WTERMSIG(status)
-		// returns the number of the signal that caused the child process to terminate. This macro should only be employed if WIFSIGNALED returned tru
-		// WSTOPSIG(status)
-	}
-	// pids[*pid_count] = fork_pid;
-	// (*pid_count)++;
-	// if (in_fd != -1)
-	// 	close(in_fd);
-	// if (out_fd != -1)
-	// 	close(out_fd);
-	// return (1);
+        // Return 0 if child failed, 1 if succeeded.
+        // return (WIFEXITED(status) && (WEXITSTATUS(status) == 0));
+        // return (WEXITSTATUS(status));
+        return (status);
+        //      WIFSIGNALED(status)
+        // returns true if the child process was terminated by a signal.
+        // WTERMSIG(status)
+        // returns the number of the signal that caused the child process to terminate. This macro should only be employed if WIFSIGNALED returned tru
+        // WSTOPSIG(status)
+    }
 }
 
 int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell) //, pid_t *pids, int *pid_count)

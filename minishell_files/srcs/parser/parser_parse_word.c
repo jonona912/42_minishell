@@ -40,7 +40,7 @@ t_token_lst	*append_redirections_if_any(t_token_lst *token_lst, t_ast_node **ast
 	if (token_lst && is_redirection(token_lst->type))
 	{
 		token_lst = append_redirections(ast_node, token_lst);
-		if (!token_lst || token_lst->type != TOKEN_WORD)
+		if (!token_lst)// || token_lst->type != TOKEN_WORD)         // removed becaues cat *.txt > output.txt did not work
 		{
 			return (ft_putstr_fd("minishell: syntax error near unexpected token\n", 2), NULL); // handle error
 		}
@@ -73,13 +73,12 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 
 	(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value);
 	if (!(*ast_node)->data.cmd.executable)
-		return (perror("minishell:"), NULL);
+		return (perror("minishell:>"), NULL);
 	current_token = token_lst;
 	ctr = 0;
 	while (current_token && current_token->type == TOKEN_WORD) // you can copy, double quote, single quote
 	{
 		ctr++;
-		// if wildcard is met
 		current_token = current_token->next;
 	}
 	(*ast_node)->data.cmd.exec_argv = (char **)malloc((ctr + 1) * sizeof(char *)); // if fails?
@@ -131,7 +130,6 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
 		// while (token_lst && token_lst->type == TOKEN_WORD)
 		// {
 		// 	// if (ft_strchr(token_lst->value, '*'))
-
 		// 	(*ast_node)->data.cmd.exec_argv[ctr] = ft_strdup(token_lst->value);
 		// 	token_lst = token_lst->next;
 		// 	ctr++;
