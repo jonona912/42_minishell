@@ -137,110 +137,105 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
 
 #include <errno.h>
 
-int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, pid_t *pids, int *pid_count)
+int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, pid_t *pids, int *pid_count)
 {
-    int     res;
-    pid_t   fork_pid;
+	// int		res;
+	(void)shell;
+	pid_t	fork_pid;
+	int		status;
 
-    fork_pid = fork();
-    if (fork_pid == -1)
-    {
-        perror("fork");
-        return (-1);
-    }
-    if (fork_pid == 0)
-    {
-        if (ast_node->data.cmd.redirs && is_redirection(ast_node->data.cmd.redirs->type))
-        {
-            if (handle_redirection_fd(ast_node->data.cmd.redirs, &in_fd) == -1)
-                exit (1);
-        }
-        if (in_fd != -1)
-        {
-            if (dup2(in_fd, STDIN_FILENO) == -1)
-            {
-                perror("dup2 in_fd");
-                exit (1);
-            }
-            close(in_fd);
-        }
-        if (out_fd != -1)
-        {
-            if (dup2(out_fd, STDOUT_FILENO) == -1)
-            {
-                perror("dup2 out_fd");
-                exit (1);
-            }
-            close(out_fd);
-        }
-        if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
-        {
-            res = execute_builtin(ast_node->data.cmd.exec_argv, shell);
-            exit (res);
-        }
-        else if (ast_node->data.cmd.executable)
-        {
-            if (execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL) == -1)
-            {
-                perror("execve");
-            }
-            exit(1);
-        }
-        else
-            exit (2);
-    }
-    else {
-        if (in_fd != -1)
+	fork_pid = fork();
+	if (fork_pid == -1)
+	{
+		perror("fork");
+		return (-1);
+	}
+	if (fork_pid == 0)
+	{
+		if (ast_node->data.cmd.redirs && is_redirection(ast_node->data.cmd.redirs->type))
+		{
+			if (handle_redirection_fd(ast_node->data.cmd.redirs, &in_fd) == -1)
+				exit (1);
+		}
+		if (in_fd != -1)
+		{
+			if (dup2(in_fd, STDIN_FILENO) == -1)
+			{
+				perror("dup2 in_fd");
+				exit (1);
+			}
 			close(in_fd);
-        if (out_fd != -1)
+		}
+		if (out_fd != -1)
+		{
+			if (dup2(out_fd, STDOUT_FILENO) == -1)
+			{
+				perror("dup2 out_fd");
+				exit (1);
+			}
 			close(out_fd);
-        int status;
-        waitpid(fork_pid, &status, 0);
-
-        // Return 0 if child failed, 1 if succeeded.
-        // return (WIFEXITED(status) && (WEXITSTATUS(status) == 0));
-        // return (WEXITSTATUS(status));
-        return (status);
-        //      WIFSIGNALED(status)
-        // returns true if the child process was terminated by a signal.
-        // WTERMSIG(status)
-        // returns the number of the signal that caused the child process to terminate. This macro should only be employed if WIFSIGNALED returned tru
-        // WSTOPSIG(status)
-    }
+		}
+		// if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
+		// {
+		// 	res = execute_builtin(ast_node->data.cmd.exec_argv, shell);
+		// 	exit (res);
+		// }
+		if (ast_node->data.cmd.executable)
+		{
+			if (execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL) == -1)
+			{
+				perror("execve");
+			}
+			printf("failed\n");
+			exit(1);
+		}
+		else
+			exit (2);
+	}
+	else {
+		if (in_fd != -1)
+			close(in_fd);
+		if (out_fd != -1)
+			close(out_fd);
+		waitpid(fork_pid, &status, 0);
+		return (1);
+	}
 }
 
 int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell) //, pid_t *pids, int *pid_count)
 {
+	int pipe_fd[2];
+	int	status;
+
 	if (ast_head->type == NODE_CMD)
 	{
-		return execute_cmd(ast_head, in_fd, out_fd, shell);//, pids, pid_count);
+		status = execute_cmd(ast_head, in_fd, out_fd, shell);
+		return (status);
 	}
 	else if (ast_head->type == NODE_PIPE)
 	{
-		int pipe_fd[2];
 		if (pipe(pipe_fd) == -1)
 		{
 			perror("pipe");
 			return (-1);
 		}
-		if (execute(ast_head->data.binary_op.left, in_fd, pipe_fd[1], shell) == -1) // , pids, pid_count
-			return (-1);
-		if (execute(ast_head->data.binary_op.right, pipe_fd[0], out_fd, shell) == -1) // , pids, pid_count
-			return (-1);
+		status = execute(ast_head->data.binary_op.left, in_fd, pipe_fd[1], shell);
+		if (status != -1)
+			status = execute(ast_head->data.binary_op.right, pipe_fd[0], out_fd, shell);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		return (1);
+		return (status);
 	}
 	else if (ast_head->type == NODE_AND)
 	{
-		int status = execute(ast_head->data.binary_op.left, -1, -1, shell); // , pids, pid_count
+		status = execute(ast_head->data.binary_op.left, -1, -1, shell); // , pids, pid_count
 		if (status)
 			status = execute(ast_head->data.binary_op.right, -1, -1, shell); // , pids, pid_count
 		return (status);
 	}
 	else if (ast_head->type == NODE_OR)
 	{
-		int status = execute(ast_head->data.binary_op.left, -1, -1, shell); // , pids, pid_count
+		status = execute(ast_head->data.binary_op.left, -1, -1, shell); // , pids, pid_count
 		if (!status)
 			status = execute(ast_head->data.binary_op.right, -1, -1, shell); // , pids, pid_count
 		return (status);
@@ -248,15 +243,15 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell) //, pid
 	return (-1);
 }
 
-int	run_pipeline(t_ast_node *ast_head, t_shell *shell) // run pipeline can return the exit status of the last command
-{
-	// pid_t pids[10];
-	// int pid_count = 0;
-	return (execute(ast_head, -1, -1, shell));//, pids, &pid_count);
-	// for (int i = 0; i < pid_count; i++)
-	// 	waitpid(pids[i], NULL, 0);
-	// return (0); // success but change it to return the exit status of the last command
-}
+// int	run_pipeline(t_ast_node *ast_head, t_shell *shell) // run pipeline can return the exit status of the last command
+// {
+// 	// pid_t pids[10];
+// 	// int pid_count = 0;
+// 	return (execute(ast_head, -1, -1, shell));//, pids, &pid_count);
+// 	// for (int i = 0; i < pid_count; i++)
+// 	// 	waitpid(pids[i], NULL, 0);
+// 	// return (0); // success but change it to return the exit status of the last command
+// }
 
 
 // if NODE_AND -- exec right if left success

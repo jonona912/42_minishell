@@ -98,11 +98,11 @@ int	main(int argc, char **argv, char **envp)
 		// wildcard_function(line);
 		add_history(line);
 		token_lst_check = parse_or(token_lst, &head);
+		print_ast(head);
 		if (!token_lst_check)
 			exec_result = 127;
 		else
 			exec_result = execute(head, -1, -1, &shell);
-		// print_ast(head);
 		// run_pipeline(head);
 
 		printf("exec_result = %d\n", exec_result);
