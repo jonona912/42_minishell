@@ -25,7 +25,7 @@ t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst) 
 		token_lst = token_lst->next;
 		if (!token_lst || token_lst->type == TOKEN_END || !is_quote_or_word(token_lst->type))
 		{
-			ft_putstr_fd("\033[31mminishell: Redirection without or wrong target\033[0m\n", 2); // print in red
+			// ft_putstr_fd("\033[31mminishell: Redirection without or wrong target\033[0m\n", 2); // print in red
 			return NULL; // Error: Redirection without target cat <
 		}
 		temp_str = ft_strdup(token_lst->value);

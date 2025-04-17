@@ -137,7 +137,7 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
 
 #include <errno.h>
 
-int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int *pid_count)
+int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, pid_t *pids, int *pid_count)
 {
     int     res;
     pid_t   fork_pid;
@@ -175,7 +175,7 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int
         }
         if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
         {
-            res = execute_builtin(ast_node->data.cmd.exec_argv);
+            res = execute_builtin(ast_node->data.cmd.exec_argv, shell);
             exit (res);
         }
         else if (ast_node->data.cmd.executable)
@@ -209,11 +209,11 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd)//, pid_t *pids, int
     }
 }
 
-int	execute(t_ast_node *ast_head, int in_fd, int out_fd) //, pid_t *pids, int *pid_count)
+int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell) //, pid_t *pids, int *pid_count)
 {
 	if (ast_head->type == NODE_CMD)
 	{
-		return execute_cmd(ast_head, in_fd, out_fd);//, pids, pid_count);
+		return execute_cmd(ast_head, in_fd, out_fd, shell);//, pids, pid_count);
 	}
 	else if (ast_head->type == NODE_PIPE)
 	{
@@ -223,9 +223,9 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd) //, pid_t *pids, int *p
 			perror("pipe");
 			return (-1);
 		}
-		if (execute(ast_head->data.binary_op.left, in_fd, pipe_fd[1]) == -1) // , pids, pid_count
+		if (execute(ast_head->data.binary_op.left, in_fd, pipe_fd[1], shell) == -1) // , pids, pid_count
 			return (-1);
-		if (execute(ast_head->data.binary_op.right, pipe_fd[0], out_fd) == -1) // , pids, pid_count
+		if (execute(ast_head->data.binary_op.right, pipe_fd[0], out_fd, shell) == -1) // , pids, pid_count
 			return (-1);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
@@ -233,26 +233,26 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd) //, pid_t *pids, int *p
 	}
 	else if (ast_head->type == NODE_AND)
 	{
-		int status = execute(ast_head->data.binary_op.left, -1, -1); // , pids, pid_count
+		int status = execute(ast_head->data.binary_op.left, -1, -1, shell); // , pids, pid_count
 		if (status)
-			status = execute(ast_head->data.binary_op.right, -1, -1); // , pids, pid_count
+			status = execute(ast_head->data.binary_op.right, -1, -1, shell); // , pids, pid_count
 		return (status);
 	}
 	else if (ast_head->type == NODE_OR)
 	{
-		int status = execute(ast_head->data.binary_op.left, -1, -1); // , pids, pid_count
+		int status = execute(ast_head->data.binary_op.left, -1, -1, shell); // , pids, pid_count
 		if (!status)
-			status = execute(ast_head->data.binary_op.right, -1, -1); // , pids, pid_count
+			status = execute(ast_head->data.binary_op.right, -1, -1, shell); // , pids, pid_count
 		return (status);
 	}
 	return (-1);
 }
 
-int	run_pipeline(t_ast_node *ast_head) // run pipeline can return the exit status of the last command
+int	run_pipeline(t_ast_node *ast_head, t_shell *shell) // run pipeline can return the exit status of the last command
 {
 	// pid_t pids[10];
 	// int pid_count = 0;
-	return (execute(ast_head, -1, -1));//, pids, &pid_count);
+	return (execute(ast_head, -1, -1, shell));//, pids, &pid_count);
 	// for (int i = 0; i < pid_count; i++)
 	// 	waitpid(pids[i], NULL, 0);
 	// return (0); // success but change it to return the exit status of the last command

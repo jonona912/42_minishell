@@ -1,7 +1,7 @@
 #include "../includes/minishell.h"
 
 void	ft_print_tokens(t_token_lst *token_lst);
-void print_ast(t_ast_node *root);
+void	print_ast(t_ast_node *root);
 
 volatile int signal_received = 0;
 
@@ -23,8 +23,32 @@ void signal_handler(int signum)
 	rl_redisplay();
 }
 
-int	main(void)
+char	**copy_env(char **envp)
 {
+	int		count = 0;
+	char	**copy;
+
+	while (envp[count])
+		count++;
+	copy = malloc(sizeof(char *) * (count + 1));
+	if (!copy)
+		return (NULL);
+	for (int i = 0; i < count; i++)
+		copy[i] = ft_strdup(envp[i]);
+	copy[count] = NULL;
+	return (copy);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	(void)argv;
+	(void)argc;
+	t_shell shell;
+	int prev_status;
+
+	shell.env = copy_env(envp);
+	shell.last_status = 0;
+	prev_status = 0;
 	t_token_lst *token_lst;
 	t_token_lst	*token_lst_check;
 	t_ast_node *head;
@@ -46,16 +70,16 @@ int	main(void)
 		signal_received = 0;
 		// line = readline("\033[0;35mminishell> \033[0m");
 		line = readline("minishel> ");
+		if (!line)
+		{
+			write(1, "exit\n", 5);
+			break;
+		}
 		add_history(line);
 		if (ft_strcmp(line, "") == 0)
 		{
 			free(line);
 			continue;
-		}
-		if (!line)
-		{
-			write(1, "exit\n", 5);
-			break;
 		}
 		if (signal_received)
 		{
@@ -77,12 +101,12 @@ int	main(void)
 		if (!token_lst_check)
 			exec_result = 127;
 		else
-			exec_result = execute(head, -1, -1);
+			exec_result = execute(head, -1, -1, &shell);
 		// print_ast(head);
 		// run_pipeline(head);
-		
+
 		printf("exec_result = %d\n", exec_result);
-		
+
 		// ms_token_free_list(token_lst);
 
 		rl_on_new_line();
@@ -125,7 +149,7 @@ void print_redirections(t_redir_lst *redirs) {
     if (!redirs) return;
     printf(" redirs=[");
     while (redirs) {
-        printf("%s->%s", 
+        printf("%s->%s",
                redirs->type == TOKEN_REDIRECTION_IN ? "<" :
                redirs->type == TOKEN_REDIRECTION_OUT ? ">" :
                redirs->type == TOKEN_APPEND ? ">>" : "<<",
@@ -147,7 +171,7 @@ void print_ast_node(t_ast_node *node, int indent)
         case NODE_CMD:
             printf("CommandNode(");
             printf("%s", node->data.cmd.executable);
-            
+
             // Print arguments if they exist
             if (node->data.cmd.exec_argv && node->data.cmd.exec_argv[0]) {
                 printf(", args=[");
@@ -157,7 +181,7 @@ void print_ast_node(t_ast_node *node, int indent)
                 }
                 printf("]");
             }
-            
+
             // Print redirections
             print_redirections(node->data.cmd.redirs);
             printf(")");

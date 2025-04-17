@@ -46,21 +46,21 @@ int	ft_exit(char **argv)
 	exit(0);
 }
 
-void	ft_env()
+void	ft_env(t_shell *shell) // changes here
 {
-	extern char	**environ;
+	// extern char	**environ;
 	int			i;
 
 	i = 0;
-	while (environ[i])
+	while (shell->env[i])
 	{
-		write(1, environ[i], ft_strlen(environ[i]));
+		write(1, shell->env[i], ft_strlen(shell->env[i]));
 		write(1, "\n", 1);
 		i++;
 	}
 }
 
-int	ft_cd (char **argv)
+int	ft_cd (char **argv, t_shell *shell)
 {
 	char		cwd[4096];
 	static char	*oldpwd = NULL;
@@ -104,7 +104,7 @@ int	ft_cd (char **argv)
 		return (1);
 	}
 	// set OLDPWD to previous directory
-	if (ft_setenv("OLDPWD", cwd, 1))
+	if (ft_setenv("OLDPWD", cwd, 1, shell))
 		return (1);
 	// set PWD to new directory
 	if (!getcwd(new_cwd, sizeof(new_cwd)))
@@ -119,16 +119,16 @@ int	ft_cd (char **argv)
 	return (0);
 }
 
-int	ft_export(char **argv)
+int	ft_export(char **argv, t_shell *shell) // changes here
 {
-	extern char	**environ;
+	// extern char	**environ;
 	char	*equal;
 	char	*name;
 	int		name_len;
 
 	if (!argv[1])
 	{
-		ft_env();
+		ft_env(shell);
 		return (0);
 	}
 	equal = ft_strchr(argv[1], '=');
@@ -145,7 +145,7 @@ int	ft_export(char **argv)
 		return (1);
 	}
 	ft_strlcpy(name, argv[1], name_len + 1);
-	if (ft_setenv(name, equal + 1, 1))
+	if (ft_setenv(name, equal + 1, 1, shell))
 	{
 		perror("Error: invalid syntax input");
 		free(name);
@@ -155,10 +155,10 @@ int	ft_export(char **argv)
 	return (0);
 }
 
-int	ft_unset(char **argv)
+int	ft_unset(char **argv, t_shell *shell) // changes here
 {
 	int			i;
-	extern char	**environ;
+	// extern char	**environ;
 	char		*equal;
 	int			j;
 
@@ -168,16 +168,16 @@ int	ft_unset(char **argv)
 		ft_putstr_fd("Error: missing argument for unset", 2);
 		return (1);
 	}
-	while (environ[i])
+	while (shell->env[i])
 	{
-		equal = ft_strchr(environ[i], '=');
-		if (equal && ft_strncmp(environ[i], argv[1], equal - environ[i]) == 0)
+		equal = ft_strchr(shell->env[i], '=');
+		if (equal && ft_strncmp(shell->env[i], argv[1], equal - shell->env[i]) == 0)
 		{
-			free(environ[i]);
+			free(shell->env[i]);
 			j = i;
-			while (environ[j])
+			while (shell->env[j])
 			{
-				environ[j] = environ[j + 1];
+				shell->env[j] = shell->env[j + 1];
 				j++;
 			}
 			return (0);

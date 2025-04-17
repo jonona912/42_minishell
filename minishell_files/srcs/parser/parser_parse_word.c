@@ -85,11 +85,14 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 	if (!(*ast_node)->data.cmd.exec_argv)
 		return (NULL); // handle malloc failure
 	ctr = 0;
-	while (token_lst && token_lst->type == TOKEN_WORD)
+	while (token_lst && (token_lst->type == TOKEN_ENV_VAR
+		|| token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_D_QUOTE
+		|| token_lst->type == TOKEN_S_QUOTE))
 	{
 		// if (ft_strchr(token_lst->value, '*'))
-		
-		(*ast_node)->data.cmd.exec_argv[ctr] = ft_strdup(token_lst->value);
+
+		(*ast_node)->data.cmd.exec_argv[ctr] = arg_return(token_lst->value, token_lst->type);
+		// (*ast_node)->data.cmd.exec_argv[ctr] = ft_strdup(token_lst->value);
 		if (!(*ast_node)->data.cmd.exec_argv[ctr])
 			return (NULL); // handle strdup failure
 		token_lst = token_lst->next;
@@ -127,7 +130,6 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node)
 		// while (token_lst && token_lst->type == TOKEN_WORD)
 		// {
 		// 	// if (ft_strchr(token_lst->value, '*'))
-			
 		// 	(*ast_node)->data.cmd.exec_argv[ctr] = ft_strdup(token_lst->value);
 		// 	token_lst = token_lst->next;
 		// 	ctr++;

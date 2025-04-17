@@ -34,7 +34,7 @@ t_token_type return_token_type(char *str)
 	return (0);
 }
 
-// changing this here 
+// changing this here
 int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_lst **token_lst)
 {
 	int	i;
