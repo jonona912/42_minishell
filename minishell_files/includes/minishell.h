@@ -206,6 +206,7 @@ t_token_lst *wildcard_function(char *line, int *char_ctr);
 ///////////////////// execute ////////////////////////
 // int execute(t_ast_node *ast_head, int pipe_direction, int pipe_fd[2]);
 int	run_pipeline(t_ast_node *ast_head);
+int	execute(t_ast_node *ast_head, int in_fd, int out_fd);
 // int	dup2_fd(int fd, int std_fd_fileno);
 int	ms_strcmp_until(char *s1, char *s2, char c);
 int	builtin_check(char *cmd);
