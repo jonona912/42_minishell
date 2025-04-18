@@ -27,14 +27,19 @@ char	**copy_env(char **envp)
 {
 	int		count = 0;
 	char	**copy;
+	int		i;
 
 	while (envp[count])
 		count++;
 	copy = malloc(sizeof(char *) * (count + 1));
 	if (!copy)
 		return (NULL);
-	for (int i = 0; i < count; i++)
+	i = 0;
+	while (i < count)
+	{
 		copy[i] = ft_strdup(envp[i]);
+		i++;
+	}
 	copy[count] = NULL;
 	return (copy);
 }
@@ -47,6 +52,8 @@ int	main(int argc, char **argv, char **envp)
 	int prev_status;
 
 	shell.env = copy_env(envp);
+	// debug_env(&shell);
+	// printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
 	shell.last_status = 0;
 	prev_status = 0;
 	t_token_lst *token_lst;
@@ -67,6 +74,7 @@ int	main(int argc, char **argv, char **envp)
 	token_lst = NULL;
 	while (1)
 	{
+		pipe(shell.exp_pipe); // shell.exp_pipe[1] -> for write side
 		signal_received = 0;
 		// line = readline("\033[0;35mminishell> \033[0m");
 		line = readline("minishel> ");
@@ -103,9 +111,12 @@ int	main(int argc, char **argv, char **envp)
 			exec_result = 127;
 		else
 			exec_result = execute(head, -1, -1, &shell);
+		// print_ast(head);
+		// debug_env(&shell);
+		// printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
 		// run_pipeline(head);
 
-		printf("shell->last_status = %d\n", return_exit_status(shell.last_status));
+		// printf("exec_result = %d\n", exec_result);
 
 		// ms_token_free_list(token_lst);
 

@@ -70,7 +70,10 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 	t_token_lst	*current_token;
 	int			ctr;
 
-	(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value);
+	if (builtin_check(token_lst->value))
+		(*ast_node)->data.cmd.executable = ft_strdup(token_lst->value);
+	else
+		(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value);
 	if (!(*ast_node)->data.cmd.executable)
 	{
 		ft_putstr_fd(token_lst->value, 2);
@@ -96,7 +99,7 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 		|| token_lst->type == TOKEN_S_QUOTE))
 	{
 		// if (ft_strchr(token_lst->value, '*'))
-
+		// printf("debug: token_lst->value: %s\n", token_lst->value);
 		(*ast_node)->data.cmd.exec_argv[ctr] = arg_return(token_lst->value, token_lst->type);
 		// (*ast_node)->data.cmd.exec_argv[ctr] = ft_strdup(token_lst->value);
 		if (!(*ast_node)->data.cmd.exec_argv[ctr])

@@ -32,8 +32,11 @@ char	*name_finder(char *value, int pos)
 
 char *ft_strjoin_char(const char *s1, char c)
 {
-	size_t len = ft_strlen(s1);
-	char *str = malloc(len + 2);
+	int		len;
+	char	*str;
+
+	len = (int)ft_strlen(s1);
+	str = (char *)malloc(len + 2);
 	if (!str)
 		return NULL;
 	ft_strlcpy(str, s1, len + 1);
@@ -87,10 +90,6 @@ char *arg_word_return(char *value)
 		if (value[i] == '$' && value[i + 1] && !ft_isspace(value[i + 1]))
 		{
 			tmp = dollar_check(value, &i);
-			// if (tmp == '\0')
-			// {
-
-			// }
 			new = ft_strjoin(res, tmp);
 			// free(tmp);
 			// free(res);
@@ -108,12 +107,11 @@ char *arg_word_return(char *value)
 char	*arg_d_quote_return(char *value)
 {
 	char	*res;
-	char	*tmp;
 
 	if (!value)
 		return (NULL);
-	tmp = ft_strtrim(value, "\"");
-	res = arg_word_return(tmp);
+	res = ft_strtrim(value, "\"");
+	res = arg_word_return(res);
 	return (res);
 }
 

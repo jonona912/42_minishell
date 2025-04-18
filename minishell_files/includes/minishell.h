@@ -22,6 +22,7 @@
 typedef struct s_shell
 {
 	char	**env;
+	int		exp_pipe[2];
 	int		last_status;
 }	t_shell;
 
@@ -102,6 +103,7 @@ typedef struct s_redir_lst {
 typedef struct s_ast_node
 {
 	t_node_type type; // CMD or PIPE
+	t_redir_lst	*paren_redirections; // if type == SUBSHELL_NODE ()
 	union {
 		struct
 		{
@@ -169,6 +171,7 @@ int	is_not_special_char(char c);
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
+char	*ft_getenv(const char *name, t_shell *shell);
 void	ft_echo(char **argv);
 void	ft_pwd();
 int		ft_exit(char **argv);
@@ -223,5 +226,12 @@ int	execute_builtin(char **argv, t_shell *shell);
 // last_exit_status.c
 int		return_exit_status(int status);
 void	set_and_move_eight_bits_left(int *x, int set_num);
+
+void debug_env(t_shell *shell);
+
+int	return_exit_status(int status);
+void	set_and_move_eight_bits_left(int *x, int set_num);
+
+
 
 #endif
