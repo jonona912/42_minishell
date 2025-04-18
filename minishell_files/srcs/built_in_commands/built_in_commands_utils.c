@@ -1,23 +1,21 @@
 #include "../../includes/minishell.h"
 
-char *ft_getenv(const char *name, t_shell *shell)
+char *ft_getenv(const char *name, t_shell shell)
 {
 	int		i;
 	char	*equal;
 	int		name_len;
 
-	if (!name || !shell->env)
+	if (!name || !shell.env)
 		return (NULL);
 	name_len = ft_strlen(name);
 	i = 0;
-	while (shell->env[i])
+	while (shell.env[i])
 	{
-		equal = ft_strchr(shell->env[i], '=');
-		if (equal && (equal - shell->env[i]) == name_len
-			&& ft_strncmp(shell->env[i], name, name_len) == 0)
-		{
+		equal = ft_strchr(shell.env[i], '=');
+		if (equal && (equal - shell.env[i]) == name_len
+			&& ft_strncmp(shell.env[i], name, name_len) == 0)
 			return (equal + 1);
-		}
 		i++;
 	}
 	return (NULL);
@@ -63,11 +61,8 @@ int ft_putenv(char *str, t_shell *shell) // change here
 	i = 0;
 	free(shell->env);
 	shell->env = new_env;
-	//
-	// ft_putstr_fd
 	return 0;
 }
-
 
 int	ft_setenv(char *name, char *value, int overwrite, t_shell *shell) // change here
 {
@@ -78,7 +73,7 @@ int	ft_setenv(char *name, char *value, int overwrite, t_shell *shell) // change 
 	tmp = NULL;
 	if (!name || !value || ft_strchr(name, '='))
 		return (1);
-	current_value = ft_getenv(name, shell);
+	current_value = ft_getenv(name, *shell);
 	if (current_value && !overwrite)
 		return (0);
 	len = ft_strlen(name) + ft_strlen(value) + 2;

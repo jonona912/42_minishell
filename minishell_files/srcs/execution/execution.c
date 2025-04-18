@@ -140,10 +140,10 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
 int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, pid_t *pids, int *pid_count)
 {
     pid_t   fork_pid;
-	// int		pipe_fd[2];
-	// int		i;
-	// int		stdin_status;
+	int		pipe_fd[2];
+	int		i;
 
+	pipe(pipe_fd);
     fork_pid = fork();
     if (fork_pid == -1)
     {
@@ -177,27 +177,25 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, 
         }
         if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
         {
-			// if (pipe(pipe_fd) == -1)
-			// {
-			// 	perror("Error: pipe went wrong");
-			// 	exit(-96);
-			// }
-			// close(pipe_fd[0]);
-			// // printf("DEBUG: Executing builtin with shell at %p, env at %p\n",
-			// // 	shell, shell ? shell->env : NULL);
+			close(pipe_fd[0]);
+			// printf("DEBUG: Executing builtin with shell at %p, env at %p\n",
+			// 	shell, shell ? shell->env : NULL);
 			execute_builtin(ast_node->data.cmd.exec_argv, shell);
-			// i = 0;
-			// while (1)
-			// {
-			// 	printf("debug send: shell.env value : %s", shell->env[i]);
-			// 	write(pipe_fd[1], shell->env[i], ft_strlen(shell->env[i]) + 1);
-			// 	if (shell->env[i] == NULL)
-			// 		break;
-			// 	i++;
-			// }
+			int count = 0;
+			while(shell->env[count] != NULL)
+				count++;
+			write(pipe_fd[1], &count, sizeof(count));
+			i = 0;
+			while (i < count)
+			{
+				int len = ft_strlen(shell->env[i]) + 1;
+				write(pipe_fd[1], &len, sizeof(len));
+				write(pipe_fd[1], shell->env[i], len);
+				i++;
+			}
 			// // debug_env(shell);
 			// // printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
-			// close(pipe_fd[1]);
+			close(pipe_fd[1]);
             exit (96);
         }
         else if (ast_node->data.cmd.executable)
@@ -216,25 +214,56 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, 
 			close(in_fd);
         if (out_fd != -1)
 			close(out_fd);
+		close(pipe_fd[1]);
+		int count;
         int status;
         waitpid(fork_pid, &status, 0);
-		// waitpid(fork_pid, &stdin_status, 0);
-		// if ((stdin_status >> 8)== 96)
-		// {
-		// 	i = 0;
-		// 	while (1)
-		// 	{
-		// 		printf("debug received: shell.env value : %s", shell->env[i]);
-		// 		read(pipe_fd[0], shell->env[i], sizeof(shell->env[i]));
-		// 		if (shell->env[i] == NULL)
-		// 			break;
-		// 		i++;
-		// 	}
-		// }
+		if ((status >> 8)== 96)
+		{
+			read(pipe_fd[0], &count, sizeof(count));
+			char **new_env = (char **)malloc((count + 1) * sizeof(char *));
+			i = 0;
+			while (i < count)
+			{
+				int len;
+				read(pipe_fd[0], &len, sizeof(len));
+				new_env[i] = (char *)malloc(len);
+				read(pipe_fd[0], new_env[i], len);
+				i++;
+			}
+			new_env[count] = NULL;
+			// free shell.env memory
+			// for (int j = 0; shell->env[j] != NULL; j++)
+			// 	free(shell->env[j]);
+			if (shell->env)
+			{
+				i = 0;
+				while (shell->env[i] != NULL)
+				{
+					free(shell->env[i]);
+					i++;
+				}
+				free(shell->env);
+			}
+			shell->env = (char **)malloc((count + 1) * sizeof(char *));
+			i = 0;
+			while(i < count)
+			{
+				shell->env[i] = ft_strdup(new_env[i]);
+				free(new_env[i]);
+				i++;
+			}
+			shell->env[count] = NULL;
+			free(new_env);
+			// printf("Parent's updated global array:\n");
+			// for (int j = 0; shell->env[j] != NULL; j++)
+			// 	printf("[%d] %s\n", j, shell->env[j]);
+			// free all memory
+
+		}
 		// debug_env(shell);
 		// printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
-		// close(pipe_fd[0]);
-		// close(pipe_fd[1]);
+		close(pipe_fd[0]);
         // Return 0 if child failed, 1 if succeeded.
         // return (WIFEXITED(status) && (WEXITSTATUS(status) == 0));
         // return (WEXITSTATUS(status));

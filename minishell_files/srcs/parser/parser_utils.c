@@ -1,12 +1,12 @@
 #include "../../includes/minishell.h"
 
-char	*dollar_execute(char *name)
+char	*dollar_execute(char *name, t_shell shell)
 {
 	char	*res;
 
 	if (!name)
 		return (NULL);
-	res = getenv(name);
+	res = ft_getenv(name, shell);
 	if (!res)
 		return (NULL);
 	return (ft_strdup(res));
@@ -30,22 +30,7 @@ char	*name_finder(char *value, int pos)
 	return (name);
 }
 
-char *ft_strjoin_char(const char *s1, char c)
-{
-	int		len;
-	char	*str;
-
-	len = (int)ft_strlen(s1);
-	str = (char *)malloc(len + 2);
-	if (!str)
-		return NULL;
-	ft_strlcpy(str, s1, len + 1);
-	str[len] = c;
-	str[len + 1] = '\0';
-	return str;
-}
-
-char	*dollar_check(char *value, int *i)
+char	*dollar_check(char *value, int *i, t_shell shell)
 {
 	char	*name;
 	char	*tmp;
@@ -59,20 +44,21 @@ char	*dollar_check(char *value, int *i)
 		return (ft_strdup("$"));
 	}
 	name_len = ft_strlen(name);
-	tmp = dollar_execute(name);
+	tmp = dollar_execute(name, shell);
 	if (!tmp)
 	{
+		// free(name);
 		(*i) += name_len + 1;
 		return (ft_strdup(""));
 	}
 	new = ft_strdup(tmp);
 	// free(tmp);
-	*i += name_len + 1;
 	// free(name);
+	*i += name_len + 1;
 	return (new);
 }
 
-char *arg_word_return(char *value)
+char *arg_word_return(char *value, t_shell shell)
 {
 	int		i;
 	char	*res;
@@ -89,7 +75,7 @@ char *arg_word_return(char *value)
 	{
 		if (value[i] == '$' && value[i + 1] && !ft_isspace(value[i + 1]))
 		{
-			tmp = dollar_check(value, &i);
+			tmp = dollar_check(value, &i, shell);
 			new = ft_strjoin(res, tmp);
 			// free(tmp);
 			// free(res);
@@ -104,26 +90,28 @@ char *arg_word_return(char *value)
 	return (res);
 }
 
-char	*arg_d_quote_return(char *value)
+char	*arg_d_quote_return(char *value, t_shell shell)
 {
 	char	*res;
+	char	*tmp;
 
 	if (!value)
 		return (NULL);
-	res = ft_strtrim(value, "\"");
-	res = arg_word_return(res);
+	tmp = ft_strtrim(value, "\"");
+	res = arg_word_return(tmp, shell);
+	free(tmp);
 	return (res);
 }
 
-char	*arg_return(char *value, t_token_type type)
+char	*arg_return(char *value, t_token_type type, t_shell shell)
 {
 	if (!value)
 		return (NULL);
 	if (type == TOKEN_D_QUOTE)
-		return (arg_d_quote_return(value));
+		return (arg_d_quote_return(value, shell));
 	if (type == TOKEN_S_QUOTE)
 		return (ft_strtrim(value, "\'"));
 	if (type == TOKEN_ENV_VAR || type == TOKEN_WORD)
-		return (arg_word_return(value));
+		return (arg_word_return(value, shell));
 	return (ft_strdup(value));
 }

@@ -54,7 +54,7 @@ int	main(int argc, char **argv, char **envp)
 	shell.env = copy_env(envp);
 	// debug_env(&shell);
 	// printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
-	shell.exit_status = 0;
+	// shell.exit_status = 0;
 	prev_status = 0;
 	t_token_lst *token_lst;
 	t_token_lst	*token_lst_check;
@@ -105,7 +105,7 @@ int	main(int argc, char **argv, char **envp)
 		// ft_print_tokens(token_lst);
 		// wildcard_function(line);
 		add_history(line);
-		token_lst_check = parse_or(token_lst, &head);
+		token_lst_check = parse_or(token_lst, &head, shell);
 		if (!token_lst_check)
 			exec_result = 127;
 		else
