@@ -97,15 +97,15 @@ int	main(int argc, char **argv, char **envp)
 		// ft_print_tokens(token_lst);
 		// wildcard_function(line);
 		add_history(line);
-		token_lst_check = parse_or(token_lst, &head);
-		print_ast(head);
+		token_lst_check = parse_or(token_lst, &head, &shell.last_status);
+		// print_ast(head);
 		if (!token_lst_check)
 			exec_result = 127;
 		else
 			exec_result = execute(head, -1, -1, &shell);
 		// run_pipeline(head);
 
-		printf("exec_result = %d\n", exec_result);
+		printf("shell->last_status = %d\n", return_exit_status(shell.last_status));
 
 		// ms_token_free_list(token_lst);
 

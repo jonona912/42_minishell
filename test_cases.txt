@@ -53,12 +53,18 @@ ls -a | grep mini > output.txt && ls -l | grep mini >> output.txt
 (ls -a | grep mini | wc -l) > output.txt && (ls -l | grep w | wc -l) >> output.txt
 (ls -a | grep mini | wc -l) > output.txt || (ls -l | grep w | wc -l) >> output.txt
 
+
 < input.txt (cat | grep jnn) > output.txt && (ls -l | grep mini) >> output.txt
 
 < input.txt cat | grep jnn > output.txt && (ls -l | grep mini) >> output.txt
 
 
 
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ last_status ////////////////////////////////////
+cat < nonexistant_file
+nonexistant_command -r
+
+cat nonexistant_argument
 
 
 ==================================== TESTS DONE =======================================
@@ -90,7 +96,7 @@ cat sjdf*.txt$PATH
 
 
 
-
+((ls -a | grep mini) | wc -l) > output.txt || (ls -l | grep w | wc -l) >> output.txt
 
 
 

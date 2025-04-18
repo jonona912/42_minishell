@@ -2,12 +2,13 @@
 
 int	ft_isblank(int c)
 {
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\v' || c == '\f' || c == '\r');
 }
 
 int	ft_append_char(char *str, char c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] != '\0')
@@ -19,9 +20,11 @@ int	ft_append_char(char *str, char c)
 
 int	handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst)
 {
+	char	*temp;
+
 	if (vars->current_token[0] != '\0')
 	{
-		char *temp = ft_strdup(vars->current_token);
+		temp = ft_strdup(vars->current_token);
 		token_add_node_back(token_lst, token_new_node(0, temp));
 	}
 	free(vars->current_token);
@@ -34,27 +37,7 @@ int	handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst)
 	return (0);
 }
 
-int	process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step)
-{
-	char	*temp;
-
-	if (vars->current_token[0] != '\0')
-	{
-		temp = ft_strdup(vars->current_token);
-		token_add_node_back(token_lst, token_new_node(0, temp));
-		vars->current_token[0] = '\0';
-	}
-	ft_append_char(vars->current_token, line[*i]);
-	if (step == 2)
-		ft_append_char(vars->current_token, line[*i + 1]);
-	temp = ft_strdup(vars->current_token);
-	token_add_node_back(token_lst, token_new_node(token_type, temp));
-	vars->current_token[0] = '\0';
-	*i += step;
-	return (1);
-}
-
-void	initialize_tokenize_struct(t_tokenize_struct *vars, char *line) // should return if fail or exit?
+int	initialize_tokenize_struct(t_tokenize_struct *vars, char *line)
 {
 	int	line_len;
 
@@ -63,9 +46,10 @@ void	initialize_tokenize_struct(t_tokenize_struct *vars, char *line) // should r
 	if (!vars->current_token)
 	{
 		printf("Error: memory allocation failed\n");
-		exit(1); ;
+		return (-1);
 	}
 	vars->current_token[0] = '\0';
 	vars->is_parenthesis = 0;
 	vars->paren_counter = 0;
+	return (0);
 }

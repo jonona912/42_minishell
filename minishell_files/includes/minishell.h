@@ -91,7 +91,6 @@ typedef enum {
 	// NODE_GROUP
 } t_node_type;
 
-
 // Structure for a single redirection or heredoc
 typedef struct s_redir_lst {
     t_token_type type;      // REDIR_INPUT, REDIR_OUTPUT, REDIR_APPEND, REDIR_HEREDOC
@@ -163,13 +162,12 @@ void		token_add_node_back(t_token_lst **head, t_token_lst *new_node);
 ////////////// tokenizer ////////////
 // ms_tokenizer.c
 int			ft_append_char(char *str, char c);
-void		initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
+int	initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 t_token_lst	*ft_tokenize(char *line);
 int	is_not_special_char(char c);
 
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
-int		process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step);
 int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
 void	ft_echo(char **argv);
 void	ft_pwd();
@@ -191,12 +189,14 @@ int	is_quote_or_word(t_token_type type);
 int	is_redirection(t_token_type type);
 
 // parser_parse_word.c
-t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node);
+// t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node);
+t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node, int *last_status);
 
 // parser.c
-t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
-t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node);
-t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node);
+// t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
+// t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node);
+// t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node);
+t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node, int *last_status);
 char		*arg_return(char *value, t_token_type type);
 
 // redirection_functions.c
@@ -220,5 +220,8 @@ int	ms_strcmp_until(char *s1, char *s2, char c);
 int	builtin_check(char *cmd);
 int	execute_builtin(char **argv, t_shell *shell);
 
+// last_exit_status.c
+int		return_exit_status(int status);
+void	set_and_move_eight_bits_left(int *x, int set_num);
 
 #endif

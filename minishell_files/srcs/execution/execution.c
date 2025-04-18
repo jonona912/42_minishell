@@ -56,10 +56,10 @@ int	handle_heredoc(char *end_delimitor, int in_fd) // here if single quotes, the
 	return (1);
 }
 
-int run_heredoc(char *end_delimitor, int *in_fd)//, int *out_fd)
+int	run_heredoc(char *end_delimitor, int *in_fd)//, int *out_fd)
 {
-	int pipe_fd[2];
-	int	is_interprete;
+	int		pipe_fd[2];
+	int		is_interprete;
 	char	*temp;
 
 	temp = end_delimitor;
@@ -73,22 +73,22 @@ int run_heredoc(char *end_delimitor, int *in_fd)//, int *out_fd)
 			return (-1);
 		is_interprete = 0;
 	}
-    if (pipe(pipe_fd) == -1)
-    {
-        perror("pipe");
-        return (-1);
-    }
-    if (handle_heredoc(end_delimitor, pipe_fd[1]) == -1)
-    {
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-        return (-1);
-    }
-    close(pipe_fd[1]);
-    *in_fd = pipe_fd[0];
+	if (pipe(pipe_fd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	if (handle_heredoc(end_delimitor, pipe_fd[1]) == -1)
+	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		return (-1);
+	}
+	close(pipe_fd[1]);
+	*in_fd = pipe_fd[0];
 	if (!is_interprete)
 		free(end_delimitor);
-    return (0);
+	return (0);
 }
 
 int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
@@ -179,22 +179,19 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, 
 			res = execute_builtin(ast_node->data.cmd.exec_argv, shell);
 			exit (res);
 		}
-		if (ast_node->data.cmd.executable)
+		else if (ast_node->data.cmd.executable)
 		{
 			if (execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL) == -1)
 			{
 				perror("execve");
 			}
-			exit(1);
+			exit(127); // not working
 		}
 		else
-			exit (2);
+			exit (3);
 	}
-	else {
-		if (in_fd != -1)
-			close(in_fd);
-		if (out_fd != -1)
-			close(out_fd);
+	else
+	{
 		waitpid(fork_pid, &shell->last_status, 0);
 		return (1);
 	}

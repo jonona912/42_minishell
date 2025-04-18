@@ -2,16 +2,16 @@
 
 // need to expand the tokens before the parser.
 
-t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node)
+t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node, int *last_status)
 {
 	t_ast_node	*left;
 	t_ast_node	*right;
 
 	right = NULL;
-	token_lst = parse_word(token_lst, ast_node);
+	token_lst = parse_word(token_lst, ast_node, last_status);
 	while (token_lst && token_lst->type == TOKEN_PIPE)
 	{
-		token_lst = parse_word(token_lst->next, &right);
+		token_lst = parse_word(token_lst->next, &right, last_status);
 		left = *ast_node;
 		*ast_node = create_binary_op_node(NODE_PIPE, left, right);
 		right = NULL;
@@ -19,16 +19,16 @@ t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node)
 	return (token_lst);
 }
 
-t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node)
+t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node, int *last_status)
 {
 	t_ast_node	*left;
 	t_ast_node	*right;
 
 	right = NULL;
-	token_lst = parse_pipe(token_lst, ast_node);
+	token_lst = parse_pipe(token_lst, ast_node, last_status);
 	while (token_lst && token_lst->type == TOKEN_AND)
 	{
-		token_lst = parse_pipe(token_lst->next, &right);
+		token_lst = parse_pipe(token_lst->next, &right, last_status);
 		left = *ast_node;
 		*ast_node = create_binary_op_node(NODE_AND, left, right);
 		right = NULL;
@@ -36,16 +36,16 @@ t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node)
 	return (token_lst);
 }
 
-t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node)
+t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node, int *last_status)
 {
 	t_ast_node	*left;
 	t_ast_node	*right;
 
 	right = NULL;
-	token_lst= parse_and(token_lst, ast_node);
+	token_lst= parse_and(token_lst, ast_node, last_status);
 	while (token_lst && token_lst->type == TOKEN_OR)
 	{
-		token_lst = parse_and(token_lst->next, &right);
+		token_lst = parse_and(token_lst->next, &right, last_status);
 		left = *ast_node;
 		*ast_node = create_binary_op_node(NODE_OR, left, right);
 	}
