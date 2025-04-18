@@ -1,5 +1,12 @@
 #include "../../includes/minishell.h"
 
+void debug_env(t_shell *shell)
+{
+    printf("Current env at %p:\n", shell->env);
+    for (int i = 0; shell->env[i]; i++)
+        printf("  [%d] %p: %s\n", i, shell->env[i], shell->env[i]);
+}
+
 void	ft_echo(char **argv)
 {
 	int	i;
@@ -48,10 +55,10 @@ int	ft_exit(char **argv)
 
 void	ft_env(t_shell *shell) // changes here
 {
-	// extern char	**environ;
-	int			i;
+	int	i;
 
 	i = 0;
+	printf("DEBUG: ft_env using env at %p\n", shell->env);
 	while (shell->env[i])
 	{
 		write(1, shell->env[i], ft_strlen(shell->env[i]));
@@ -71,7 +78,7 @@ int	ft_cd (char **argv, t_shell *shell)
 	// case for cd and cd ~
 	if (!argv[1] || strcmp(argv[1], "~") == 0)
 	{
-		tmp = getenv("HOME");
+		tmp = ft_getenv("HOME", shell);
 		if (!tmp)
 		{
 			ft_putstr_fd("Error: HOME is not set\n", 2);
@@ -84,7 +91,7 @@ int	ft_cd (char **argv, t_shell *shell)
 		if (oldpwd)
 			tmp = oldpwd;
 		else
-			tmp = getenv("OLDPWD");
+			tmp = ft_getenv("OLDPWD", shell);
 		if (!tmp)
 		{
 			ft_putstr_fd("Error: OLDPWD is not set\n", 2);
@@ -121,11 +128,12 @@ int	ft_cd (char **argv, t_shell *shell)
 
 int	ft_export(char **argv, t_shell *shell) // changes here
 {
-	// extern char	**environ;
 	char	*equal;
 	char	*name;
 	int		name_len;
 
+	// debug_env(shell);
+	// printf("DEBUG: ft_export modifying shell at %p\n", shell);
 	if (!argv[1])
 	{
 		ft_env(shell);
@@ -152,13 +160,14 @@ int	ft_export(char **argv, t_shell *shell) // changes here
 		return (1);
 	}
 	free(name);
+	// printf("DEBUG: ft_export modifying shell at %p\n", shell);
+	// debug_env(shell);
 	return (0);
 }
 
 int	ft_unset(char **argv, t_shell *shell) // changes here
 {
 	int			i;
-	// extern char	**environ;
 	char		*equal;
 	int			j;
 

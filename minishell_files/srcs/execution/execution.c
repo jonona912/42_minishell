@@ -139,8 +139,10 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)//, int *out_fd)
 
 int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, pid_t *pids, int *pid_count)
 {
-    int     res;
     pid_t   fork_pid;
+	// int		pipe_fd[2];
+	// int		i;
+	// int		stdin_status;
 
     fork_pid = fork();
     if (fork_pid == -1)
@@ -175,8 +177,28 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, 
         }
         if (ast_node->data.cmd.exec_argv && builtin_check(ast_node->data.cmd.exec_argv[0]))
         {
-            res = execute_builtin(ast_node->data.cmd.exec_argv, shell);
-            exit (res);
+			// if (pipe(pipe_fd) == -1)
+			// {
+			// 	perror("Error: pipe went wrong");
+			// 	exit(-96);
+			// }
+			// close(pipe_fd[0]);
+			// // printf("DEBUG: Executing builtin with shell at %p, env at %p\n",
+			// // 	shell, shell ? shell->env : NULL);
+			execute_builtin(ast_node->data.cmd.exec_argv, shell);
+			// i = 0;
+			// while (1)
+			// {
+			// 	printf("debug send: shell.env value : %s", shell->env[i]);
+			// 	write(pipe_fd[1], shell->env[i], ft_strlen(shell->env[i]) + 1);
+			// 	if (shell->env[i] == NULL)
+			// 		break;
+			// 	i++;
+			// }
+			// // debug_env(shell);
+			// // printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
+			// close(pipe_fd[1]);
+            exit (96);
         }
         else if (ast_node->data.cmd.executable)
         {
@@ -196,7 +218,23 @@ int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)//, 
 			close(out_fd);
         int status;
         waitpid(fork_pid, &status, 0);
-
+		// waitpid(fork_pid, &stdin_status, 0);
+		// if ((stdin_status >> 8)== 96)
+		// {
+		// 	i = 0;
+		// 	while (1)
+		// 	{
+		// 		printf("debug received: shell.env value : %s", shell->env[i]);
+		// 		read(pipe_fd[0], shell->env[i], sizeof(shell->env[i]));
+		// 		if (shell->env[i] == NULL)
+		// 			break;
+		// 		i++;
+		// 	}
+		// }
+		// debug_env(shell);
+		// printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
+		// close(pipe_fd[0]);
+		// close(pipe_fd[1]);
         // Return 0 if child failed, 1 if succeeded.
         // return (WIFEXITED(status) && (WEXITSTATUS(status) == 0));
         // return (WEXITSTATUS(status));
