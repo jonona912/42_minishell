@@ -51,7 +51,6 @@ int	copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_ls
 		(*dest)[j++] = src[i++];
 		if (src[i] && (src[i] == delimiter && src[i + 1] == delimiter)) // to handle this case cat "hell""$PATH"
 			i+= 2;
-
 	}
 	(*dest)[j] = '\0';
 	if (src[i] == delimiter)
@@ -120,7 +119,7 @@ int	send_paren_to_token_lst(char *str, t_token_lst **token_lst, t_token_type tok
 		vars->paren_counter++;
 	else if (str[0] == ')')
 	{
-		if (vars->paren_counter == 0)
+		if (vars->paren_counter == 0) // mistake, what if there are more than one paren
 		{
 			free(temp);
 			ft_putstr_fd("Error: unmatched parenthesis", 2);
@@ -156,15 +155,13 @@ int	send_str_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token
 	return (ft_strlen(str));
 }
 
-int handle_other_tokens(char *line, t_token_lst **token_lst, t_tokenize_struct *vars)
+int	handle_other_tokens(char *line, t_token_lst **token_lst, t_tokenize_struct *vars)
 {
 	int	i;
 
-	if (!line)
-		return (-1);
-	if (line[0] == '\0')
-		return (0);
 	i = 0;
+	if (!line || line[0] == '\0')
+		return (0);
 	if (line[i] == '<' && line[i + 1] == '<')
 		return (send_str_to_token_lst("<<", token_lst, TOKEN_HEREDOC));
 	if (line[i] == '>' && line[i + 1] == '>')
@@ -183,8 +180,6 @@ int handle_other_tokens(char *line, t_token_lst **token_lst, t_tokenize_struct *
 		return (send_paren_to_token_lst("(", token_lst, TOKEN_L_PAREN, vars));
 	if (line[i] == ')')
 		return (send_paren_to_token_lst(")", token_lst, TOKEN_R_PAREN, vars));
-	// if (line[i] == '$')
-	// 	return (send_str_to_token_lst("$", token_lst, TOKEN_ENV_VAR));
 	return (0);
 }
 
@@ -258,10 +253,6 @@ int handle_env_var(char *current_token, char *line, t_token_lst **token_lst)
 	return (i);
 }
 
-// create tokens for each match of wildcard
-// if nothing is matched then just send the string as a word token
-
-
 int	is_wildcard_present(char *line)
 {
 	int	i;
@@ -313,7 +304,8 @@ t_token_lst	*ft_tokenize(char *line)
 	int					i;
 	int					temp;
 
-	initialize_tokenize_struct(&vars, line);
+	if (initialize_tokenize_struct(&vars, line) == -1)
+		return (NULL);
 	token_lst = NULL;
 	i = 0;
 	while (line[i])
