@@ -6,9 +6,9 @@ t_token_lst	*token_new_node(t_token_type type, char *value)
 
 	new_node = (t_token_lst *)malloc(sizeof(t_token_lst));
 	if (!new_node)
-		return (NULL); // restart the branches
-	new_node->type = type; // t_token_type -> ls -l | grep "test" ls TOKEN_WORD -l TOKEN_WORD | TOKEN_PIPE grep TOKEN_WORD "test" TOKEN_D_QUOTE (blank spaces between tokens skipped)
-	new_node->value = value; // ls       -l      |      grep        test (IMPORTANT TO REMOVE QUOTES)
+		return (NULL);
+	new_node->type = type;
+	new_node->value = value;
 	new_node->next = NULL;
 	return (new_node);
 }

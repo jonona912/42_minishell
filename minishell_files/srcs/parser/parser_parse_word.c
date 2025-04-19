@@ -60,7 +60,6 @@ int count_token_words(t_token_lst *token_lst)
 	while (token_lst && token_lst->type == TOKEN_WORD) // you can copy, double quote, single quote
 	{
 		count++;
-		// if wildcard is met
 		token_lst = token_lst->next;
 	}
 	return count;
@@ -76,10 +75,17 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 	else
 		(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value);
 	if (!(*ast_node)->data.cmd.executable)
-		return (perror("minishell:>"), NULL);
+	{
+		ft_putstr_fd(token_lst->value, 2);
+		ft_putstr_fd(": command not found\n", 2);
+		set_and_move_eight_bits_left(&shell.last_status, 127);
+		return (NULL); // handle error
+	}
 	current_token = token_lst;
 	ctr = 0;
-	while (current_token && current_token->type == TOKEN_WORD) // you can copy, double quote, single quote
+	while (current_token && (token_lst->type == TOKEN_ENV_VAR
+		|| token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_D_QUOTE
+		|| token_lst->type == TOKEN_S_QUOTE)) // you can copy, double quote, single quote
 	{
 		ctr++;
 		current_token = current_token->next;
@@ -108,11 +114,6 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 
 t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node, t_shell shell)
 {
-	// t_token_lst	*current_token;
-	// int			ctr;
-	// t_token_lst	*wildcard_token;
-
-	// ctr = 0;
 	if (token_lst && (token_lst->type == TOKEN_WORD || is_redirection(token_lst->type)))
 	{
 		*ast_node = create_cmd_node(NODE_CMD, NULL, NULL, NULL); // handle if failure happens

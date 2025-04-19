@@ -25,7 +25,8 @@ SRCS = main_minishell.c \
 		$(EXECUTE_DIR)/execution.c \
 		$(EXECUTE_DIR)/execution_utils.c \
 		$(COMMANDS_DIR)/built_in_commands.c \
-		$(COMMANDS_DIR)/built_in_commands_utils.c
+		$(COMMANDS_DIR)/built_in_commands_utils.c \
+		$(COMMANDS_DIR)/last_exit_status.c
 
 # Test files
 TEST_DIR = tests
