@@ -22,6 +22,8 @@
 typedef struct s_shell
 {
 	char	**env;
+	char	*cd;
+	char	*old_cd;
 	int		exp_pipe[2];
 	int		last_status;
 }	t_shell;
@@ -171,12 +173,12 @@ int	is_not_special_char(char c);
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
-char	*ft_getenv(const char *name, t_shell *shell);
+char	*ft_getenv(const char *name, t_shell shell);
 void	ft_echo(char **argv);
 void	ft_pwd();
 int		ft_exit(char **argv);
 void	ft_env(t_shell *shell);
-int		ft_cd (char **argv, t_shell *shell);
+// int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
 int		ft_unset(char **argv, t_shell *shell);
 
@@ -193,14 +195,12 @@ int	is_redirection(t_token_type type);
 
 // parser_parse_word.c
 // t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node);
-t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node, int *last_status);
+t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node, t_shell shell);
+t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node, t_shell shell);
 
 // parser.c
-// t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
-// t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node);
-// t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node);
-t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node, int *last_status);
-char		*arg_return(char *value, t_token_type type);
+t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node, t_shell shell);
+char	*arg_return(char *value, t_token_type type, t_shell shell); // move it to it's corresponding file 
 
 // redirection_functions.c
 t_redir_lst *new_redir_node(t_token_type type, char *target);

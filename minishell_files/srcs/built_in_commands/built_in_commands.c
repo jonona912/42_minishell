@@ -36,7 +36,7 @@ void	ft_echo(char **argv)
 
 void	ft_pwd()
 {
-	char cwd[4096];
+	char cwd[4096]; // MAX_PWD MAX_LONG
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		printf("%s\n", cwd);
 	else
@@ -67,64 +67,64 @@ void	ft_env(t_shell *shell) // changes here
 	}
 }
 
-int	ft_cd (char **argv, t_shell *shell)
-{
-	char		cwd[4096];
-	static char	*oldpwd = NULL;
-	char		new_cwd[4096];
-	char		*tmp;
+// int	ft_cd (char **argv, t_shell *shell)
+// {
+// 	// char		cwd[4096];
+// 	// static char	*oldpwd = NULL;
+// 	char		new_cwd[4096];
+// 	char		*tmp;
 
-	tmp = argv[1];
-	// case for cd and cd ~
-	if (!argv[1] || strcmp(argv[1], "~") == 0)
-	{
-		tmp = ft_getenv("HOME", shell);
-		if (!tmp)
-		{
-			ft_putstr_fd("Error: HOME is not set\n", 2);
-			return (1);
-		}
-	}
-	// case for cd -
-	else if (strcmp(argv[1], "-") == 0)
-	{
-		if (oldpwd)
-			tmp = oldpwd;
-		else
-			tmp = ft_getenv("OLDPWD", shell);
-		if (!tmp)
-		{
-			ft_putstr_fd("Error: OLDPWD is not set\n", 2);
-			return (1);
-		}
-	}
-	// save current directory
-	if (!getcwd(cwd, sizeof(cwd)))
-	{
-		ft_putstr_fd("Error: current working directory name not found\n", 2);
-		return (1);
-	}
-	// change directory
-	if (chdir(tmp) != 0)
-	{
-		ft_putstr_fd("Error: directory cannot be changed\n", 2);
-		return (1);
-	}
-	// set OLDPWD to previous directory
-	if (ft_setenv("OLDPWD", cwd, 1, shell))
-		return (1);
-	// set PWD to new directory
-	if (!getcwd(new_cwd, sizeof(new_cwd)))
-	{
-		ft_putstr_fd("Error: cannot set PWD to new directory\n", 2);
-		return (1);
-	}
-	// update oldpwd
-	if (oldpwd)
-		free(oldpwd);
-	oldpwd = ft_strdup(cwd);
-	return (0);
-}
+// 	tmp = argv[1];
+// 	// case for cd and cd ~
+// 	if (!argv[1] || strcmp(argv[1], "~") == 0)
+// 	{
+// 		tmp = ft_getenv("HOME", *shell);
+// 		if (!tmp)
+// 		{
+// 			ft_putstr_fd("Error: HOME is not set\n", 2);
+// 			return (1);
+// 		}
+// 	}
+// 	// case for cd -
+// 	else if (strcmp(argv[1], "-") == 0)
+// 	{
+// 		if (shell->old_cd)
+// 			tmp = oldpwd;
+// 		else
+// 			tmp = ft_getenv("OLDPWD", *shell);
+// 		if (!tmp)
+// 		{
+// 			ft_putstr_fd("Error: OLDPWD is not set\n", 2);
+// 			return (1);
+// 		}
+// 	}
+// 	// save current directory
+// 	if (!getcwd(cwd, sizeof(cwd)))
+// 	{
+// 		ft_putstr_fd("Error: current working directory name not found\n", 2);
+// 		return (1);
+// 	}
+// 	// change directory
+// 	if (chdir(tmp) != 0)
+// 	{
+// 		ft_putstr_fd("Error: directory cannot be changed\n", 2);
+// 		return (1);
+// 	}
+// 	// set OLDPWD to previous directory
+// 	if (ft_setenv("OLDPWD", cwd, 1, shell))
+// 		return (1);
+// 	// set PWD to new directory
+// 	if (!getcwd(new_cwd, sizeof(new_cwd)))
+// 	{
+// 		ft_putstr_fd("Error: cannot set PWD to new directory\n", 2);
+// 		return (1);
+// 	}
+// 	// update oldpwd
+// 	if (oldpwd)
+// 		free(oldpwd);
+// 	oldpwd = ft_strdup(cwd);
+// 	return (0);
+// }
 
 int	ft_export(char **argv, t_shell *shell) // changes here
 {
@@ -132,8 +132,6 @@ int	ft_export(char **argv, t_shell *shell) // changes here
 	char	*name;
 	int		name_len;
 
-	// debug_env(shell);
-	// printf("DEBUG: ft_export modifying shell at %p\n", shell);
 	if (!argv[1])
 	{
 		ft_env(shell);
@@ -160,8 +158,6 @@ int	ft_export(char **argv, t_shell *shell) // changes here
 		return (1);
 	}
 	free(name);
-	// printf("DEBUG: ft_export modifying shell at %p\n", shell);
-	// debug_env(shell);
 	return (0);
 }
 

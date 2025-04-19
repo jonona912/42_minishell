@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:50:36 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/04/17 19:24:22 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/18 18:12:15 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(char *src);
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin_char(const char *s1, char c);
 char	*ft_strjoin_three(char const *s1, char const *s2, char const *s3);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
