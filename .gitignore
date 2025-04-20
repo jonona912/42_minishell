@@ -8,3 +8,4 @@ txt_files/
 *.a
 minishell
 a.out
+minishell_tester

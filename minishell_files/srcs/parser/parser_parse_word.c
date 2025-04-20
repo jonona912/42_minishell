@@ -40,7 +40,7 @@ t_token_lst	*append_redirections_if_any(t_token_lst *token_lst, t_ast_node **ast
 	if (token_lst && is_redirection(token_lst->type))
 	{
 		token_lst = append_redirections(ast_node, token_lst);
-		if (!token_lst || token_lst->type != TOKEN_WORD)
+		if (!token_lst)// || token_lst->type != TOKEN_WORD)
 		{
 			return (ft_putstr_fd("minishell: syntax error near unexpected token\n", 2), NULL); // handle error
 		}

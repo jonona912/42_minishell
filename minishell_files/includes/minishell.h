@@ -14,7 +14,7 @@
 
 #include "../../libft/libft.h"
 
-// # include <sys/types.h>
+
 
 typedef enum	s_token_type
 {
@@ -51,29 +51,6 @@ typedef struct s_tokenize_struct
 	int		paren_counter;
 }	t_tokenize_struct;
 
-
-
-// // make separate lists for tokens and commands
-// typedef struct s_cmd_lst
-// {
-// 	char			*path;
-// 	char			**av;
-// 	struct s_cmd_lst	*next;
-// }	t_cmd_lst;
-
-// typedef struct	s_command
-// {
-// 	char **tokens;
-// 	char *current_cmd_lst;
-// 	char *input_file;
-// 	char *output_file;
-// 	struct s_command *next;
-// 	int	quote;
-// 	int	redirection;
-// 	int	pipe;
-// }	t_command;
-
-
 typedef enum {
 	NODE_CMD,
 	NODE_PIPE,
@@ -109,23 +86,10 @@ typedef struct s_ast_node
 	} data;
 }	t_ast_node;
 
-// typedef struct s_pid_lst
-// {
-// 	pid_t				pid;
-// 	struct s_pid_lst	*next;
-// }	t_pid_lst;
-
-
-
 
 
 
 ///////////// lists /////////////
-// ms_command_lst.c
-// t_cmd_lst	*ms_new_node(char *value, char **argv);
-// void		ms_free_list(t_cmd_lst *head);
-// t_cmd_lst	*ms_get_last_node(t_cmd_lst *head);
-// void		ms_add_node_back(t_cmd_lst **head, t_cmd_lst *new_node);
 
 // ms_token_lst.c
 t_token_lst	*token_new_node(t_token_type type, char *value);
@@ -139,7 +103,7 @@ int			ft_append_char(char *str, char c);
 void		initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 t_token_lst	*ft_tokenize(char *line);
 
-
+// NEEDS TO BE CHANGED
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step);
@@ -183,12 +147,18 @@ char *return_executable_path(const char *name);
 // wildcard_functions.c
 t_token_lst *wildcard_function(char *wildcard_str);
 
-///////////////////// execute ////////////////////////
-// int execute(t_ast_node *ast_head, int pipe_direction, int pipe_fd[2]);
+///////////////////// execution ////////////////////////
 int	run_pipeline(t_ast_node *ast_head);
-// int	dup2_fd(int fd, int std_fd_fileno);
 int	ms_strcmp_until(char *s1, char *s2, char c);
 int	builtin_check(char *cmd);
 int	execute_builtin(char **argv);
+
+
+// check_user_input.c
+int	check_user_input(char **line);
+
+/////////////////////////// print_structs ///////////////////////////
+void	ft_print_tokens(t_token_lst *token_lst);
+void print_ast(t_ast_node *root);
 
 #endif

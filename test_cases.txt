@@ -58,7 +58,7 @@ ls -a | grep mini > output.txt && ls -l | grep mini >> output.txt
 < input.txt cat | grep jnn > output.txt && (ls -l | grep mini) >> output.txt
 
 
-
+(ls -a && cat < input.txt) > output.txt
 
 
 ==================================== TESTS DONE =======================================
