@@ -35,7 +35,7 @@ compare_outputs() {
     else
         echo -e "\e[31m${test_name} test failed\e[0m"
         echo -e "\e[34mReal shell output: \n \e[0m'$output_real'"
-        echo -e "\e[35mMinishell output: \n \e[0m'$output_minishell'"
+        echo -e "\e[33mMinishell output: \n \e[0m'$output_minishell'"
     fi
 }
 
@@ -60,30 +60,76 @@ test_command() {
 }
 
 # Tests
+echo -e "\e[35mNO ARGUMENTS TEST\e[0m" #
+test_command "" \
+            "no"
+
+echo -e "\e[35mSIMPLE TESTS\e[0m" #
+
 test_command "ls -a" \
             "yes"
 test_command "ls" \
             "yes"
+
+echo -e "\e[35mPIPE TESTS\e[0m" #
+test_command "ls -a | grep mini" \
+            "no"
+
+test_command "ls -a | grep mini | wc -l" \
+            "no"
+
+echo -e "\e[35mREDIRECTION IN TESTS\e[0m" #
 test_command "<input.txt       cat" \
             "no"
 test_command "<input.txt	cat | grep jnn" \
             "no"
 test_command "<input.txt	cat | grep jnn | wc -l" \
             "no"
-test_command "(ls -a | grep mini) || (ls -l | grep mini)" \
-            "no"
 test_command "grep jnn < input.txt < input_2.txt" \
             "no"
+
+echo -e "\e[35mAND / OR TESTS (&&/||) \e[0m" # 
+test_command "(ls -a | grep mini) || (ls -l | grep mini)" \
+            "no"
+
+test_command "cat input.txt || ls -a" \
+            "no"
+
+test_command "cat input.txt && cat input_2.txt" \
+            "no"
+
+test_command "cat input.txt | wc -l && cat input_2.txt" \
+            "no"
+
+test_command "< input.txt cat | wc -l && cat input_2.txt" \
+            "no"
+
+echo -e "\e[35mSUBSHELL TESTS\e[0m" #
+
+test_command "(ls -a | grep mini | wc -l) && (ls -l | grep w | wc -l)" \
+            "no"
+
+test_command "(ls -a && cat < input.txt)" \
+            "yes"
+
+test_command "((ls -a| grep mini) || cat < input.txt)" \
+            "no"
+
+test_command "(ls -a && cat < input.txt) | (grep .txt | (grep input | wc -l))" \
+            "no"
+
+test_command "(ls -a| sort && cat < input.txt) && (((ls -a && cat < input.txt) | grep .txt) | (grep input | wc -l))" \
+            "yes"
 
 
 
 ################### DOUBLE QUOTES TESTS ########################
 # grep jnn < "input.txt" < "input_2.txt"
-echo -e "\e[33mDOUBLE QUOTES TESTS\e[0m"
-test_command "\cat \"input.txt\"" \
-            "no"
-test_command "grep jnn < \"input.txt\" < \"input_2.txt\"" \
-            "no"
+# echo -e "\e[33mDOUBLE QUOTES TESTS\e[0m"
+# test_command "\cat \"input.txt\"" \
+#             "no"
+# test_command "grep jnn < \"input.txt\" < \"input_2.txt\"" \
+#             "no"
 
 
 

@@ -14,7 +14,8 @@ int	is_quote_or_word(t_token_type type)
 
 
 
-t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst) // redirections can store s_quotes and d_quotes (tokens)
+// t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst) // redirections can store s_quotes and d_quotes (tokens)
+t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst)
 {
 	t_token_type	redir_type;
 	t_redir_lst		*redir_node;
@@ -39,8 +40,7 @@ t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst) 
 			free(temp_str);
 			return (NULL); // handle error
 		}
-
-		add_redir_back(&(*ast_node)->data.cmd.redirs, redir_node);
+		add_redir_back(node_redirs, redir_node);
 		token_lst = token_lst->next;
 	}
 	return (token_lst);

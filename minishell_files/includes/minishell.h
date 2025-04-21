@@ -56,7 +56,7 @@ typedef enum {
 	NODE_PIPE,
 	NODE_AND,
 	NODE_OR,
-	// NODE_GROUP
+	NODE_SUBSHELL
 } t_node_type;
 
 
@@ -83,6 +83,11 @@ typedef struct s_ast_node
 			struct s_ast_node* left;
 			struct s_ast_node* right;
 		} binary_op;
+		struct
+		{
+			struct s_ast_node* subshell;
+			t_redir_lst *sub_shell_redir;
+		} sub_shell;
 	} data;
 }	t_ast_node;
 
@@ -121,9 +126,9 @@ int		ft_unset(char **argv);
 // ast_binary_tree_function.c
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
 t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
-
+t_ast_node	*create_subshell_node(t_node_type type, t_ast_node *subshell, t_redir_lst *sub_shell_redir);
 // parser_helper_1.c
-t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst);
+t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst);
 int	is_quote_or_word(t_token_type type);
 int	is_redirection(t_token_type type);
 
@@ -148,10 +153,20 @@ char *return_executable_path(const char *name);
 t_token_lst *wildcard_function(char *wildcard_str);
 
 ///////////////////// execution ////////////////////////
-int	run_pipeline(t_ast_node *ast_head);
+// execute_command.c
+int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd);
+
+// execution.c
+int execute(t_ast_node *ast_head, int in_fd, int out_fd);
 int	ms_strcmp_until(char *s1, char *s2, char c);
 int	builtin_check(char *cmd);
 int	execute_builtin(char **argv);
+
+// here_doc.c
+int run_heredoc(char *end_delimitor, int *in_fd);
+
+// redirections.c
+int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd);
 
 
 // check_user_input.c
