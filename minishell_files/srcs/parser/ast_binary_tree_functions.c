@@ -1,9 +1,5 @@
 #include "../../includes/minishell.h"
 
-
-// // // update this!!!
-
-// Function to create a command node
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs)
 {
 	t_ast_node *node;
@@ -28,5 +24,18 @@ t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node
 	node->type = type;
 	node->data.binary_op.left = left;
 	node->data.binary_op.right = right;
+	return node;
+}
+
+t_ast_node	*create_subshell_node(t_node_type type, t_ast_node *subshell, t_redir_lst *sub_shell_redir)
+{
+	t_ast_node *node;
+
+	node = (t_ast_node *)malloc(sizeof(t_ast_node));
+	if (!node)
+		return NULL;
+	node->type = type;
+	node->data.sub_shell.subshell = subshell;
+	node->data.sub_shell.sub_shell_redir = sub_shell_redir;
 	return node;
 }

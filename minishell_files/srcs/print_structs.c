@@ -31,7 +31,7 @@ void print_redirections(t_redir_lst *redirs) {
     if (!redirs) return;
     printf(" redirs=[");
     while (redirs) {
-        printf("%s->%s", 
+        printf("%s = %s", 
                redirs->type == TOKEN_REDIRECTION_IN ? "<" :
                redirs->type == TOKEN_REDIRECTION_OUT ? ">" :
                redirs->type == TOKEN_APPEND ? ">>" : "<<",
@@ -94,6 +94,15 @@ void print_ast_node(t_ast_node *node, int indent)
             print_ast_node(node->data.binary_op.left, indent + 1);
             printf(",\n");
             print_ast_node(node->data.binary_op.right, indent + 1);
+            printf("\n");
+            for (int i = 0; i < indent; i++) printf("  ");
+            printf(")");
+            break;
+        case NODE_SUBSHELL:
+            printf("SubshellNode(\n");
+            print_ast_node(node->data.sub_shell.subshell, indent + 1);
+            printf(",\n");
+            print_redirections(node->data.sub_shell.sub_shell_redir);
             printf("\n");
             for (int i = 0; i < indent; i++) printf("  ");
             printf(")");

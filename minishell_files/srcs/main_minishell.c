@@ -73,12 +73,12 @@ int	main(int argc, char **argv, char **envp)
 		signal_received = 0;
 		if (!is_test)
 			line = readline("minishel> ");
-		add_history(line);
 		if (!line)
 		{
-			write(1, "exit\n", 5);
+			free(line);
 			break;
 		}
+		add_history(line);
 		if (check_user_input(&line) == -1)
 			continue;
 		token_lst = ft_tokenize(line);
@@ -100,7 +100,8 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		// print_ast(head);
-		run_pipeline(head);
+		// run_pipeline(head);
+		execute(head, -1, -1);
 		// printf("exec_result = %d\n", exec_result);
 		
 		rl_on_new_line();

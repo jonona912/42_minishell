@@ -58,8 +58,28 @@ ls -a | grep mini > output.txt && ls -l | grep mini >> output.txt
 < input.txt cat | grep jnn > output.txt && (ls -l | grep mini) >> output.txt
 
 
-(ls -a && cat < input.txt) > output.txt
+(ls -a | grep mini && cat < input.txt) > output.txt
+((ls -a| grep mini) || cat < input.txt) > output.txt
+(ls -a && cat < input.txt) | grep .txt > output.txt
+(ls -a && cat < input.txt) | grep .txt | (grep input | wc -l) > output.txt
+(ls -a && cat < input.txt) | (grep .txt | (grep input | wc -l)) > output.txt
+(ls| sort && cat < input.txt) && (((ls -a && cat < input.txt) | grep .txt) | (grep input | wc -l)) > output.txt
+(ls| sort && cat < input.txt) >> output.txt >> output_2.txt && (((ls -a && cat < input.txt) | grep .txt) | (grep input | wc -l)) >> output.txt
+(ls| sort && < input.txt cat ) >> output.txt >> output_2.txt && (((ls -a && cat < input.txt) | grep .txt) | (grep input | wc -l)) >> output.txt
 
+(cat && grep sdfsdf) < input.txt
+(cat | grep jnn) < input.txt
+
+(ls -a && cat < input.txt) > output.txt > output2.txt
+
+(lasdfs -aasdf || cat < input.txt) 2> error.log > output.tx
+(echo $TEST && cat < input.txt) > output.txt
+
+export TEST=123
+(echo $TEST && cat < input.txt) > output.txt
+
+(export TEST=456 && ls -a) > output.txt
+echo $TEST  # Should still be unset or original value
 
 ==================================== TESTS DONE =======================================
 ** first check token_lst
@@ -86,6 +106,10 @@ echo << EOF > output.txt
 
 cat sjdf*.txt$PATH
 
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ ISUES ///////////////////////////
+""
+''
 
 
 
@@ -143,7 +167,6 @@ ls -l
 ls -l minishell_files
 
 ||||||||||||||||||||||| DON'T KNOW HOW MINISHELL NEEDS TO HANDLE ||||||||||||||||||||||||
-
 
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\ Handle environment variables ////////////
