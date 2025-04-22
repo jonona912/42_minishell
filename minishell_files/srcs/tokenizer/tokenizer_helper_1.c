@@ -54,7 +54,7 @@ int	process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *
 	return (1);
 }
 
-void	initialize_tokenize_struct(t_tokenize_struct *vars, char *line) // should return if fail or exit?
+int	initialize_tokenize_struct(t_tokenize_struct *vars, char *line)
 {
 	int	line_len;
 
@@ -63,9 +63,10 @@ void	initialize_tokenize_struct(t_tokenize_struct *vars, char *line) // should r
 	if (!vars->current_token)
 	{
 		printf("Error: memory allocation failed\n");
-		exit(1); ;
+		return (-1);
 	}
 	vars->current_token[0] = '\0';
 	vars->is_parenthesis = 0;
 	vars->paren_counter = 0;
+	return (0);
 }
