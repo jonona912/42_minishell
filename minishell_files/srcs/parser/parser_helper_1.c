@@ -15,7 +15,7 @@ int	is_quote_or_word(t_token_type type)
 
 
 // t_token_lst	*append_redirections(t_ast_node **ast_node, t_token_lst *token_lst) // redirections can store s_quotes and d_quotes (tokens)
-t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst)
+t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst, t_shell *shell)
 {
 	t_token_type	redir_type;
 	t_redir_lst		*redir_node;
@@ -31,7 +31,8 @@ t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_l
 			ft_putstr_fd("\033[31mminishell: Redirection without or wrong target\033[0m\n", 2); // print in red
 			return NULL; // Error: Redirection without target cat <
 		}
-		temp_str = ft_strdup(token_lst->value);
+		// temp_str = ft_strdup(token_lst->value); // handle double quotest etc.
+		temp_str = arg_return(token_lst->value, token_lst->type, shell); // handle double quotes and single quotes
 		if (!temp_str)
 			return (NULL); // handle error
 		redir_node = new_redir_node(redir_type, temp_str);

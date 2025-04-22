@@ -1,12 +1,27 @@
 #include "../../includes/minishell.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+char *ft_getenv(const char *name, t_shell shell)
+{
+	int		i;
+	char	*equal;
+	int		name_len;
 
-extern char **environ;
+	if (!name || !shell.env)
+		return (NULL);
+	name_len = ft_strlen(name);
+	i = 0;
+	while (shell.env[i])
+	{
+		equal = ft_strchr(shell.env[i], '=');
+		if (equal && (equal - shell.env[i]) == name_len
+			&& ft_strncmp(shell.env[i], name, name_len) == 0)
+			return (equal + 1);
+		i++;
+	}
+	return (NULL);
+}
 
-int ft_putenv(char *str)
+int ft_putenv(char *str, t_shell *shell) // change here
 {
 	char	*eq_str;
 	int		name_len;
@@ -19,34 +34,37 @@ int ft_putenv(char *str)
 	eq_str = ft_strchr(str, '=');
 	name_len = eq_str - str;
 	i = 0;
-	while (environ[i])
+	while (shell->env[i])
 	{
-		if (ft_strncmp(environ[i], str, name_len) == 0 && environ[i][name_len] == '=')
+		if (ft_strncmp(shell->env[i], str, name_len) == 0 && shell->env[i][name_len] == '=')
 		{
-			environ[i] = str;
+			free(shell->env[i]);
+			shell->env[i] = str;
 			return (0);
 		}
 		i++;
 	}
 	env_y = 0;
-	while (environ[env_y]) env_y++;
+	while (shell->env[env_y])
+		env_y++;
 	new_env = (char **) malloc(sizeof(char *) * (env_y + 2));
 	if (!new_env)
 		return (1);
 	i = 0;
 	while (i < env_y)
 	{
-		new_env[i] = environ[i];
+		new_env[i] = shell->env[i];
 		i++;
 	}
 	new_env[env_y] = str;
 	new_env[env_y + 1] = NULL;
-	environ = new_env; // Point to the new array
+	i = 0;
+	free(shell->env);
+	shell->env = new_env;
 	return 0;
 }
 
-
-int	ft_setenv(char *name, char *value, int overwrite)
+int	ft_setenv(char *name, char *value, int overwrite, t_shell *shell) // change here
 {
 	char	*current_value;
 	char	*tmp;
@@ -55,7 +73,7 @@ int	ft_setenv(char *name, char *value, int overwrite)
 	tmp = NULL;
 	if (!name || !value || ft_strchr(name, '='))
 		return (1);
-	current_value = getenv(name);
+	current_value = ft_getenv(name, *shell);
 	if (current_value && !overwrite)
 		return (0);
 	len = ft_strlen(name) + ft_strlen(value) + 2;
@@ -68,7 +86,7 @@ int	ft_setenv(char *name, char *value, int overwrite)
 	ft_strlcpy(tmp, name, len);
 	ft_strlcat(tmp, "=", len);
 	ft_strlcat(tmp, value, len);
-	if (ft_putenv(tmp))
+	if (ft_putenv(tmp, shell))
 	{
 		free(tmp);
 		perror("Error: putenv failed");

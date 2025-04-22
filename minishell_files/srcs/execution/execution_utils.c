@@ -10,20 +10,20 @@ int	builtin_check(char *cmd)
 			ft_strcmp(cmd, "exit") == 0);
 }
 
-int	execute_builtin(char **argv)
+int	execute_builtin(char **argv, t_shell *shell)
 {
 	if (ft_strcmp(argv[0], "echo") == 0)
 		ft_echo(argv);
-	else if (ft_strcmp(argv[0], "cd") == 0)
-		return (ft_cd(argv));
+	// else if (ft_strcmp(argv[0], "cd") == 0)
+	// 	return (ft_cd(argv, shell));
 	else if (ft_strcmp(argv[0], "pwd") == 0)
-		ft_pwd();
+		ft_pwd(shell);
 	else if (ft_strcmp(argv[0], "export") == 0)
-		return (ft_export(argv));
+		return (ft_export(argv, shell));
 	else if (ft_strcmp(argv[0], "unset") == 0)
-		return(ft_unset(argv));
+		return(ft_unset(argv, shell));
 	else if (ft_strcmp(argv[0], "env") == 0)
-		ft_env();
+		ft_env(shell);
 	else if (ft_strcmp(argv[0], "exit") == 0)
 		return (ft_exit(argv));
 	return (0);

@@ -56,9 +56,9 @@ test_command() {
         output_minishell=$(echo "$command" | ./minishell -test)
     fi
     compare_outputs "$command" "$output_real" "$output_minishell"
-    
 }
 
+# invalid permission tests
 # Tests
 echo -e "\e[35mNO ARGUMENTS TEST\e[0m" #
 test_command "" \
@@ -123,23 +123,75 @@ test_command "(ls -a| sort && cat < input.txt) && (((ls -a && cat < input.txt) |
 
 
 
-################### DOUBLE QUOTES TESTS ########################
-# grep jnn < "input.txt" < "input_2.txt"
-# echo -e "\e[33mDOUBLE QUOTES TESTS\e[0m"
-# test_command "\cat \"input.txt\"" \
-#             "no"
-# test_command "grep jnn < \"input.txt\" < \"input_2.txt\"" \
-#             "no"
+################## DOUBLE QUOTES TESTS ########################
+echo -e "\e[33mDOUBLE QUOTES TESTS\e[0m"
+test_command "cat \"input.txt\"" \
+            "no"
+
+test_command "grep jnn < \"input.txt\" < \"input_2.txt\"" \
+            "no"
+################## SIGNLE QUOTES TESTS ########################
+echo -e "\e[33mSINGLE QUOTES TESTS\e[0m"
+test_command "cat 'input.txt'" \
+            "no"
+test_command "grep jnn < 'input.txt' < 'input_2.txt'" \
+            "no"
+
+
+################## BUILTINS TESTS ########################
+echo -e "\e[33m===========> BUILTINS TESTS <============\e[0m"
+
+echo -e "\e[33mECHO TESTS\e[0m"
+
+test_command "echo hello jnn" \
+            "no"
+
+test_command "echo \"hello \$USER\"" \
+            "no"
+
+test_command "echo -n \"hello \$PATH\"" \
+            "no"
+
+test_command "echo -n \"hello jnn\"" \
+            "no"
+
+test_command "echo -nnnnnn \"hello jnn\"" \
+            "no"
+
+test_command "echo -n -n -n -n -n -n -n -n \"hello jnn\"" \
+            "no"
+
+test_command "echo -n -n -n -n -n -n -n -n -n\"hello jnn\"" \
+            "no"
+
+test_command "echo -n -n -n -n -n -n -n -n \"hello jnn\" | wc -l" \
+            "no"
+
+test_command "echo -n -n hello jnn, there should be seven words | wc -w" \
+            "no"
+
+test_command "echo -n 'hello \$USER'" \
+            "no"
+
+test_command "echo \$USER \"\$USER'\$USER'\"'\$USER\"\$USER\"'"
+
+test_command "echo \$NON_AVAL" \
+            "no"
 
 
 
+test_command "echo \$? + \$? - \$?" \
+            "no"
+# add more single quote and other types of tests
 
+echo -e "\e[33mPWD TESTS\e[0m"
 
+test_command "pwd" \
+            "no"
 
-# test_command "(ls -a | grep mini) && (ls | grep mini)" "(ls -a | grep mini) && (ls | grep mini)" "no"
-# test_command "(ls -a | grep mini) > output.txt && (ls -a | grep minishell_sub)" "(ls -a | grep mini) > output.txt && (ls -a | grep minishell_sub)" "yes"
+test_command "pwd | grep home" \
+            "no"
 
-
-
-
+test_command "pwd | grep home | wc -l" \
+            "no"
 

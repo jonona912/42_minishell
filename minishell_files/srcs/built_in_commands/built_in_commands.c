@@ -1,5 +1,12 @@
 #include "../../includes/minishell.h"
 
+// void debug_env(t_shell *shell)
+// {
+//     printf("Current env at %p:\n", shell->env);
+//     for (int i = 0; shell->env[i]; i++)
+//         printf("  [%d] %p: %s\n", i, shell->env[i], shell->env[i]);
+// }
+
 void	ft_echo(char **argv)
 {
 	int	i;
@@ -29,7 +36,7 @@ void	ft_echo(char **argv)
 
 void	ft_pwd()
 {
-	char cwd[4096];
+	char cwd[4096]; // MAX_PWD MAX_LONG
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		printf("%s\n", cwd);
 	else
@@ -46,89 +53,88 @@ int	ft_exit(char **argv)
 	exit(0);
 }
 
-void	ft_env()
+void	ft_env(t_shell *shell) // changes here
 {
-	extern char	**environ;
-	int			i;
+	int	i;
 
 	i = 0;
-	while (environ[i])
+	// printf("DEBUG: ft_env using env at %p\n", shell->env);
+	while (shell->env[i])
 	{
-		write(1, environ[i], ft_strlen(environ[i]));
+		write(1, shell->env[i], ft_strlen(shell->env[i]));
 		write(1, "\n", 1);
 		i++;
 	}
 }
 
-int	ft_cd (char **argv)
-{
-	char		cwd[4096];
-	static char	*oldpwd = NULL;
-	char		new_cwd[4096];
-	char		*tmp;
+// int	ft_cd (char **argv, t_shell *shell)
+// {
+// 	// char		cwd[4096];
+// 	// static char	*oldpwd = NULL;
+// 	char		new_cwd[4096];
+// 	char		*tmp;
 
-	tmp = argv[1];
-	// case for cd and cd ~
-	if (!argv[1] || strcmp(argv[1], "~") == 0)
-	{
-		tmp = getenv("HOME");
-		if (!tmp)
-		{
-			ft_putstr_fd("Error: HOME is not set\n", 2);
-			return (1);
-		}
-	}
-	// case for cd -
-	else if (strcmp(argv[1], "-") == 0)
-	{
-		if (oldpwd)
-			tmp = oldpwd;
-		else
-			tmp = getenv("OLDPWD");
-		if (!tmp)
-		{
-			ft_putstr_fd("Error: OLDPWD is not set\n", 2);
-			return (1);
-		}
-	}
-	// save current directory
-	if (!getcwd(cwd, sizeof(cwd)))
-	{
-		ft_putstr_fd("Error: current working directory name not found\n", 2);
-		return (1);
-	}
-	// change directory
-	if (chdir(tmp) != 0)
-	{
-		ft_putstr_fd("Error: directory cannot be changed\n", 2);
-		return (1);
-	}
-	// set OLDPWD to previous directory
-	if (ft_setenv("OLDPWD", cwd, 1))
-		return (1);
-	// set PWD to new directory
-	if (!getcwd(new_cwd, sizeof(new_cwd)))
-	{
-		ft_putstr_fd("Error: cannot set PWD to new directory\n", 2);
-		return (1);
-	}
-	// update oldpwd
-	if (oldpwd)
-		free(oldpwd);
-	oldpwd = ft_strdup(cwd);
-	return (0);
-}
+// 	tmp = argv[1];
+// 	// case for cd and cd ~
+// 	if (!argv[1] || strcmp(argv[1], "~") == 0)
+// 	{
+// 		tmp = ft_getenv("HOME", *shell);
+// 		if (!tmp)
+// 		{
+// 			ft_putstr_fd("Error: HOME is not set\n", 2);
+// 			return (1);
+// 		}
+// 	}
+// 	// case for cd -
+// 	else if (strcmp(argv[1], "-") == 0)
+// 	{
+// 		if (shell->old_cd)
+// 			tmp = oldpwd;
+// 		else
+// 			tmp = ft_getenv("OLDPWD", *shell);
+// 		if (!tmp)
+// 		{
+// 			ft_putstr_fd("Error: OLDPWD is not set\n", 2);
+// 			return (1);
+// 		}
+// 	}
+// 	// save current directory
+// 	if (!getcwd(cwd, sizeof(cwd)))
+// 	{
+// 		ft_putstr_fd("Error: current working directory name not found\n", 2);
+// 		return (1);
+// 	}
+// 	// change directory
+// 	if (chdir(tmp) != 0)
+// 	{
+// 		ft_putstr_fd("Error: directory cannot be changed\n", 2);
+// 		return (1);
+// 	}
+// 	// set OLDPWD to previous directory
+// 	if (ft_setenv("OLDPWD", cwd, 1, shell))
+// 		return (1);
+// 	// set PWD to new directory
+// 	if (!getcwd(new_cwd, sizeof(new_cwd)))
+// 	{
+// 		ft_putstr_fd("Error: cannot set PWD to new directory\n", 2);
+// 		return (1);
+// 	}
+// 	// update oldpwd
+// 	if (oldpwd)
+// 		free(oldpwd);
+// 	oldpwd = ft_strdup(cwd);
+// 	return (0);
+// }
 
-int	ft_export(char **argv)
+int	ft_export(char **argv, t_shell *shell) // changes here
 {
-	extern char	**environ;
 	char	*equal;
 	char	*name;
 	int		name_len;
 
 	if (!argv[1])
 	{
-		ft_env();
+		ft_env(shell);
 		return (0);
 	}
 	equal = ft_strchr(argv[1], '=');
@@ -145,7 +151,7 @@ int	ft_export(char **argv)
 		return (1);
 	}
 	ft_strlcpy(name, argv[1], name_len + 1);
-	if (ft_setenv(name, equal + 1, 1))
+	if (ft_setenv(name, equal + 1, 1, shell))
 	{
 		perror("Error: invalid syntax input");
 		free(name);
@@ -155,10 +161,9 @@ int	ft_export(char **argv)
 	return (0);
 }
 
-int	ft_unset(char **argv)
+int	ft_unset(char **argv, t_shell *shell) // changes here
 {
 	int			i;
-	extern char	**environ;
 	char		*equal;
 	int			j;
 
@@ -168,16 +173,16 @@ int	ft_unset(char **argv)
 		ft_putstr_fd("Error: missing argument for unset", 2);
 		return (1);
 	}
-	while (environ[i])
+	while (shell->env[i])
 	{
-		equal = ft_strchr(environ[i], '=');
-		if (equal && ft_strncmp(environ[i], argv[1], equal - environ[i]) == 0)
+		equal = ft_strchr(shell->env[i], '=');
+		if (equal && ft_strncmp(shell->env[i], argv[1], equal - shell->env[i]) == 0)
 		{
-			free(environ[i]);
+			free(shell->env[i]);
 			j = i;
-			while (environ[j])
+			while (shell->env[j])
 			{
-				environ[j] = environ[j + 1];
+				shell->env[j] = shell->env[j + 1];
 				j++;
 			}
 			return (0);
