@@ -130,6 +130,8 @@ test_command "cat \"input.txt\"" \
 
 test_command "grep jnn < \"input.txt\" < \"input_2.txt\"" \
             "no"
+
+
 ################## SIGNLE QUOTES TESTS ########################
 echo -e "\e[33mSINGLE QUOTES TESTS\e[0m"
 test_command "cat 'input.txt'" \
@@ -195,3 +197,48 @@ test_command "pwd | grep home" \
 test_command "pwd | grep home | wc -l" \
             "no"
 
+
+# echo -e "\e[33m===========> WILDCARD TESTS <============\e[0m"
+echo -e "\e[33mWILDCARD TESTS\e[0m"
+
+test_command "echo *" \
+            "yes"
+
+test_command "echo *****" \
+            "yes"
+
+test_command "echo *.txt" \
+            "yes"
+
+test_command "echo ******.txt" \
+            "yes"
+
+test_command "echo *.txt | wc -l" \
+            "no"
+
+test_command "echo *.txt | wc -l | grep 2" \
+            "yes"
+
+test_command "echo mini*" \
+            "yes"
+
+test_command "echo mini*******" \
+            "yes"
+
+test_command "echo mini***** | wc -l" \
+            "no"
+
+test_command "cat input*" \
+            "no"
+
+test_command "cat input* | wc -l" \
+            "no"
+
+test_command "cat *.txt | wc -l" \
+            "no"
+
+# exit status is same as in bash for the folowing cases
+# $? returns correct value for <invalid command>, e.g. wrong_command
+# <valid command> and/or <valid flags> e.g. ls -asdf, ls, ls -a
+# returns correct value for <valid command> and <invalid flags> e.g.  ls -resa 
+# cases to handle echo $?. echo $? + $?. echo $? + $? a sentence $? ...

@@ -90,7 +90,7 @@ int	main(int argc, char **argv, char **envp)
 
 	// Remove trailing newline
 	line[strcspn(line, "\n")] = 0;
-	
+
 	while (1)
 	{
 		signal_received = 0;
@@ -116,6 +116,7 @@ int	main(int argc, char **argv, char **envp)
 		token_lst_check = parse_or(token_lst, &head, &shell);
 		if (!token_lst_check)
 		{
+			// printf("exit status = %d\n", shell.last_status);
 			// handle error
 			// write(1, "Error: parsing failed\n", 22);
 			token_free_list(token_lst); // free the double pointer of the token list and set it to NULL
@@ -124,9 +125,9 @@ int	main(int argc, char **argv, char **envp)
 		}
 		// print_ast(head);
 		// run_pipeline(head);
-		execute(head, -1, -1, &shell);
+		shell.last_status = execute(head, -1, -1, &shell);
 		// printf("exec_result = %d\n", exec_result);
-		
+		// printf("exit status = %d\n", shell.last_status);
 		rl_on_new_line();
 		free(line);
 		if (is_test)

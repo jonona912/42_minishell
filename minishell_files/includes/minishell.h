@@ -11,6 +11,8 @@
 #include <termios.h>
 #include <limits.h>
 # include <fcntl.h> // for open
+#include <dirent.h>
+#include <sys/stat.h>
 
 #include "../../libft/libft.h"
 
@@ -66,6 +68,26 @@ typedef enum {
 	NODE_SUBSHELL
 } t_node_type;
 
+typedef enum
+{
+	WILDCARD_START,
+	WILDCARD_END,
+	WILDCARD_ONLY,
+	WILDCARD_NONE
+}	t_wildcard_type;
+
+typedef struct s_wildcard_type_string
+{
+	t_wildcard_type type;
+	char *data;
+}	t_wildcard_type_string;
+
+typedef struct s_read_dir
+{
+	DIR *dir;
+	struct dirent *entry;
+	struct stat file_stat;
+}	t_read_dir;
 
 // Structure for a single redirection or heredoc
 typedef struct s_redir_lst {
@@ -112,9 +134,9 @@ void		token_add_node_back(t_token_lst **head, t_token_lst *new_node);
 ////////////// tokenizer ////////////
 // ms_tokenizer.c
 int			ft_append_char(char *str, char c);
-void		initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
+int			initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 t_token_lst	*ft_tokenize(char *line);
-
+int			is_not_special_char(char c);
 // NEEDS TO BE CHANGED
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
@@ -127,7 +149,6 @@ void	ft_env(t_shell *shell);
 // int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
 int		ft_unset(char **argv, t_shell *shell);
-
 
 /////////////////////// parser /////////////////////////
 
@@ -156,7 +177,7 @@ char *return_executable_path(const char *name);
 
 
 // wildcard_functions.c
-t_token_lst *wildcard_function(char *wildcard_str);
+t_token_lst	*wildcard_function(char *line, int *char_ctr);
 
 ///////////////////// execution ////////////////////////
 // execute_command.c
@@ -187,5 +208,7 @@ void print_ast(t_ast_node *root);
 // NEW FUNCTIONS FROM MERGING BUILTINS
 char	*arg_return(char *value, t_token_type type, t_shell *shell);
 void	set_and_move_eight_bits_left(int *x, int set_num);
+
+
 
 #endif

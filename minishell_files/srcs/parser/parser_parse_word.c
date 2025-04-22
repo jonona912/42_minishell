@@ -115,7 +115,7 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node
 	{
 		ft_putstr_fd(token_lst->value, 2);
 		ft_putstr_fd(": command not found\n", 2);
-		set_and_move_eight_bits_left(&shell->last_status, 127);
+		shell->last_status = 127;
 		return (NULL); // handle error
 	}
 	current_token = token_lst;
