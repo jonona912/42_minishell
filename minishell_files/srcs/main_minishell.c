@@ -32,6 +32,27 @@ void signal_handler(int signum)
 	rl_redisplay();
 }
 
+char	**copy_env(char **envp)
+{
+	int		count = 0;
+	char	**copy;
+	int		i;
+
+	while (envp[count])
+		count++;
+	copy = malloc(sizeof(char *) * (count + 1));
+	if (!copy)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		copy[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	copy[count] = NULL;
+	return (copy);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argv;
@@ -40,7 +61,9 @@ int	main(int argc, char **argv, char **envp)
 	t_token_lst	*token_lst_check;
 	t_ast_node	*head;
 	int		is_test;
+	t_shell shell;
 
+	shell.env = copy_env(envp);
 	if (argc == 2 && ft_strcmp(argv[1], "-test") == 0)
 		is_test = 1;
 	else
@@ -90,7 +113,7 @@ int	main(int argc, char **argv, char **envp)
 			continue;
 		}
 		// ft_print_tokens(token_lst);
-		token_lst_check = parse_or(token_lst, &head);
+		token_lst_check = parse_or(token_lst, &head, &shell);
 		if (!token_lst_check)
 		{
 			// handle error
@@ -101,7 +124,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		// print_ast(head);
 		// run_pipeline(head);
-		execute(head, -1, -1);
+		execute(head, -1, -1, &shell);
 		// printf("exec_result = %d\n", exec_result);
 		
 		rl_on_new_line();

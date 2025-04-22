@@ -14,7 +14,14 @@
 
 #include "../../libft/libft.h"
 
-
+typedef struct s_shell
+{
+	char	**env;
+	char	*cd;
+	char	*old_cd;
+	int		exp_pipe[2];
+	int		last_status;
+}	t_shell;
 
 typedef enum	s_token_type
 {
@@ -111,15 +118,16 @@ t_token_lst	*ft_tokenize(char *line);
 // NEEDS TO BE CHANGED
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
-int		process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step);
-int		ft_setenv(char *name, char *value, int overwrite);
+int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
+char	*ft_getenv(const char *name, t_shell shell);
 void	ft_echo(char **argv);
 void	ft_pwd();
 int		ft_exit(char **argv);
-void	ft_env();
-int		ft_cd (char **argv);
-int		ft_export(char **argv);
-int		ft_unset(char **argv);
+void	ft_env(t_shell *shell);
+// int		ft_cd (char **argv, t_shell *shell);
+int		ft_export(char **argv, t_shell *shell);
+int		ft_unset(char **argv, t_shell *shell);
+
 
 /////////////////////// parser /////////////////////////
 
@@ -128,17 +136,15 @@ t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv
 t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
 t_ast_node	*create_subshell_node(t_node_type type, t_ast_node *subshell, t_redir_lst *sub_shell_redir);
 // parser_helper_1.c
-t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst);
+t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst, t_shell *shell);
 int	is_quote_or_word(t_token_type type);
 int	is_redirection(t_token_type type);
 
 // parser_parse_word.c
-t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node);
+t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell);
 
 // parser.c
-t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node);
-t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node);
-t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node);
+t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell);
 
 // redirection_functions.c
 t_redir_lst *new_redir_node(t_token_type type, char *target);
@@ -154,13 +160,15 @@ t_token_lst *wildcard_function(char *wildcard_str);
 
 ///////////////////// execution ////////////////////////
 // execute_command.c
-int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd);
+// int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd);
+int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell);
 
 // execution.c
-int execute(t_ast_node *ast_head, int in_fd, int out_fd);
+// int execute(t_ast_node *ast_head, int in_fd, int out_fd);
+int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell);
 int	ms_strcmp_until(char *s1, char *s2, char c);
 int	builtin_check(char *cmd);
-int	execute_builtin(char **argv);
+int	execute_builtin(char **argv, t_shell *shell);
 
 // here_doc.c
 int run_heredoc(char *end_delimitor, int *in_fd);
@@ -175,5 +183,9 @@ int	check_user_input(char **line);
 /////////////////////////// print_structs ///////////////////////////
 void	ft_print_tokens(t_token_lst *token_lst);
 void print_ast(t_ast_node *root);
+
+// NEW FUNCTIONS FROM MERGING BUILTINS
+char	*arg_return(char *value, t_token_type type, t_shell *shell);
+void	set_and_move_eight_bits_left(int *x, int set_num);
 
 #endif

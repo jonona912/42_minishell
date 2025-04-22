@@ -85,6 +85,8 @@ echo $TEST  # Should still be unset or original value
 ** first check token_lst
 ** then handle in parser most probably (yep.......)
 
+cat | cat | ls
+
 cat *.txt
 ls *.txt
 

@@ -20,6 +20,7 @@ SRCS = main_minishell.c \
 		$(PARSER_DIR)/parser.c \
 		$(PARSER_DIR)/parser_helper_1.c \
 		$(PARSER_DIR)/parser_parse_word.c \
+		$(PARSER_DIR)/parser_utils.c \
 		$(PARSER_DIR)/return_executable_path.c \
 		$(PARSER_DIR)/redirection_functions.c \
 		$(PARSER_DIR)/wildcard_functions.c \
@@ -29,7 +30,8 @@ SRCS = main_minishell.c \
 		$(EXECUTE_DIR)/here_doc.c \
 		$(EXECUTE_DIR)/redirections.c \
 		$(COMMANDS_DIR)/built_in_commands.c \
-		$(COMMANDS_DIR)/built_in_commands_utils.c
+		$(COMMANDS_DIR)/built_in_commands_utils.c \
+		$(COMMANDS_DIR)/last_exit_status.c
 
 # Test files
 TEST_DIR = tests
