@@ -242,3 +242,20 @@ test_command "cat *.txt | wc -l" \
 # <valid command> and/or <valid flags> e.g. ls -asdf, ls, ls -a
 # returns correct value for <valid command> and <invalid flags> e.g.  ls -resa 
 # cases to handle echo $?. echo $? + $?. echo $? + $? a sentence $? ...
+# Below are examples how this should work in bash
+# mnishel: $? + $?
+# 0: command not found
+# mnishel: alsdjf
+# alsdjf: command not found
+# mnishel: $? + $?
+# 127: command not found
+# mnishel: ls -rere
+# ls: invalid option -- 'e'
+# Try 'ls --help' for more information.
+# mnishel: $? + $?
+# 2: command not found
+# mnishel: ls -asdf
+# .
+# mnishel: $? + $?
+# 0: command not found
+# mnishel: 

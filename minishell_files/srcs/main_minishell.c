@@ -101,15 +101,17 @@ int	main(int argc, char **argv, char **envp)
 			free(line);
 			break;
 		}
-		add_history(line);
 		if (check_user_input(&line) == -1)
 			continue;
 		token_lst = ft_tokenize(line);
-		if (!token_lst)
+		if (token_lst)
+			add_history(line);
+		if (!token_lst || token_lst->type == TOKEN_END)
 		{
 			// redact later
 			free(line);
-			write(1, "\n", 1);
+			shell.last_status = 1;
+			// write(1, "\n", 1); // should ot print if nothing was given except 
 			continue;
 		}
 		// ft_print_tokens(token_lst);
