@@ -13,15 +13,6 @@ int	check_user_input(char **line)
 	return (0);
 }
 
-
-void setup_terminal()
-{
-	struct termios term;
-	tcgetattr(0, &term);
-	term.c_lflag &= ~ECHOCTL;
-	tcsetattr(0, TCSANOW, &term);
-}
-
 void signal_handler(int signum)
 {
 	(void)signum;
@@ -69,28 +60,26 @@ int	main(int argc, char **argv, char **envp)
 	else
 		is_test = 0;
     size_t len = 0;
-
 	head = NULL;
 	token_lst = NULL;
 	char	*line = NULL;
 	// make this a seperate function
 	struct sigaction sa;
-	setup_terminal();
 	sa.sa_handler = signal_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
-
-	// Read input from stdin
-	if (getline(&line, &len, stdin) == -1) {
-		free(line);
-		return 0; // Exit on EOF
+	if (is_test)
+	{
+		// Read input from stdin
+		if (getline(&line, &len, stdin) == -1) {
+			free(line);
+			return 0; // Exit on EOF
+		}
+		// Remove trailing newline
+		line[strcspn(line, "\n")] = 0;
 	}
-
-	// Remove trailing newline
-	line[strcspn(line, "\n")] = 0;
-
 	while (1)
 	{
 		signal_received = 0;
@@ -99,6 +88,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!line)
 		{
 			free(line);
+			// write(1, "exit\n", 5);
 			break;
 		}
 		if (check_user_input(&line) == -1)
@@ -111,7 +101,7 @@ int	main(int argc, char **argv, char **envp)
 			// redact later
 			free(line);
 			shell.last_status = 1;
-			// write(1, "\n", 1); // should ot print if nothing was given except 
+			// write(1, "\n", 1); // should ot print if nothing was given except
 			continue;
 		}
 		// ft_print_tokens(token_lst);

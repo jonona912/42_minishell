@@ -1,8 +1,8 @@
 #!/bin/bash
 # compare_outputs() {
-#     # Local Variables: The local keyword ensures test_name, output_real, and output_minishell 
+#     # Local Variables: The local keyword ensures test_name, output_real, and output_minishell
 # 	# are scoped to the function, preventing conflicts with global variables.
-# 	local test_name=$1 
+# 	local test_name=$1
 #     local output_real=$2
 #     local output_minishell=$3
 # 	# Tests if the two outputs are identical (string equality).
@@ -47,7 +47,7 @@ test_command() {
     local normalize=$2
 
     # echo -n "Testing ${test_name}..."
-    
+
     if [ "$normalize" = "yes" ]; then
         output_real=$(eval "$command" | tr ' ' '\n' | sort | tr '\n' ' ' | sed 's/ $//')
         output_minishell=$(echo "$command" | ./minishell -test | tr ' ' '\n' | sort | tr '\n' ' ' | sed 's/ $//')
@@ -88,7 +88,7 @@ test_command "<input.txt	cat | grep jnn | wc -l" \
 test_command "grep jnn < input.txt < input_2.txt" \
             "no"
 
-echo -e "\e[35mAND / OR TESTS (&&/||) \e[0m" # 
+echo -e "\e[35mAND / OR TESTS (&&/||) \e[0m" #
 test_command "(ls -a | grep mini) || (ls -l | grep mini)" \
             "no"
 
@@ -237,10 +237,11 @@ test_command "cat input* | wc -l" \
 test_command "cat *.txt | wc -l" \
             "no"
 
+
 # exit status is same as in bash for the folowing cases
 # $? returns correct value for <invalid command>, e.g. wrong_command
 # <valid command> and/or <valid flags> e.g. ls -asdf, ls, ls -a
-# returns correct value for <valid command> and <invalid flags> e.g.  ls -resa 
+# returns correct value for <valid command> and <invalid flags> e.g.  ls -resa
 # cases to handle echo $?. echo $? + $?. echo $? + $? a sentence $? ...
 # Below are examples how this should work in bash
 # mnishel: $? + $?
@@ -258,4 +259,4 @@ test_command "cat *.txt | wc -l" \
 # .
 # mnishel: $? + $?
 # 0: command not found
-# mnishel: 
+# mnishel:

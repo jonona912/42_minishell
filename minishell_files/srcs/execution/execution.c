@@ -88,39 +88,6 @@ int handle_subshell(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	return (status);
 }
 
-// int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
-// {
-// 	int status;
-
-// 	if (ast_head->type == NODE_CMD) // returns command function
-// 	{
-// 		return (execute_cmd(ast_head, in_fd, out_fd, shell));
-// 	}
-// 	else if (ast_head->type == NODE_SUBSHELL)
-// 	{
-// 		return (handle_subshell(ast_head, in_fd, out_fd));
-// 	}
-// 	else if (ast_head->type == NODE_PIPE)
-// 	{
-// 		return (handle_pipe(ast_head, in_fd, out_fd)); // returns cmd exit status (processed)
-// 	}
-// 	else if (ast_head->type == NODE_AND) // node or and and get status through returning
-// 	{
-// 		status = execute(ast_head->data.binary_op.left, in_fd, out_fd);
-// 		if (!status) // made changes here to reflect exit status
-// 			status = execute(ast_head->data.binary_op.right, in_fd, out_fd);
-// 		return (status);
-// 	}
-// 	else if (ast_head->type == NODE_OR)
-// 	{
-// 		status = execute(ast_head->data.binary_op.left, in_fd, out_fd);
-// 		if (status)
-// 			status = execute(ast_head->data.binary_op.right, in_fd, out_fd);
-// 		return (status);
-// 	}
-// 	return -1;
-// }
-
 int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 {
 	int status;

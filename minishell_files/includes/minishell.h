@@ -19,8 +19,6 @@
 typedef struct s_shell
 {
 	char	**env;
-	char	*cd;
-	char	*old_cd;
 	int		exp_pipe[2];
 	int		last_status;
 }	t_shell;
@@ -104,7 +102,7 @@ typedef struct s_ast_node
 		struct
 		{
 			char *executable;
-			char **exec_argv; 
+			char **exec_argv;
 			t_redir_lst *redirs;
 		} cmd;
 		struct
@@ -146,7 +144,7 @@ void	ft_echo(char **argv);
 void	ft_pwd();
 int		ft_exit(char **argv);
 void	ft_env(t_shell *shell);
-// int		ft_cd (char **argv, t_shell *shell);
+int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
 int		ft_unset(char **argv, t_shell *shell);
 
@@ -209,6 +207,26 @@ void print_ast(t_ast_node *root);
 char	*arg_return(char *value, t_token_type type, t_shell *shell);
 void	set_and_move_eight_bits_left(int *x, int set_num);
 
+
+char			**copy_token_till_delimeter_dest(char **dest, int *i, int *j, char *src);
+int				copy_token_till_delimeter_step2(char *src, int i, char *temp, t_token_lst **token_lst);
+char			*copy_token_till_delimeter_step1(char **dest, char delimiter, int *j);
+t_token_type	return_token_type(char *str);
+int				send_paren_to_token_lst_paren(char *str, char *temp, t_tokenize_struct *vars);
+int				ft_tokenize_loop_part1(char *line, int *i, t_tokenize_struct *vars, t_token_lst **token_lst);
+int				ft_tokenize_loop_part2(char *line, int *i, t_tokenize_struct *vars, t_token_lst **token_lst);
+int				is_not_special_char(char c);
+t_token_type	return_token_type(char *str);
+int				send_str_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token_type);
+int				copy_until_special_char(char *current_token, char *line, char *char_set);
+int				send_paren_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token_type, t_tokenize_struct *vars);
+int				create_word_token(char *current_token, char *line, t_token_lst **token_lst);
+int				is_wildcard_present(char *line);
+int				handle_quotes(t_tokenize_struct *vars, char *line, t_token_lst **token_lst);
+int				handle_other_tokens(char *line, t_token_lst **token_lst, t_tokenize_struct *vars);
+int				append_to_token(t_token_type type, char *current_token, t_token_lst **token_lst);
+int				handle_env_var(char *current_token, char *line, t_token_lst **token_lst);
+int				handle_wildcard(char *current_token, char *line, t_token_lst **token_lst);
 
 
 #endif

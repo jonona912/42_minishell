@@ -14,8 +14,8 @@ int	execute_builtin(char **argv, t_shell *shell)
 {
 	if (ft_strcmp(argv[0], "echo") == 0)
 		ft_echo(argv);
-	// else if (ft_strcmp(argv[0], "cd") == 0)
-	// 	return (ft_cd(argv, shell));
+	else if (ft_strcmp(argv[0], "cd") == 0)
+		return (ft_cd(argv, shell));
 	else if (ft_strcmp(argv[0], "pwd") == 0)
 		ft_pwd(shell);
 	else if (ft_strcmp(argv[0], "export") == 0)

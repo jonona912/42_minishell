@@ -12,9 +12,9 @@ COMMANDS_DIR = built_in_commands
 
 SRCS = main_minishell.c \
 		print_structs.c \
-		check_user_input.c \
 		$(TOKENIZER_DIR)/tokenizer_helper_1.c \
 		$(TOKENIZER_DIR)/token_lst_functions.c \
+		$(TOKENIZER_DIR)/tokenizer_utils.c \
 		$(TOKENIZER_DIR)/tokenizer.c \
 		$(PARSER_DIR)/ast_binary_tree_functions.c \
 		$(PARSER_DIR)/parser.c \

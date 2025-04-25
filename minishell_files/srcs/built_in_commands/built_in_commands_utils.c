@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-char *ft_getenv(const char *name, t_shell shell)
+char	*ft_getenv(const char *name, t_shell shell)
 {
 	int		i;
 	char	*equal;
@@ -21,7 +21,7 @@ char *ft_getenv(const char *name, t_shell shell)
 	return (NULL);
 }
 
-int ft_putenv(char *str, t_shell *shell) // change here
+int	ft_putenv(char *str, t_shell *shell) // change here
 {
 	char	*eq_str;
 	int		name_len;
@@ -94,4 +94,3 @@ int	ft_setenv(char *name, char *value, int overwrite, t_shell *shell) // change 
 	}
 	return (0);
 }
-       

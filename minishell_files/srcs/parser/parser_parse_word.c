@@ -1,19 +1,5 @@
 #include "../../includes/minishell.h"
 
-// t_ast_node	*return_rightest_node(t_ast_node *ast_node)
-// {
-// 	t_ast_node	*temp;
-
-// 	if (!ast_node)
-// 		return (NULL);
-// 	temp = ast_node;
-// 	while (temp && temp->type != NODE_CMD)
-// 	{
-// 		temp = temp->data.binary_op.right;
-// 	}
-// 	return (temp);
-// }
-
 t_token_lst	*handle_parentheses(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell)
 {
 	token_lst = token_lst->next;
@@ -67,40 +53,6 @@ int count_token_words(t_token_lst *token_lst)
 	}
 	return count;
 }
-
-// t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node)
-// {
-// 	t_token_lst	*current_token;
-// 	int			ctr;
-// // YOU LEFT HERE !!!!!!!!! 
-// 	(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value);
-// 	if (!(*ast_node)->data.cmd.executable)
-// 		return (perror("minishell:"), NULL);
-// 	current_token = token_lst;
-// 	ctr = 0;
-// 	while (current_token && current_token->type == TOKEN_WORD) // you can copy, double quote, single quote
-// 	{
-// 		ctr++;
-// 		// if wildcard is met
-// 		current_token = current_token->next;
-// 	}
-// 	(*ast_node)->data.cmd.exec_argv = (char **)malloc((ctr + 1) * sizeof(char *)); // if fails?
-// 	if (!(*ast_node)->data.cmd.exec_argv)
-// 		return (NULL); // handle malloc failure
-// 	ctr = 0;
-// 	while (token_lst && token_lst->type == TOKEN_WORD)
-// 	{
-// 		// if (ft_strchr(token_lst->value, '*'))
-		
-// 		(*ast_node)->data.cmd.exec_argv[ctr] = ft_strdup(token_lst->value);
-// 		if (!(*ast_node)->data.cmd.exec_argv[ctr])
-// 			return (NULL); // handle strdup failure
-// 		token_lst = token_lst->next;
-// 		ctr++;
-// 	}
-// 	(*ast_node)->data.cmd.exec_argv[ctr] = NULL;
-// 	return (token_lst);
-// }
 
 t_token_lst	*populate_command_data(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell)
 {
@@ -169,7 +121,7 @@ t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *
 		token_lst = append_redirections_if_any(token_lst, &(*ast_node)->data.sub_shell.sub_shell_redir, shell);
 		if (!token_lst)
 			return (NULL);
-		
+
 	}
 	return (token_lst);
 }
