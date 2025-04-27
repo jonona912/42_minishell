@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 14:51:23 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/26 14:51:57 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell)
+t_token_lst	*parse_pipe(t_token_lst *token_lst,
+		t_ast_node **ast_node, t_shell *shell)
 {
 	t_ast_node	*left;
 	t_ast_node	*right;
@@ -17,7 +30,8 @@ t_token_lst	*parse_pipe(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *
 	return (token_lst);
 }
 
-t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell)
+t_token_lst	*parse_and(t_token_lst *token_lst,
+		t_ast_node **ast_node, t_shell *shell)
 {
 	t_ast_node	*left;
 	t_ast_node	*right;
@@ -34,13 +48,14 @@ t_token_lst	*parse_and(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *s
 	return (token_lst);
 }
 
-t_token_lst	*parse_or(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell)
+t_token_lst	*parse_or(t_token_lst *token_lst,
+		t_ast_node **ast_node, t_shell *shell)
 {
 	t_ast_node	*left;
 	t_ast_node	*right;
 
 	right = NULL;
-	token_lst= parse_and(token_lst, ast_node, shell);
+	token_lst = parse_and(token_lst, ast_node, shell);
 	while (token_lst && token_lst->type == TOKEN_OR)
 	{
 		token_lst = parse_and(token_lst->next, &right, shell);

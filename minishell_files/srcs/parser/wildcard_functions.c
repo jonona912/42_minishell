@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wildcard_functions.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 11:07:58 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/26 14:25:32 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 t_wildcard_type	find_wildcard_type(char *line)
 {
 	t_wildcard_type	wildcard_type;
-	int	i;
+	int				i;
 
 	i = 0;
 	wildcard_type = WILDCARD_NONE;
@@ -21,7 +33,7 @@ t_wildcard_type	find_wildcard_type(char *line)
 	while (is_not_special_char(line[i]) && line[i] == '*')
 	{
 		if (wildcard_type == WILDCARD_NONE)
-			wildcard_type = WILDCARD_END;;;
+			wildcard_type = WILDCARD_END;
 		i++;
 	}
 	return (wildcard_type);
@@ -37,7 +49,7 @@ int	copy_wildcard_string(char **dest, char *line)
 	i = 0;
 	while (is_not_special_char(line[i]) && line[i] == '*')
 		i++;
-	traverse = (line + i);
+	traverse = line + i;
 	while (is_not_special_char(*traverse) && *traverse != '*')
 	{
 		len++;
@@ -47,18 +59,9 @@ int	copy_wildcard_string(char **dest, char *line)
 	if (!*dest)
 	{
 		perror("malloc");
-		return (-1); // this won't work properly
+		return (-1);
 	}
-	len = 0;
-	while (is_not_special_char(line[i]) && line[i] != '*')
-	{
-		(*dest)[len] = line[i];
-		i++;
-		len++;
-	}
-	while (line[i] && line[i] == '*')
-		i++;
-	(*dest)[len] = '\0';
+	i = copy_wildcard_string_loop(line, i, dest);
 	return (i);
 }
 
@@ -66,66 +69,46 @@ t_wildcard_type_string	*identify_wildcard_type(char *line, int *char_ctr)
 {
 	t_wildcard_type_string	*wildcard_type_string;
 
-	wildcard_type_string = (t_wildcard_type_string *)malloc(sizeof(t_wildcard_type_string));
+	wildcard_type_string = (t_wildcard_type_string *)
+		malloc(sizeof(t_wildcard_type_string));
 	if (!wildcard_type_string)
 	{
 		perror("malloc");
-		return NULL; // this won't work properly
+		return (NULL);
 	}
 	if (!line || line[0] == '\0')
 	{
 		wildcard_type_string->type = WILDCARD_NONE;
-		return wildcard_type_string;
+		return (wildcard_type_string);
 	}
 	wildcard_type_string->type = find_wildcard_type(line);
-	if (wildcard_type_string->type == WILDCARD_START || wildcard_type_string->type == WILDCARD_END)
-	{
-		*char_ctr = copy_wildcard_string(&wildcard_type_string->data, line);
-	}
-	else if (wildcard_type_string->type == WILDCARD_ONLY)
-	{
-		while (is_not_special_char(line[*char_ctr]) && line[*char_ctr] == '*')
-			(*char_ctr)++;
-		wildcard_type_string->data = NULL;
-	}
-	else
-	{
-		wildcard_type_string->data = NULL;
-	}
+	identify_wildcard_type_if(wildcard_type_string, char_ctr, line);
 	return (wildcard_type_string);
 }
 
-t_token_lst	*join_wildcar_token(t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, char *(ft_strstr_func)(const char *str, const char *wildcard))
+t_token_lst	*join_wildcar_token(t_read_dir *read_dir,
+	t_wildcard_type_string *wildcard_string,
+	char *(ft_strstr_func)(const char *str, const char *wildcard))
 {
 	t_token_lst	*wildcard_list;
-	char		*str;
 
 	wildcard_list = NULL;
-	while ((read_dir->entry = readdir(read_dir->dir)) != NULL)
+	while (1)
 	{
+		read_dir->entry = readdir(read_dir->dir);
+		if (read_dir->entry == NULL)
+			break ;
 		if (stat(read_dir->entry->d_name, &read_dir->file_stat))
 		{
 			perror("stat");
-			continue;
+			continue ;
 		}
 		if (read_dir->entry->d_name[0] == '.')
-				continue ;
-		if (ft_strstr_func)
-		{
-			str = ft_strstr_func(read_dir->entry->d_name, wildcard_string->data);
-			if (str)
-			{
-				str = ft_strdup(read_dir->entry->d_name);
-				token_add_node_back(&wildcard_list, token_new_node(TOKEN_WORD, str));
-			}
-		}
-		else
-		{
-			str = ft_strdup(read_dir->entry->d_name);
-			token_add_node_back(&wildcard_list, token_new_node(TOKEN_WORD, str));
-		}
+			continue ;
+		join_wildcar_token_if(ft_strstr_func, read_dir,
+			wildcard_string, &wildcard_list);
 	}
-	return wildcard_list;
+	return (wildcard_list);
 }
 
 t_token_lst	*wildcard_function(char *line, int *char_ctr)
@@ -140,22 +123,17 @@ t_token_lst	*wildcard_function(char *line, int *char_ctr)
 	if (read_dir.dir == NULL)
 	{
 		perror("opendir");
-		return NULL;
+		return (NULL);
 	}
-	if (wildcard_string->type == WILDCARD_START)
-		wildcard_list = join_wildcar_token(&read_dir, wildcard_string, ft_strstr_last);
-	else if (wildcard_string->type == WILDCARD_END)
-		wildcard_list = join_wildcar_token(&read_dir, wildcard_string, ft_strstr_first);
-	else if (wildcard_string->type == WILDCARD_ONLY)
-		wildcard_list = join_wildcar_token(&read_dir, wildcard_string, NULL);
-	if (closedir(read_dir.dir)) {
+	wildcard_list = wildcard_function_if(wildcard_string,
+			wildcard_list, &read_dir);
+	if (closedir(read_dir.dir))
+	{
 		perror("closedir");
-		return NULL;
+		return (NULL);
 	}
 	if (wildcard_string->data)
-	{
 		free(wildcard_string->data);
-	}
 	free(wildcard_string);
 	return (wildcard_list);
 }

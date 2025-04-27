@@ -1,13 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer_helper_1.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 11:05:16 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/26 13:15:50 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	ft_isblank(int c)
 {
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\v' || c == '\f' || c == '\r');
 }
 
 int	ft_append_char(char *str, char c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] != '\0')
@@ -19,9 +32,11 @@ int	ft_append_char(char *str, char c)
 
 int	handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst)
 {
+	char	*temp;
+
 	if (vars->current_token[0] != '\0')
 	{
-		char *temp = ft_strdup(vars->current_token);
+		temp = ft_strdup(vars->current_token);
 		token_add_node_back(token_lst, token_new_node(0, temp));
 	}
 	free(vars->current_token);
@@ -34,24 +49,9 @@ int	handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst)
 	return (0);
 }
 
-int	process_redirection(t_tokenize_struct *vars, t_token_lst **token_lst, char *line, int *i, t_token_type token_type, int step)
+int	is_not_special_char(char c)
 {
-	char	*temp;
-
-	if (vars->current_token[0] != '\0')
-	{
-		temp = ft_strdup(vars->current_token);
-		token_add_node_back(token_lst, token_new_node(0, temp));
-		vars->current_token[0] = '\0';
-	}
-	ft_append_char(vars->current_token, line[*i]);
-	if (step == 2)
-		ft_append_char(vars->current_token, line[*i + 1]);
-	temp = ft_strdup(vars->current_token);
-	token_add_node_back(token_lst, token_new_node(token_type, temp));
-	vars->current_token[0] = '\0';
-	*i += step;
-	return (1);
+	return (c && !ft_isblank(c) && ft_strchr("<>|&()\"\'", c) == NULL);
 }
 
 int	initialize_tokenize_struct(t_tokenize_struct *vars, char *line)

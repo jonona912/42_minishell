@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection_functions.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 14:50:34 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/26 15:44:08 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-
-t_redir_lst *new_redir_node(t_token_type type, char *target)
+t_redir_lst	*new_redir_node(t_token_type type, char *target)
 {
-	t_redir_lst *new_node;
+	t_redir_lst	*new_node;
 
 	new_node = (t_redir_lst *)malloc(sizeof(t_redir_lst));
 	if (!new_node)
@@ -14,16 +25,16 @@ t_redir_lst *new_redir_node(t_token_type type, char *target)
 	return (new_node);
 }
 
-void add_redir_back(t_redir_lst **lst, t_redir_lst *new_node)
+void	add_redir_back(t_redir_lst **lst, t_redir_lst *new_node)
 {
-	t_redir_lst *temp;
+	t_redir_lst	*temp;
 
 	if (!lst || !new_node)
-		return;
+		return ;
 	if (!*lst)
 	{
 		*lst = new_node;
-		return;
+		return ;
 	}
 	temp = *lst;
 	while (temp->next)
@@ -31,13 +42,19 @@ void add_redir_back(t_redir_lst **lst, t_redir_lst *new_node)
 	temp->next = new_node;
 }
 
-void free_redir_list(t_redir_lst **lst)
+int	is_word_or_quote(t_token_type type)
 {
-	t_redir_lst *temp;
-	t_redir_lst *next_node;
+	return (type == TOKEN_WORD || type == TOKEN_S_QUOTE
+		|| type == TOKEN_D_QUOTE);
+}
+
+void	free_redir_list(t_redir_lst **lst)
+{
+	t_redir_lst	*temp;
+	t_redir_lst	*next_node;
 
 	if (!lst || !*lst)
-		return;
+		return ;
 	temp = *lst;
 	while (temp)
 	{

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 14:54:42 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/26 14:54:58 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 char	*dollar_execute(char *name, t_shell shell)
@@ -19,7 +31,8 @@ char	*name_finder(char *value, int pos)
 
 	i = 0;
 	pos++;
-	while (value[pos + i] && (ft_isalnum(value[pos + i]) || value[pos + i] == '_'))
+	while (value[pos + i] && (ft_isalnum(value[pos + i])
+			|| value[pos + i] == '_'))
 		i++;
 	if (i == 0)
 		return (NULL);
@@ -37,7 +50,7 @@ char	*dollar_check(char *value, int *i, t_shell shell)
 	char	*new;
 	int		name_len;
 
-	name = name_finder(value, *i); // value = $USER -> name = USER
+	name = name_finder(value, *i);
 	if (!name)
 	{
 		(*i)++;
@@ -47,18 +60,15 @@ char	*dollar_check(char *value, int *i, t_shell shell)
 	tmp = dollar_execute(name, shell);
 	if (!tmp)
 	{
-		// free(name);
 		(*i) += name_len + 1;
 		return (ft_strdup(""));
 	}
 	new = ft_strdup(tmp);
-	// free(tmp);
-	// free(name);
 	*i += name_len + 1;
 	return (new);
 }
 
-char *arg_word_return(char *value, t_shell shell)
+char	*arg_word_return(char *value, t_shell shell)
 {
 	int		i;
 	char	*res;
@@ -77,13 +87,10 @@ char *arg_word_return(char *value, t_shell shell)
 		{
 			tmp = dollar_check(value, &i, shell);
 			new = ft_strjoin(res, tmp);
-			// free(tmp);
-			// free(res);
 			res = new;
-			continue;
+			continue ;
 		}
 		tmp = ft_strjoin_char(res, value[i]);
-		// free(res);
 		res = tmp;
 		i++;
 	}

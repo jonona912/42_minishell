@@ -15,9 +15,12 @@ SRCS = main_minishell.c \
 		$(TOKENIZER_DIR)/tokenizer_helper_1.c \
 		$(TOKENIZER_DIR)/token_lst_functions.c \
 		$(TOKENIZER_DIR)/tokenizer_utils.c \
+		$(TOKENIZER_DIR)/tokenizer_utils_2.c \
+		$(TOKENIZER_DIR)/tokenizer_utils_utils.c \
 		$(TOKENIZER_DIR)/tokenizer.c \
 		$(PARSER_DIR)/ast_binary_tree_functions.c \
 		$(PARSER_DIR)/parser.c \
+		$(PARSER_DIR)/utils_par.c \
 		$(PARSER_DIR)/parser_helper_1.c \
 		$(PARSER_DIR)/parser_parse_word.c \
 		$(PARSER_DIR)/parser_utils.c \
@@ -26,12 +29,13 @@ SRCS = main_minishell.c \
 		$(PARSER_DIR)/wildcard_functions.c \
 		$(EXECUTE_DIR)/execute_command.c \
 		$(EXECUTE_DIR)/execution.c \
+		$(EXECUTE_DIR)/utils_ex.c \
+		$(EXECUTE_DIR)/utils2_ex.c \
 		$(EXECUTE_DIR)/execution_utils.c \
 		$(EXECUTE_DIR)/here_doc.c \
 		$(EXECUTE_DIR)/redirections.c \
 		$(COMMANDS_DIR)/built_in_commands.c \
 		$(COMMANDS_DIR)/built_in_commands_utils.c \
-		$(COMMANDS_DIR)/last_exit_status.c
 
 # Test files
 TEST_DIR = tests

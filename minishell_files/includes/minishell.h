@@ -208,6 +208,7 @@ char	*arg_return(char *value, t_token_type type, t_shell *shell);
 void	set_and_move_eight_bits_left(int *x, int set_num);
 
 
+// tokenizer
 char			**copy_token_till_delimeter_dest(char **dest, int *i, int *j, char *src);
 int				copy_token_till_delimeter_step2(char *src, int i, char *temp, t_token_lst **token_lst);
 char			*copy_token_till_delimeter_step1(char **dest, char delimiter, int *j);
@@ -227,6 +228,33 @@ int				handle_other_tokens(char *line, t_token_lst **token_lst, t_tokenize_struc
 int				append_to_token(t_token_type type, char *current_token, t_token_lst **token_lst);
 int				handle_env_var(char *current_token, char *line, t_token_lst **token_lst);
 int				handle_wildcard(char *current_token, char *line, t_token_lst **token_lst);
+int				copy_token_till_delimiter(char **dest, char *src, char delimiter, t_token_lst **token_lst);
+int				ft_tokenize_loop_part2_error_handler(int temp, t_tokenize_struct *vars, t_token_lst **token_lst, int *i);
+
+
+//parser
+int			copy_wildcard_string_loop(char *line, int i, char **dest);
+void		identify_wildcard_type_if(t_wildcard_type_string *wildcard_type_string, int *char_ctr, char *line);
+int			copy_wildcard_string(char **dest, char *line);
+t_token_lst	*wildcard_function_if(t_wildcard_type_string *wildcard_string, t_token_lst *wildcard_list, t_read_dir *read_dir);
+t_token_lst	*join_wildcar_token(t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, char *(ft_strstr_func)(const char *str, const char *wildcard));
+void		join_wildcar_token_if(char *(ft_strstr_func)(const char *str, const char *wildcard), t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, t_token_lst **wildcard_list);
+int			is_word_or_quote(t_token_type type);
+t_token_lst	*populate_command_data_loop2(t_token_lst *token_lst, t_shell *shell, t_ast_node *ast_node);
+int			populate_command_data_loop1(t_token_lst *token_lst);
+
+
+//execution
+void	handle_subshell_if(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell);
+void	execute_cmd_parent_free(t_shell *shell, char **new_env);
+int		execute_cmd_parent_loop_if(char **new_env, int *i, int *pipe_fd, int *len);
+int		execute_cmd_parent_loop(int count, char **new_env, int *pipe_fd);
+void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd);
+void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell);
+int		get_exit_status(int status);
+void	execute_cmd_child_beginning(int *pipe_fd, t_ast_node *ast_node, int in_fd);
+void	execute_cmd_child_if_else(t_ast_node *ast_node, int *pipe_fd);
+void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd);
 
 
 #endif

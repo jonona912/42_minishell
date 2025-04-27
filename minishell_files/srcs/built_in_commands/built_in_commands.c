@@ -29,7 +29,8 @@ void	ft_echo(char **argv)
 
 void	ft_pwd()
 {
-	char cwd[4096];
+	char	cwd[4096];
+
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		printf("%s\n", cwd);
 	else

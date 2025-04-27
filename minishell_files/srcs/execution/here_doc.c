@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 17:22:15 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/26 17:25:10 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	ms_strcmp_until(char *s1, char *s2, char c)
@@ -12,13 +24,13 @@ int	ms_strcmp_until(char *s1, char *s2, char c)
 	return (*(s1 + i) - *(s2 + i));
 }
 
-int	handle_heredoc(char *end_delimitor, int in_fd) // here if single quotes, then you can strip it and // handle cat << ''
+int	handle_heredoc(char *end_delimitor, int in_fd)
 {
 	char	*input;
 
 	if (!end_delimitor)
 		return (-1);
-	while(1)
+	while (1)
 	{
 		input = readline("\033[0;35mheredoc>\033[0m");
 		if (ms_strcmp_until(end_delimitor, input, '\n') == 0)
@@ -33,10 +45,26 @@ int	handle_heredoc(char *end_delimitor, int in_fd) // here if single quotes, the
 	return (1);
 }
 
-int run_heredoc(char *end_delimitor, int *in_fd)
+int	run_heredoc_error_handler(int *pipe_fd, char *end_delimitor)
 {
-	int pipe_fd[2];
-	int	is_interprete;
+	if (pipe(pipe_fd) == -1)
+	{
+		perror("pipe");
+		return (0);
+	}
+	if (handle_heredoc(end_delimitor, pipe_fd[1]) == -1)
+	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		return (0);
+	}
+	return (1);
+}
+
+int	run_heredoc(char *end_delimitor, int *in_fd)
+{
+	int		pipe_fd[2];
+	int		is_interprete;
 	char	*temp;
 
 	temp = end_delimitor;
@@ -50,20 +78,11 @@ int run_heredoc(char *end_delimitor, int *in_fd)
 			return (-1);
 		is_interprete = 0;
 	}
-    if (pipe(pipe_fd) == -1)
-    {
-        perror("pipe");
-        return (-1);
-    }
-    if (handle_heredoc(end_delimitor, pipe_fd[1]) == -1)
-    {
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-        return (-1);
-    }
-    close(pipe_fd[1]);
-    *in_fd = pipe_fd[0];
+	if (!run_heredoc_error_handler(pipe_fd, end_delimitor))
+		return (-1);
+	close(pipe_fd[1]);
+	*in_fd = pipe_fd[0];
 	if (!is_interprete)
 		free(end_delimitor);
-    return (0);
+	return (0);
 }
