@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 11:29:05 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/27 11:31:22 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/28 10:11:22 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,10 @@ void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd)
 		}
 		close(out_fd);
 	}
+}
+
+void	close_pipe_fd(int *pipe_fd)
+{
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
 }

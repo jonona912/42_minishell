@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_minishell.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/27 16:03:32 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/28 16:38:31 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 volatile int signal_received = 0;
@@ -8,6 +20,9 @@ int	check_user_input(char **line)
 	{
 		free(*line);
 		*line = NULL;
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
 		return (-1);
 	}
 	return (0);
@@ -54,12 +69,13 @@ int	main(int argc, char **argv, char **envp)
 	int		is_test;
 	t_shell shell;
 
+	shell.last_status = 0;
 	shell.env = copy_env(envp);
 	if (argc == 2 && ft_strcmp(argv[1], "-test") == 0)
 		is_test = 1;
 	else
 		is_test = 0;
-    size_t len = 0;
+	size_t len = 0;
 	head = NULL;
 	token_lst = NULL;
 	char	*line = NULL;
@@ -88,7 +104,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!line)
 		{
 			free(line);
-			// write(1, "exit\n", 5);
+			write(1, "exit\n", 5);
 			break;
 		}
 		if (check_user_input(&line) == -1)

@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:49:50 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/27 11:27:44 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/27 17:22:38 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,15 @@ void	execute_cmd_child_builtin(t_ast_node *ast_node,
 		}
 		execute_cmd_child_builtin_loop(count, pipe_fd, shell);
 		close(pipe_fd[1]);
-		exit (96);
+		exit (0);
 	}
 }
 
-int	execute_cmd_beginning(pid_t *fork_pid, t_shell *shell,
-		int *pipe_fd, t_ast_node *ast_node)
+int	execute_cmd_beginning(pid_t *fork_pid, int *pipe_fd, t_ast_node *ast_node)
 {
 	if (ast_node->data.cmd.exec_argv
-		&& ft_strcmp(ast_node->data.cmd.exec_argv[0], "cd") == 0)
-		return (ft_cd(ast_node->data.cmd.exec_argv, shell));
+		&& ft_strcmp(ast_node->data.cmd.exec_argv[0], "exit") == 0)
+		exit(0);
 	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe");
@@ -91,7 +90,10 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)
 	pid_t	fork_pid;
 	int		pipe_fd[2];
 
-	if (execute_cmd_beginning(&fork_pid, shell, pipe_fd, ast_node))
+	if (ast_node->data.cmd.exec_argv
+		&& ft_strcmp(ast_node->data.cmd.exec_argv[0], "cd") == 0)
+		return (ft_cd(ast_node->data.cmd.exec_argv, shell));
+	if (execute_cmd_beginning(&fork_pid, pipe_fd, ast_node))
 		return (-1);
 	if (fork_pid == 0)
 	{

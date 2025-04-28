@@ -6,48 +6,16 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 14:54:42 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/26 14:54:58 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/27 16:21:05 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*dollar_execute(char *name, t_shell shell)
-{
-	char	*res;
-
-	if (!name)
-		return (NULL);
-	res = ft_getenv(name, shell);
-	if (!res)
-		return (NULL);
-	return (ft_strdup(res));
-}
-
-char	*name_finder(char *value, int pos)
-{
-	int		i;
-	char	*name;
-
-	i = 0;
-	pos++;
-	while (value[pos + i] && (ft_isalnum(value[pos + i])
-			|| value[pos + i] == '_'))
-		i++;
-	if (i == 0)
-		return (NULL);
-	name = (char *)malloc(i + 1);
-	if (!name)
-		return (NULL);
-	ft_strlcpy(name, value + pos, i + 1);
-	return (name);
-}
-
 char	*dollar_check(char *value, int *i, t_shell shell)
 {
 	char	*name;
 	char	*tmp;
-	char	*new;
 	int		name_len;
 
 	name = name_finder(value, *i);
@@ -58,14 +26,31 @@ char	*dollar_check(char *value, int *i, t_shell shell)
 	}
 	name_len = ft_strlen(name);
 	tmp = dollar_execute(name, shell);
+	free(name);
 	if (!tmp)
 	{
 		(*i) += name_len + 1;
 		return (ft_strdup(""));
 	}
-	new = ft_strdup(tmp);
 	*i += name_len + 1;
-	return (new);
+	return (tmp);
+}
+
+int	dollar_structure_if(char *value, int *i, t_shell shell, char **res)
+{
+	char	*new;
+	char	*tmp;
+
+	if (value[*i] == '$' && value[*i + 1] && !ft_isspace(value[*i + 1]))
+	{
+		tmp = dollar_check(value, i, shell);
+		new = ft_strjoin(*res, tmp);
+		free(*res);
+		free(tmp);
+		*res = new;
+		return (1);
+	}
+	return (0);
 }
 
 char	*arg_word_return(char *value, t_shell shell)
@@ -73,7 +58,6 @@ char	*arg_word_return(char *value, t_shell shell)
 	int		i;
 	char	*res;
 	char	*tmp;
-	char	*new;
 
 	if (!value)
 		return (NULL);
@@ -83,14 +67,10 @@ char	*arg_word_return(char *value, t_shell shell)
 	i = 0;
 	while (value[i])
 	{
-		if (value[i] == '$' && value[i + 1] && !ft_isspace(value[i + 1]))
-		{
-			tmp = dollar_check(value, &i, shell);
-			new = ft_strjoin(res, tmp);
-			res = new;
+		if (dollar_structure_if(value, &i, shell, &res))
 			continue ;
-		}
 		tmp = ft_strjoin_char(res, value[i]);
+		free(res);
 		res = tmp;
 		i++;
 	}
@@ -105,6 +85,8 @@ char	*arg_d_quote_return(char *value, t_shell shell)
 	if (!value)
 		return (NULL);
 	tmp = ft_strtrim(value, "\"");
+	if (!tmp)
+		return (NULL);
 	res = arg_word_return(tmp, shell);
 	free(tmp);
 	return (res);

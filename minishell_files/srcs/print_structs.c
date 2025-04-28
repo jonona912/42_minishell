@@ -31,7 +31,7 @@ void print_redirections(t_redir_lst *redirs) {
     if (!redirs) return;
     printf(" redirs=[");
     while (redirs) {
-        printf("%s = %s", 
+        printf("%s = %s",
                redirs->type == TOKEN_REDIRECTION_IN ? "<" :
                redirs->type == TOKEN_REDIRECTION_OUT ? ">" :
                redirs->type == TOKEN_APPEND ? ">>" : "<<",
@@ -53,7 +53,7 @@ void print_ast_node(t_ast_node *node, int indent)
         case NODE_CMD:
             printf("CommandNode(");
             printf("%s", node->data.cmd.executable);
-            
+
             // Print arguments if they exist
             if (node->data.cmd.exec_argv && node->data.cmd.exec_argv[0]) {
                 printf(", args=[");
@@ -63,7 +63,7 @@ void print_ast_node(t_ast_node *node, int indent)
                 }
                 printf("]");
             }
-            
+
             // Print redirections
             print_redirections(node->data.cmd.redirs);
             printf(")");
@@ -111,7 +111,7 @@ void print_ast_node(t_ast_node *node, int indent)
 }
 
 // Wrapper function for cleaner output
-void print_ast(t_ast_node *root) 
+void print_ast(t_ast_node *root)
 {
     print_ast_node(root, 0);
     printf("\n");

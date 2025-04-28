@@ -35,6 +35,7 @@ SRCS = main_minishell.c \
 		$(EXECUTE_DIR)/here_doc.c \
 		$(EXECUTE_DIR)/redirections.c \
 		$(COMMANDS_DIR)/built_in_commands.c \
+		$(COMMANDS_DIR)/utils_built.c \
 		$(COMMANDS_DIR)/built_in_commands_utils.c \
 
 # Test files
@@ -102,7 +103,7 @@ clean:
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME) $(TESTER)
+	rm -f $(NAME)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all

@@ -237,6 +237,74 @@ test_command "cat input* | wc -l" \
 test_command "cat *.txt | wc -l" \
             "no"
 
+##############################
+### BASIC COMMAND TESTS
+##############################
+echo -e "\n\e[35m=== BASIC COMMAND TESTS ===\e[0m"
+test_command "ls" "yes"
+test_command "ls -la" "yes"
+test_command "/bin/ls" "yes"
+test_command "/bin/ls -la" "yes"
+test_command "echo Hello World" "no"
+test_command "echo -n Hello World" "no"
+
+##############################
+### REDIRECTION TESTS
+##############################
+echo -e "\n\e[35m=== REDIRECTION TESTS ===\e[0m"
+
+# Input redirection
+test_command "cat < test_input.txt" "no"
+test_command "wc -l < test_input.txt" "no"
+
+# Output redirection
+test_command "echo new content > test_output.txt" "no"
+test_command "cat test_output.txt" "no"  # Should show "new content"
+
+# Append redirection
+test_command "echo appended content >> test_append.txt" "no"
+test_command "cat test_append.txt" "no"  # Should show original + appended content
+
+
+##############################
+### PIPE TESTS
+##############################
+echo -e "\n\e[35m=== PIPE TESTS ===\e[0m"
+test_command "ls | grep Makefile" "no"
+test_command "ls | grep Makefile | wc -l" "no"
+test_command "cat test_input.txt | grep test" "no"
+test_command "cat test_input.txt | grep test | wc -c" "no"
+
+##############################
+### ENVIRONMENT VARIABLE TESTS
+##############################
+echo -e "\n\e[35m=== ENVIRONMENT VARIABLE TESTS ===\e[0m"
+test_command "echo \$PATH" "no"
+test_command "echo \"\$PATH\"" "no"
+test_command "echo '\$PATH'" "no"
+test_command "echo \$NON_EXISTENT_VAR" "no"
+test_command "echo \"\$NON_EXISTENT_VAR\"" "no"
+test_command "echo '\$NON_EXISTENT_VAR'" "no"
+
+##############################
+### QUOTING TESTS
+##############################
+echo -e "\n\e[35m=== QUOTING TESTS ===\e[0m"
+test_command "echo \"hello \$USER\"" "no"
+test_command "echo 'hello \$USER'" "no"
+test_command "echo \"hello '\$USER'\"" "no"
+test_command "echo 'hello \"\$USER\"'" "no"
+test_command "echo 'hello \\"world\\"'" "no"
+
+##############################
+### WILDCARD TESTS
+##############################
+echo -e "\n\e[35m=== WILDCARD TESTS ===\e[0m"
+test_command "echo *.txt" "yes"
+test_command "echo *" "yes"
+test_command "echo *.nonexistent" "yes"
+test_command "echo * | wc -w" "no"
+
 
 # exit status is same as in bash for the folowing cases
 # $? returns correct value for <invalid command>, e.g. wrong_command
@@ -260,3 +328,47 @@ test_command "cat *.txt | wc -l" \
 # mnishel: $? + $?
 # 0: command not found
 # mnishel:
+
+
+
+
+# ======================================================>   problems
+# cat << EOF
+# cat << EOF > output.txt
+# cat << EOF > output.txt | cat << END > output2.txt
+
+# fasdfasdf || ls
+# fasldjkfasd && ls
+# ls -a && ls -l => works
+
+#  % ./minishell
+# minishel> << EOF
+# zsh: segmentation fault (core dumped)  ./minishell
+
+# minishel> ls o**.txt
+# ls: cannot access '.txt': No such file or directory
+# output  output.txt
+
+
+
+############################### opopov's territory
+# Should print exit after command
+# opopov@c2r13s4:~/Documents/Minishell/minishell$ exit dfgdfg
+# exit
+# bash: exit: dfgdfg: numeric argument required
+
+
+# Solve problem with CTRL+C and cat
+# % ./minishell
+# minishel> cat^C
+# minishel> cat
+# minishel> minishel> fdgdfg
+
+# Solve problem with CTRL+D
+# % ./minishell
+# minishel> cat
+# ^\^\^\minishel>
+
+# Problem with unset
+
+# Problem with export

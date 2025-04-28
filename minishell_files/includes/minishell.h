@@ -10,7 +10,7 @@
 #include <signal.h>
 #include <termios.h>
 #include <limits.h>
-# include <fcntl.h> // for open
+# include <fcntl.h>
 #include <dirent.h>
 #include <sys/stat.h>
 
@@ -28,7 +28,7 @@ typedef enum	s_token_type
 	TOKEN_WORD,
 	TOKEN_S_QUOTE,
 	TOKEN_D_QUOTE,
-	TOKEN_WILDCARD, // not handled
+	TOKEN_WILDCARD,
 	TOKEN_PIPE,
 	TOKEN_REDIRECTION_IN,
 	TOKEN_REDIRECTION_OUT,
@@ -140,9 +140,9 @@ int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
 char	*ft_getenv(const char *name, t_shell shell);
-void	ft_echo(char **argv);
+void	ft_echo(char **argv, t_shell *shell);
 void	ft_pwd();
-int		ft_exit(char **argv);
+// int		ft_exit(char **argv);
 void	ft_env(t_shell *shell);
 int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
@@ -242,6 +242,8 @@ void		join_wildcar_token_if(char *(ft_strstr_func)(const char *str, const char *
 int			is_word_or_quote(t_token_type type);
 t_token_lst	*populate_command_data_loop2(t_token_lst *token_lst, t_shell *shell, t_ast_node *ast_node);
 int			populate_command_data_loop1(t_token_lst *token_lst);
+char		*dollar_execute(char *name, t_shell shell);
+char		*name_finder(char *value, int pos);
 
 
 //execution
@@ -255,6 +257,14 @@ int		get_exit_status(int status);
 void	execute_cmd_child_beginning(int *pipe_fd, t_ast_node *ast_node, int in_fd);
 void	execute_cmd_child_if_else(t_ast_node *ast_node, int *pipe_fd);
 void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd);
+void	close_pipe_fd(int *pipe_fd);
+void	handle_pipe_left_pid_error(int *pipe_fd);
+void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head, int in_fd, t_shell *shell);
+
+
+//built_in_commands
+int		ft_cd_special_cases(char **argv, t_shell *shell, char **tmp, char *oldpwd);
+void	ft_echo_loop(char **argv, t_shell *shell, int *i);
 
 
 #endif
