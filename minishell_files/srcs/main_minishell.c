@@ -57,6 +57,7 @@ int	main(int argc, char **argv, char **envp)
 	int		is_test;
 	t_shell shell;
 
+	shell.heredoc_temp_counter = 0;
 	shell.last_status = 0;
 	shell.env = copy_env(envp);
 	if (argc == 2 && ft_strcmp(argv[1], "-test") == 0)

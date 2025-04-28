@@ -21,6 +21,7 @@ typedef struct s_shell
 	char	**env;
 	int		exp_pipe[2];
 	int		last_status;
+	int		heredoc_temp_counter;
 }	t_shell;
 
 typedef enum	s_token_type
@@ -87,11 +88,11 @@ typedef struct s_read_dir
 	struct stat file_stat;
 }	t_read_dir;
 
-// Structure for a single redirection or heredoc
+
 typedef struct s_redir_lst {
-    t_token_type type;      // REDIR_INPUT, REDIR_OUTPUT, REDIR_APPEND, REDIR_HEREDOC
-    char *target;           // File path (e.g., "input.txt") or heredoc delimiter (e.g., "EOF")
-    struct s_redir_lst *next; // Linked list for multiple redirections
+    t_token_type type;
+    char *target;
+    struct s_redir_lst *next;
 } t_redir_lst;
 
 // AST node structure
@@ -191,7 +192,7 @@ int	execute_builtin(char **argv, t_shell *shell);
 
 // here_doc.c
 int run_heredoc(char *end_delimitor, int *in_fd);
-
+int	handle_heredoc(char *end_delimitor, int in_fd);
 // redirections.c
 int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd);
 
