@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   return_executable_path.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 14:29:10 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/26 15:45:04 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/28 19:21:43 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	return_executable_path_loop(char **path_split, const char *name,
 		*temp_path = NULL;
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 int	copy_wildcard_string_loop(char *line, int i, char **dest)
@@ -71,9 +71,11 @@ char	*return_executable_path(const char *name)
 	path_split = ft_split(path, ':');
 	if (path_split == NULL)
 		return (NULL);
-	ch = return_executable_path_loop(path_split, name, &temp_path);
+	ch = return_executable_path_loop(path_split, name, &temp_path); // delete ch
 	ft_free_double_ptr(path_split);
-	if (!ch)
-		return (NULL);
+	// if (!ch) // ch == 0?
+	// 	return (NULL);
+	if (!temp_path)
+		temp_path = ft_strdup((char *) name);
 	return (temp_path);
 }

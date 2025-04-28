@@ -254,8 +254,8 @@ test_command "echo -n Hello World" "no"
 echo -e "\n\e[35m=== REDIRECTION TESTS ===\e[0m"
 
 # Input redirection
-test_command "cat < test_input.txt" "no"
-test_command "wc -l < test_input.txt" "no"
+test_command "cat < input.txt" "no"
+test_command "wc -l < input.txt" "no"
 
 # Output redirection
 test_command "echo new content > test_output.txt" "no"
@@ -272,8 +272,8 @@ test_command "cat test_append.txt" "no"  # Should show original + appended conte
 echo -e "\n\e[35m=== PIPE TESTS ===\e[0m"
 test_command "ls | grep Makefile" "no"
 test_command "ls | grep Makefile | wc -l" "no"
-test_command "cat test_input.txt | grep test" "no"
-test_command "cat test_input.txt | grep test | wc -c" "no"
+test_command "cat input.txt | grep test" "no"
+test_command "cat input.txt | grep test | wc -c" "no"
 
 ##############################
 ### ENVIRONMENT VARIABLE TESTS
@@ -345,9 +345,6 @@ test_command "echo * | wc -w" "no"
 # minishel> << EOF
 # zsh: segmentation fault (core dumped)  ./minishell
 
-# minishel> ls o**.txt
-# ls: cannot access '.txt': No such file or directory
-# output  output.txt
 
 
 

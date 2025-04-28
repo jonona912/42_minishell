@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2_ex.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 11:29:05 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/28 10:11:22 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/28 19:21:10 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,12 @@ void	execute_cmd_child_if_else(t_ast_node *ast_node, int *pipe_fd)
 		close(pipe_fd[1]);
 		if (execve(ast_node->data.cmd.executable,
 				ast_node->data.cmd.exec_argv, NULL) == -1)
-			perror("execve");
-		exit(1);
+		{
+			ft_putstr_fd(ast_node->data.cmd.executable, 2);
+			ft_putstr_fd(": ", 2);
+			perror("");
+		}
+		exit(127);
 	}
 	else
 	{
