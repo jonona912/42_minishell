@@ -121,6 +121,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		// print_ast(head);
 		// run_pipeline(head);
+	
 		shell.last_status = execute(head, -1, -1, &shell);
 		// printf("exec_result = %d\n", exec_result);
 		// printf("exit status = %d\n", shell.last_status);

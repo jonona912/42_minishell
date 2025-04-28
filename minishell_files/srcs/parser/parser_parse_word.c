@@ -52,19 +52,23 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst,
 	else
 		(*ast_node)->data.cmd.executable = return_executable_path
 			(token_lst->value);
-	if (!(*ast_node)->data.cmd.executable)
-	{
-		ft_putstr_fd(token_lst->value, 2);
-		ft_putstr_fd(": command not found\n", 2);
-		shell->last_status = 127;
-		return (NULL);
-	}
+	// if (!(*ast_node)->data.cmd.executable)
+	// {
+	// 	ft_putstr_fd(token_lst->value, 2);
+	// 	ft_putstr_fd(": command not found\n", 2);
+	// 	shell->last_status = 127;
+	// 	return (NULL);
+	// }
 	ctr = populate_command_data_loop1(token_lst);
-	(*ast_node)->data.cmd.exec_argv = (char **)
-		malloc((ctr + 1) * sizeof(char *));
-	if (!(*ast_node)->data.cmd.exec_argv)
-		return (NULL);
-	return (populate_command_data_loop2(token_lst, shell, *ast_node));
+	if (ctr > 0)
+	{
+		(*ast_node)->data.cmd.exec_argv = (char **)
+			malloc((ctr + 1) * sizeof(char *));
+		if (!(*ast_node)->data.cmd.exec_argv)
+			return (NULL);
+		token_lst = populate_command_data_loop2(token_lst, shell, *ast_node);
+	}
+	return (token_lst);
 }
 
 t_token_lst	*parse_word(t_token_lst *token_lst,
@@ -78,7 +82,7 @@ t_token_lst	*parse_word(t_token_lst *token_lst,
 			(token_lst, &(*ast_node)->data.cmd.redirs, shell);
 		if (!token_lst)
 			return (NULL);
-		token_lst = populate_command_data(token_lst, ast_node, shell);
+		token_lst = populate_command_data(token_lst, ast_node, shell); // problem
 		token_lst = append_redirections_if_any
 			(token_lst, &(*ast_node)->data.cmd.redirs, shell);
 		return (token_lst);

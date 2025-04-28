@@ -8,7 +8,7 @@ int	execute_cmd_parent(pid_t fork_pid, int *pipe_fd, t_shell *shell)
 
 	close(pipe_fd[1]);
 	waitpid(fork_pid, &status, 0);
-	if ((status >> 8) == 96)
+	if ((status >> 8) == 96) // what is this for?
 	{
 		if (read(pipe_fd[0], &count, sizeof(count)) != sizeof(count))
 		{
@@ -78,8 +78,7 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)
 	pid_t	fork_pid;
 	int		pipe_fd[2];
 
-	if (ast_node->data.cmd.exec_argv
-		&& ft_strcmp(ast_node->data.cmd.exec_argv[0], "cd") == 0)
+	if (ast_node->data.cmd.exec_argv && ft_strcmp(ast_node->data.cmd.exec_argv[0], "cd") == 0)
 		return (ft_cd(ast_node->data.cmd.exec_argv, shell));
 	if (execute_cmd_beginning(&fork_pid, pipe_fd, ast_node))
 		return (-1);

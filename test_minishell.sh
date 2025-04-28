@@ -345,7 +345,7 @@ test_command "echo * | wc -w" "no"
 # minishel> << EOF
 # zsh: segmentation fault (core dumped)  ./minishell
 
-
+# (ls -a | grep mini > output.txt) || (ls -l | grep mini > output.txt)1
 
 
 ############################### opopov's territory
