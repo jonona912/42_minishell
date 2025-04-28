@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   execution_utils.c                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/26 17:47:17 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/28 10:12:05 by opopov           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes/minishell.h"
 
 int	builtin_check(char *cmd)
@@ -60,4 +48,3 @@ void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head,
 	status = execute(ast_head->data.binary_op.left, in_fd, -1, shell);
 	exit(status);
 }
-

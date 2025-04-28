@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   return_executable_path.c                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/26 14:29:10 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/28 19:21:43 by zkhojazo         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes/minishell.h"
 
 int	return_executable_path_loop(char **path_split, const char *name,

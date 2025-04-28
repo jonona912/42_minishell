@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils2_ex.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/27 11:29:05 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/28 19:21:10 by zkhojazo         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes/minishell.h"
 
 void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell)
@@ -32,13 +20,13 @@ void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell)
 }
 
 void	execute_cmd_child_beginning(int *pipe_fd,
-	t_ast_node *ast_node, int in_fd)
+	t_ast_node *ast_node, int *in_fd)
 {
 	close(pipe_fd[0]);
 	if (ast_node->data.cmd.redirs
 		&& is_redirection(ast_node->data.cmd.redirs->type))
 	{
-		if (handle_redirection_fd(ast_node->data.cmd.redirs, &in_fd) == -1)
+		if (handle_redirection_fd(ast_node->data.cmd.redirs, in_fd) == -1)
 		{
 			close(pipe_fd[1]);
 			exit (1);
