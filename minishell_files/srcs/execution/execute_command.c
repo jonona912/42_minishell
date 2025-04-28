@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:49:50 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/27 17:22:38 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/28 19:20:56 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)
 		return (-1);
 	if (fork_pid == 0)
 	{
-		execute_cmd_child_beginning(pipe_fd, ast_node, in_fd);
+		execute_cmd_child_beginning(pipe_fd, ast_node, &in_fd);
 		execute_cmd_child_fd(in_fd, out_fd, pipe_fd);
 		execute_cmd_child_builtin(ast_node, shell, pipe_fd);
 		execute_cmd_child_if_else(ast_node, pipe_fd);

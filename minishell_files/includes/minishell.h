@@ -254,7 +254,7 @@ int		execute_cmd_parent_loop(int count, char **new_env, int *pipe_fd);
 void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd);
 void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell);
 int		get_exit_status(int status);
-void	execute_cmd_child_beginning(int *pipe_fd, t_ast_node *ast_node, int in_fd);
+void	execute_cmd_child_beginning(int *pipe_fd, t_ast_node *ast_node, int *in_fd);
 void	execute_cmd_child_if_else(t_ast_node *ast_node, int *pipe_fd);
 void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd);
 void	close_pipe_fd(int *pipe_fd);

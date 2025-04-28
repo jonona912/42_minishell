@@ -345,10 +345,6 @@ test_command "echo * | wc -w" "no"
 # minishel> << EOF
 # zsh: segmentation fault (core dumped)  ./minishell
 
-# minishel> ls o**.txt
-# ls: cannot access '.txt': No such file or directory
-# output  output.txt
-
 
 
 ############################### opopov's territory
