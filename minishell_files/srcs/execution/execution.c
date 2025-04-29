@@ -75,10 +75,10 @@ void preprocess_heredocs(t_ast_node *node, t_shell *shell)
         preprocess_heredocs(node->data.binary_op.left, shell);
         preprocess_heredocs(node->data.binary_op.right, shell);
     }
-    // else if (node->type == SUBSHELL)
-    // {
-    //     preprocess_heredocs(node->data.sub_shell.subshell);
-    // }
+	// else if (node->type == SUBSHELL)
+	// {
+	//     preprocess_heredocs(node->data.sub_shell.subshell);
+	// }
 }
 
 void cleanup_heredocs(t_ast_node *node, t_shell *shell)

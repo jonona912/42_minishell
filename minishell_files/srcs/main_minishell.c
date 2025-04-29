@@ -90,6 +90,7 @@ int	main(int argc, char **argv, char **envp)
 		signal_received = 0;
 		if (!is_test)
 			line = readline("minishel> ");
+		printf("line = %s\n", line);
 		if (!line)
 		{
 			free(line);
@@ -109,7 +110,7 @@ int	main(int argc, char **argv, char **envp)
 			// write(1, "\n", 1); // should ot print if nothing was given except
 			continue;
 		}
-		// ft_print_tokens(token_lst);
+		ft_print_tokens(token_lst);
 		token_lst_check = parse_or(token_lst, &head, &shell);
 		if (!token_lst_check)
 		{

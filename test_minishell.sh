@@ -58,6 +58,9 @@ test_command() {
     compare_outputs "$command" "$output_real" "$output_minishell"
 }
 
+# Making folders
+echo >> 
+
 # invalid permission tests
 # Tests
 echo -e "\e[35mNO ARGUMENTS TEST\e[0m" #
@@ -369,3 +372,19 @@ test_command "echo * | wc -w" "no"
 # Problem with unset
 
 # Problem with export
+
+
+# minishel> echo "somme test" >>>> testfile1.txt
+# minishell: Redirection without or wrong target
+# minishell: syntax error near unexpected token
+
+
+# minishel> hgfdgfd
+# hgfdgfd: No such file or directory
+# minishel> hgfdgfd
+# hgfdgfd: No such file or directory
+# minishel> echo "Start" & echo "middle"
+# ^C
+# minishel> echo start
+# ^C
+# minishel> ^[[A^[[A^[[B^[[B^[[A^[[A^[[A

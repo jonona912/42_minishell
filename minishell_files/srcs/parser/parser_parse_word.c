@@ -10,7 +10,13 @@ t_token_lst	*handle_parentheses(t_token_lst *token_lst,
 		return (ft_putstr_fd("Error: no left parent\n", STDERR_FILENO), NULL);
 	}
 	token_lst = token_lst->next;
-	return (token_lst);
+	if (token_lst && (token_lst->type == TOKEN_AND || token_lst->type == TOKEN_OR || token_lst->type == TOKEN_PIPE || token_lst->type == TOKEN_END))
+	{
+		// return (ft_putstr_fd("minishell: syntax error near unexpected token\n", STDERR_FILENO), NULL);
+		return (token_lst);
+	}
+	return (ft_putstr_fd("minishell: syntax error near unexpected token\n", STDERR_FILENO), NULL);
+	// return (token_lst);
 }
 
 t_token_lst	*append_redirections_if_any(t_token_lst *token_lst,
