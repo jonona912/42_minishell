@@ -333,9 +333,6 @@ test_command "echo * | wc -w" "no"
 
 
 # ======================================================>   problems
-# cat << EOF
-# cat << EOF > output.txt
-# cat << EOF > output.txt | cat << END > output2.txt
 
 # fasdfasdf || ls
 # fasldjkfasd && ls
@@ -346,25 +343,13 @@ test_command "echo * | wc -w" "no"
 # zsh: segmentation fault (core dumped)  ./minishell
 
 
-
-
 ############################### opopov's territory
-# Should print exit after command
-# opopov@c2r13s4:~/Documents/Minishell/minishell$ exit dfgdfg
-# exit
-# bash: exit: dfgdfg: numeric argument required
 
-
-# Solve problem with CTRL+C and cat
+# Solve problem with CTRL+C and cat (Can't solve this)
 # % ./minishell
 # minishel> cat^C
 # minishel> cat
 # minishel> minishel> fdgdfg
-
-# Solve problem with CTRL+D
-# % ./minishell
-# minishel> cat
-# ^\^\^\minishel>
 
 # Problem with unset
 

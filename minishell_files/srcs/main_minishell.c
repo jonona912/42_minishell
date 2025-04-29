@@ -8,9 +8,6 @@ int	check_user_input(char **line)
 	{
 		free(*line);
 		*line = NULL;
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
 		return (-1);
 	}
 	return (0);
@@ -21,8 +18,8 @@ void signal_handler(int signum)
 	(void)signum;
 	signal_received = 1;
 	write(1, "\n", 1);
-	rl_on_new_line();
 	rl_replace_line("", 0);
+	rl_on_new_line();
 	rl_redisplay();
 }
 
@@ -51,19 +48,20 @@ int	main(int argc, char **argv, char **envp)
 {
 	(void)argv;
 	(void)envp;
+	(void)argc;
 	t_token_lst *token_lst;
 	t_token_lst	*token_lst_check;
 	t_ast_node	*head;
-	int		is_test;
-	t_shell shell;
+	// int		is_test;
+	t_shell	shell;
 
 	shell.last_status = 0;
 	shell.env = copy_env(envp);
-	if (argc == 2 && ft_strcmp(argv[1], "-test") == 0)
-		is_test = 1;
-	else
-		is_test = 0;
-	size_t len = 0;
+	// if (argc == 2 && ft_strcmp(argv[1], "-test") == 0)
+	// 	is_test = 1;
+	// else
+	// 	is_test = 0;
+	// size_t len = 0;
 	head = NULL;
 	token_lst = NULL;
 	char	*line = NULL;
@@ -74,21 +72,21 @@ int	main(int argc, char **argv, char **envp)
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
-	if (is_test)
-	{
-		// Read input from stdin
-		if (getline(&line, &len, stdin) == -1) {
-			free(line);
-			return 0; // Exit on EOF
-		}
-		// Remove trailing newline
-		line[strcspn(line, "\n")] = 0;
-	}
+	// if (is_test)
+	// {
+	// 	// Read input from stdin
+	// 	if (getline(&line, &len, stdin) == -1) {
+	// 		free(line);
+	// 		return 0; // Exit on EOF
+	// 	}
+	// 	// Remove trailing newline
+	// 	line[strcspn(line, "\n")] = 0;
+	// }
 	while (1)
 	{
 		signal_received = 0;
-		if (!is_test)
-			line = readline("minishel> ");
+		// if (!is_test)
+		line = readline("minishel> ");
 		if (!line)
 		{
 			free(line);
@@ -96,7 +94,7 @@ int	main(int argc, char **argv, char **envp)
 			break;
 		}
 		if (check_user_input(&line) == -1)
-			continue;
+			continue ;
 		token_lst = ft_tokenize(line);
 		if (token_lst)
 			add_history(line);
@@ -126,8 +124,8 @@ int	main(int argc, char **argv, char **envp)
 		// printf("exit status = %d\n", shell.last_status);
 		rl_on_new_line();
 		free(line);
-		if (is_test)
-			break;
+		// if (is_test)
+		// 	break;
 	}
 	return (0);
 }

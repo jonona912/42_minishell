@@ -63,12 +63,25 @@ void	ft_echo_loop(char **argv, t_shell *shell, int *i)
 	}
 }
 
-// int	ft_exit(char **argv)
-// {
-// 	if (argv[1])
-// 	{
-// 		write(1, "Error: too many arguments\n", 26);
-// 		return (1);
-// 	}
-// 	exit(0);
-// }
+void	ft_exit(char **argv)
+{
+	int	i;
+
+	i = 0;
+	if (argv[1])
+	{
+		while (argv[1][i])
+		{
+			if (ft_isalpha(argv[1][i]))
+			{
+				printf("exit: %s: numeric argument required\n", argv[1]);
+				exit(0);
+			}
+			i++;
+		}
+		printf("exit\n");
+		exit(0);
+	}
+	printf("exit\n");
+	exit(0);
+}

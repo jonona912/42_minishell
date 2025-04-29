@@ -265,6 +265,7 @@ void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head, int in_fd, t
 //built_in_commands
 int		ft_cd_special_cases(char **argv, t_shell *shell, char **tmp, char *oldpwd);
 void	ft_echo_loop(char **argv, t_shell *shell, int *i);
+void	ft_exit(char **argv);
 
 
 #endif

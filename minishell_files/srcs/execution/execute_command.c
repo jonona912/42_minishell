@@ -56,7 +56,7 @@ int	execute_cmd_beginning(pid_t *fork_pid, int *pipe_fd, t_ast_node *ast_node)
 {
 	if (ast_node->data.cmd.exec_argv
 		&& ft_strcmp(ast_node->data.cmd.exec_argv[0], "exit") == 0)
-		exit(0);
+		ft_exit(ast_node->data.cmd.exec_argv);
 	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe");
