@@ -90,7 +90,6 @@ int	main(int argc, char **argv, char **envp)
 		signal_received = 0;
 		if (!is_test)
 			line = readline("minishel> ");
-		printf("line = %s\n", line);
 		if (!line)
 		{
 			free(line);
@@ -110,17 +109,18 @@ int	main(int argc, char **argv, char **envp)
 			// write(1, "\n", 1); // should ot print if nothing was given except
 			continue;
 		}
-		ft_print_tokens(token_lst);
+		// ft_print_tokens(token_lst);
 		token_lst_check = parse_or(token_lst, &head, &shell);
 		if (!token_lst_check)
 		{
 			// printf("exit status = %d\n", shell.last_status);
 			// handle error
 			// write(1, "Error: parsing failed\n", 22);
-			token_free_list(token_lst); // free the double pointer of the token list and set it to NULL
+			token_free_list(token_lst); // free the double pointer of the token list and set it to NULL cat < input.txt < input_2.txt
 			free(line);
 			continue ;
 		}
+		token_free_list(token_lst);
 		// print_ast(head);
 		// run_pipeline(head);
 	
@@ -128,6 +128,7 @@ int	main(int argc, char **argv, char **envp)
 		// printf("exec_result = %d\n", exec_result);
 		// printf("exit status = %d\n", shell.last_status);
 		rl_on_new_line();
+		free_ast_node(head);
 		free(line);
 		if (is_test)
 			break;

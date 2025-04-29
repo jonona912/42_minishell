@@ -9,6 +9,7 @@ void	ft_echo(char **argv, t_shell *shell)
 	i = 1;
 	if (!argv[i])
 		return ;
+	// printf("argv[0]: %s\n", argv[0]); // doesn't reach it
 	while (ft_strncmp(argv[i], "-n", 2) == 0) //  echo -nnnn -nff
 	{
 		if (!argv[i + 1])

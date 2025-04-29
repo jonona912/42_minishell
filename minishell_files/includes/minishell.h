@@ -129,7 +129,7 @@ t_token_lst	*token_new_node(t_token_type type, char *value);
 void		token_free_list(t_token_lst *head);
 t_token_lst	*token_get_last_node(t_token_lst *head);
 void		token_add_node_back(t_token_lst **head, t_token_lst *new_node);
-
+int	token_lst_size(t_token_lst *head);
 ////////////// tokenizer ////////////
 // ms_tokenizer.c
 int			ft_append_char(char *str, char c);
@@ -155,6 +155,7 @@ int		ft_unset(char **argv, t_shell *shell);
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
 t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
 t_ast_node	*create_subshell_node(t_node_type type, t_ast_node *subshell, t_redir_lst *sub_shell_redir);
+void free_ast_node(t_ast_node *node);
 // parser_helper_1.c
 t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst, t_shell *shell);
 int	is_quote_or_word(t_token_type type);
@@ -173,6 +174,9 @@ void free_redir_list(t_redir_lst **lst);
 
 // return_executable_path.c
 char *return_executable_path(const char *name);
+
+// parse_cmd.c
+t_token_lst *parse_cmd(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell);
 
 
 // wildcard_functions.c

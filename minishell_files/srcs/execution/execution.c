@@ -81,7 +81,7 @@ void preprocess_heredocs(t_ast_node *node, t_shell *shell)
 	// }
 }
 
-void cleanup_heredocs(t_ast_node *node, t_shell *shell)
+void	cleanup_heredocs(t_ast_node *node, t_shell *shell)
 {
 	t_redir_lst *redir;
     if (!node)

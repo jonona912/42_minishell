@@ -13,8 +13,9 @@ int	builtin_check(char *cmd)
 		|| ft_strcmp(cmd, "env") == 0);
 }
 
-int	execute_builtin(char **argv, t_shell *shell)
+int	execute_builtin(char **argv, t_shell *shell) // handle $P
 {
+	// printf("argv[0]: %s\n", argv[0]);
 	if (ft_strcmp(argv[0], "echo") == 0)
 		ft_echo(argv, shell);
 	else if (ft_strcmp(argv[0], "pwd") == 0)

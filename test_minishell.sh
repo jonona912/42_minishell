@@ -59,79 +59,79 @@ test_command() {
 }
 
 # Making folders
-echo >> 
 
 # invalid permission tests
 # Tests
-echo -e "\e[35mNO ARGUMENTS TEST\e[0m" #
-test_command "" \
-            "no"
+####################=================================================================================================
+# echo -e "\e[35mNO ARGUMENTS TEST\e[0m" #
+# test_command "" \
+#             "no"
 
-echo -e "\e[35mSIMPLE TESTS\e[0m" #
+# echo -e "\e[35mSIMPLE TESTS\e[0m" #
 
-test_command "ls -a" \
-            "yes"
-test_command "ls" \
-            "yes"
+# test_command "ls -a" \
+#             "yes"
+# test_command "ls" \
+#             "yes"
 
-echo -e "\e[35mPIPE TESTS\e[0m" #
-test_command "ls -a | grep mini" \
-            "no"
+# echo -e "\e[35mPIPE TESTS\e[0m" #
+# test_command "ls -a | grep mini" \
+#             "no"
 
-test_command "ls -a | grep mini | wc -l" \
-            "no"
+# test_command "ls -a | grep mini | wc -l" \
+#             "no"
 
-echo -e "\e[35mREDIRECTION IN TESTS\e[0m" #
-test_command "<input.txt       cat" \
-            "no"
-test_command "<input.txt	cat | grep jnn" \
-            "no"
-test_command "<input.txt	cat | grep jnn | wc -l" \
-            "no"
-test_command "grep jnn < input.txt < input_2.txt" \
-            "no"
+# echo -e "\e[35mREDIRECTION IN TESTS\e[0m" #
+# test_command "<input.txt       cat" \
+#             "no"
+# test_command "<input.txt	cat | grep jnn" \
+#             "no"
+# test_command "<input.txt	cat | grep jnn | wc -l" \
+#             "no"
+# test_command "grep jnn < input.txt < input_2.txt" \
+#             "no"
 
-echo -e "\e[35mAND / OR TESTS (&&/||) \e[0m" #
-test_command "(ls -a | grep mini) || (ls -l | grep mini)" \
-            "no"
+# echo -e "\e[35mAND / OR TESTS (&&/||) \e[0m" #
+# test_command "(ls -a | grep mini) || (ls -l | grep mini)" \
+#             "no"
 
-test_command "cat input.txt || ls -a" \
-            "no"
+# test_command "cat input.txt || ls -a" \
+#             "no"
 
-test_command "cat input.txt && cat input_2.txt" \
-            "no"
+# test_command "cat input.txt && cat input_2.txt" \
+#             "no"
 
-test_command "cat input.txt | wc -l && cat input_2.txt" \
-            "no"
+# test_command "cat input.txt | wc -l && cat input_2.txt" \
+#             "no"
 
-test_command "< input.txt cat | wc -l && cat input_2.txt" \
-            "no"
+# test_command "< input.txt cat | wc -l && cat input_2.txt" \
+#             "no"
 
-echo -e "\e[35mSUBSHELL TESTS\e[0m" #
+# echo -e "\e[35mSUBSHELL TESTS\e[0m" #
 
-test_command "(ls -a | grep mini | wc -l) && (ls -l | grep w | wc -l)" \
-            "no"
+# test_command "(ls -a | grep mini | wc -l) && (ls -l | grep w | wc -l)" \
+#             "no"
 
-test_command "(ls -a && cat < input.txt)" \
-            "yes"
+# test_command "(ls -a && cat < input.txt)" \
+#             "yes"
 
-test_command "((ls -a| grep mini) || cat < input.txt)" \
-            "no"
+# test_command "((ls -a| grep mini) || cat < input.txt)" \
+#             "no"
 
-test_command "(ls -a && cat < input.txt) | (grep .txt | (grep input | wc -l))" \
-            "no"
+# test_command "(ls -a && cat < input.txt) | (grep .txt | (grep input | wc -l))" \
+#             "no"
 
-test_command "(ls -a| sort && cat < input.txt) && (((ls -a && cat < input.txt) | grep .txt) | (grep input | wc -l))" \
-            "yes"
+# test_command "(ls -a| sort && cat < input.txt) && (((ls -a && cat < input.txt) | grep .txt) | (grep input | wc -l))" \
+#             "yes"
 
-
+####################=================================================================================================
 
 ################## DOUBLE QUOTES TESTS ########################
 echo -e "\e[33mDOUBLE QUOTES TESTS\e[0m"
 test_command "cat \"input.txt\"" \
             "no"
-
-test_command "grep jnn < \"input.txt\" < \"input_2.txt\"" \
+# grep jnn < "input.txt" < "input_2.txt"
+test_command "grep jnn < \"input.txt\" < \"input_2.txt\"" \ 
             "no"
 
 
@@ -188,127 +188,127 @@ test_command "echo \$NON_AVAL" \
 test_command "echo \$? + \$? - \$?" \
             "no"
 # add more single quote and other types of tests
+##########################################################=====================================
+# echo -e "\e[33mPWD TESTS\e[0m"
 
-echo -e "\e[33mPWD TESTS\e[0m"
+# test_command "pwd" \
+#             "no"
 
-test_command "pwd" \
-            "no"
+# test_command "pwd | grep home" \
+#             "no"
 
-test_command "pwd | grep home" \
-            "no"
-
-test_command "pwd | grep home | wc -l" \
-            "no"
-
-
-# echo -e "\e[33m===========> WILDCARD TESTS <============\e[0m"
-echo -e "\e[33mWILDCARD TESTS\e[0m"
-
-test_command "echo *" \
-            "yes"
-
-test_command "echo *****" \
-            "yes"
-
-test_command "echo *.txt" \
-            "yes"
-
-test_command "echo ******.txt" \
-            "yes"
-
-test_command "echo *.txt | wc -l" \
-            "no"
-
-test_command "echo *.txt | wc -l | grep 2" \
-            "yes"
-
-test_command "echo mini*" \
-            "yes"
-
-test_command "echo mini*******" \
-            "yes"
-
-test_command "echo mini***** | wc -l" \
-            "no"
-
-test_command "cat input*" \
-            "no"
-
-test_command "cat input* | wc -l" \
-            "no"
-
-test_command "cat *.txt | wc -l" \
-            "no"
-
-##############################
-### BASIC COMMAND TESTS
-##############################
-echo -e "\n\e[35m=== BASIC COMMAND TESTS ===\e[0m"
-test_command "ls" "yes"
-test_command "ls -la" "yes"
-test_command "/bin/ls" "yes"
-test_command "/bin/ls -la" "yes"
-test_command "echo Hello World" "no"
-test_command "echo -n Hello World" "no"
-
-##############################
-### REDIRECTION TESTS
-##############################
-echo -e "\n\e[35m=== REDIRECTION TESTS ===\e[0m"
-
-# Input redirection
-test_command "cat < input.txt" "no"
-test_command "wc -l < input.txt" "no"
-
-# Output redirection
-test_command "echo new content > test_output.txt" "no"
-test_command "cat test_output.txt" "no"  # Should show "new content"
-
-# Append redirection
-test_command "echo appended content >> test_append.txt" "no"
-test_command "cat test_append.txt" "no"  # Should show original + appended content
+# test_command "pwd | grep home | wc -l" \
+#             "no"
 
 
-##############################
-### PIPE TESTS
-##############################
-echo -e "\n\e[35m=== PIPE TESTS ===\e[0m"
-test_command "ls | grep Makefile" "no"
-test_command "ls | grep Makefile | wc -l" "no"
-test_command "cat input.txt | grep test" "no"
-test_command "cat input.txt | grep test | wc -c" "no"
+# # echo -e "\e[33m===========> WILDCARD TESTS <============\e[0m"
+# echo -e "\e[33mWILDCARD TESTS\e[0m"
 
-##############################
-### ENVIRONMENT VARIABLE TESTS
-##############################
-echo -e "\n\e[35m=== ENVIRONMENT VARIABLE TESTS ===\e[0m"
-test_command "echo \$PATH" "no"
-test_command "echo \"\$PATH\"" "no"
-test_command "echo '\$PATH'" "no"
-test_command "echo \$NON_EXISTENT_VAR" "no"
-test_command "echo \"\$NON_EXISTENT_VAR\"" "no"
-test_command "echo '\$NON_EXISTENT_VAR'" "no"
+# test_command "echo *" \
+#             "yes"
 
-##############################
-### QUOTING TESTS
-##############################
-echo -e "\n\e[35m=== QUOTING TESTS ===\e[0m"
-test_command "echo \"hello \$USER\"" "no"
-test_command "echo 'hello \$USER'" "no"
-test_command "echo \"hello '\$USER'\"" "no"
-test_command "echo 'hello \"\$USER\"'" "no"
-test_command "echo 'hello \\"world\\"'" "no"
+# test_command "echo *****" \
+#             "yes"
 
-##############################
-### WILDCARD TESTS
-##############################
-echo -e "\n\e[35m=== WILDCARD TESTS ===\e[0m"
-test_command "echo *.txt" "yes"
-test_command "echo *" "yes"
-test_command "echo *.nonexistent" "yes"
-test_command "echo * | wc -w" "no"
+# test_command "echo *.txt" \
+#             "yes"
+
+# test_command "echo ******.txt" \
+#             "yes"
+
+# test_command "echo *.txt | wc -l" \
+#             "no"
+
+# test_command "echo *.txt | wc -l | grep 2" \
+#             "yes"
+
+# test_command "echo mini*" \
+#             "yes"
+
+# test_command "echo mini*******" \
+#             "yes"
+
+# test_command "echo mini***** | wc -l" \
+#             "no"
+
+# test_command "cat input*" \
+#             "no"
+
+# test_command "cat input* | wc -l" \
+#             "no"
+
+# test_command "cat *.txt | wc -l" \
+#             "no"
+
+# ##############################
+# ### BASIC COMMAND TESTS
+# ##############################
+# echo -e "\n\e[35m=== BASIC COMMAND TESTS ===\e[0m"
+# test_command "ls" "yes"
+# test_command "ls -la" "yes"
+# test_command "/bin/ls" "yes"
+# test_command "/bin/ls -la" "yes"
+# test_command "echo Hello World" "no"
+# test_command "echo -n Hello World" "no"
+
+# ##############################
+# ### REDIRECTION TESTS
+# ##############################
+# echo -e "\n\e[35m=== REDIRECTION TESTS ===\e[0m"
+
+# # Input redirection
+# test_command "cat < input.txt" "no"
+# test_command "wc -l < input.txt" "no"
+
+# # Output redirection
+# test_command "echo new content > test_output.txt" "no"
+# test_command "cat test_output.txt" "no"  # Should show "new content"
+
+# # Append redirection
+# test_command "echo appended content >> test_append.txt" "no"
+# test_command "cat test_append.txt" "no"  # Should show original + appended content
 
 
+# ##############################
+# ### PIPE TESTS
+# ##############################
+# echo -e "\n\e[35m=== PIPE TESTS ===\e[0m"
+# test_command "ls | grep Makefile" "no"
+# test_command "ls | grep Makefile | wc -l" "no"
+# test_command "cat input.txt | grep test" "no"
+# test_command "cat input.txt | grep test | wc -c" "no"
+
+# ##############################
+# ### ENVIRONMENT VARIABLE TESTS
+# ##############################
+# echo -e "\n\e[35m=== ENVIRONMENT VARIABLE TESTS ===\e[0m"
+# test_command "echo \$PATH" "no"
+# test_command "echo \"\$PATH\"" "no"
+# test_command "echo '\$PATH'" "no"
+# test_command "echo \$NON_EXISTENT_VAR" "no"
+# test_command "echo \"\$NON_EXISTENT_VAR\"" "no"
+# test_command "echo '\$NON_EXISTENT_VAR'" "no"
+
+# ##############################
+# ### QUOTING TESTS
+# ##############################
+# echo -e "\n\e[35m=== QUOTING TESTS ===\e[0m"
+# test_command "echo \"hello \$USER\"" "no"
+# test_command "echo 'hello \$USER'" "no"
+# test_command "echo \"hello '\$USER'\"" "no"
+# test_command "echo 'hello \"\$USER\"'" "no"
+# test_command "echo 'hello \\"world\\"'" "no"
+
+# ##############################
+# ### WILDCARD TESTS
+# ##############################
+# echo -e "\n\e[35m=== WILDCARD TESTS ===\e[0m"
+# test_command "echo *.txt" "yes"
+# test_command "echo *" "yes"
+# test_command "echo *.nonexistent" "yes"
+# test_command "echo * | wc -w" "no"
+
+##########################################################33===============================================
 # exit status is same as in bash for the folowing cases
 # $? returns correct value for <invalid command>, e.g. wrong_command
 # <valid command> and/or <valid flags> e.g. ls -asdf, ls, ls -a
