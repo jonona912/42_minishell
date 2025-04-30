@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 11:00:01 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/26 11:04:49 by opopov           ###   ########.fr       */
+/*   Updated: 2025/04/29 21:09:45 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	send_paren_to_token_lst_paren(char *str, char *temp,
 		if (vars->paren_counter == 0)
 		{
 			free(temp);
-			ft_putstr_fd("Error: unmatched parenthesis", 2);
+			ft_putstr_fd("Error: unmatched parenthesis\n", 2);
 			return (-1);
 		}
 		vars->paren_counter--;
@@ -48,6 +48,11 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst)
 	int		i;
 
 	i = copy_until_special_char(current_token, line, "<>|&()\"\'");
+	if (line[i] && line[i] == '&' && line[i + 1] != '&')
+	{
+		ft_putstr_fd("Error: single '&' is not allowed\n", 2);
+		return (-1);
+	}
 	if (current_token[0] != '\0')
 	{
 		if (append_to_token(TOKEN_WORD, current_token, token_lst) == -1)

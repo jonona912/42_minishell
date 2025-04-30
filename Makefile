@@ -27,6 +27,7 @@ SRCS = main_minishell.c \
 		$(PARSER_DIR)/return_executable_path.c \
 		$(PARSER_DIR)/redirection_functions.c \
 		$(PARSER_DIR)/wildcard_functions.c \
+		$(PARSER_DIR)/parse_cmd.c \
 		$(EXECUTE_DIR)/execute_command.c \
 		$(EXECUTE_DIR)/execution.c \
 		$(EXECUTE_DIR)/utils_ex.c \

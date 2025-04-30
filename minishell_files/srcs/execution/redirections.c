@@ -2,7 +2,7 @@
 
 void	print_error(const char *message)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd("minishell:: ", STDERR_FILENO);
 	ft_putstr_fd((char *)message, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
 	perror("");

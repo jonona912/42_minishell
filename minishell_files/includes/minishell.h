@@ -21,6 +21,7 @@ typedef struct s_shell
 	char	**env;
 	int		exp_pipe[2];
 	int		last_status;
+	int		heredoc_temp_counter;
 }	t_shell;
 
 typedef enum	s_token_type
@@ -87,11 +88,11 @@ typedef struct s_read_dir
 	struct stat file_stat;
 }	t_read_dir;
 
-// Structure for a single redirection or heredoc
+
 typedef struct s_redir_lst {
-    t_token_type type;      // REDIR_INPUT, REDIR_OUTPUT, REDIR_APPEND, REDIR_HEREDOC
-    char *target;           // File path (e.g., "input.txt") or heredoc delimiter (e.g., "EOF")
-    struct s_redir_lst *next; // Linked list for multiple redirections
+    t_token_type type;
+    char *target;
+    struct s_redir_lst *next;
 } t_redir_lst;
 
 // AST node structure
@@ -128,7 +129,7 @@ t_token_lst	*token_new_node(t_token_type type, char *value);
 void		token_free_list(t_token_lst *head);
 t_token_lst	*token_get_last_node(t_token_lst *head);
 void		token_add_node_back(t_token_lst **head, t_token_lst *new_node);
-
+int	token_lst_size(t_token_lst *head);
 ////////////// tokenizer ////////////
 // ms_tokenizer.c
 int			ft_append_char(char *str, char c);
@@ -154,6 +155,7 @@ int		ft_unset(char **argv, t_shell *shell);
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
 t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
 t_ast_node	*create_subshell_node(t_node_type type, t_ast_node *subshell, t_redir_lst *sub_shell_redir);
+void free_ast_node(t_ast_node *node);
 // parser_helper_1.c
 t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst, t_shell *shell);
 int	is_quote_or_word(t_token_type type);
@@ -173,6 +175,9 @@ void free_redir_list(t_redir_lst **lst);
 // return_executable_path.c
 char *return_executable_path(const char *name);
 
+// parse_cmd.c
+t_token_lst *parse_cmd(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell);
+
 
 // wildcard_functions.c
 t_token_lst	*wildcard_function(char *line, int *char_ctr);
@@ -191,7 +196,7 @@ int	execute_builtin(char **argv, t_shell *shell);
 
 // here_doc.c
 int run_heredoc(char *end_delimitor, int *in_fd);
-
+int	handle_heredoc(char *end_delimitor, int in_fd);
 // redirections.c
 int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd);
 

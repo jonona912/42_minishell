@@ -42,3 +42,31 @@ t_ast_node	*create_subshell_node(t_node_type type,
 	node->data.sub_shell.sub_shell_redir = sub_shell_redir;
 	return (node);
 }
+
+void free_ast_node(t_ast_node *node)
+{
+    if (!node)
+        return;
+    if (node->type == NODE_CMD)
+    {
+        free(node->data.cmd.executable);
+        if (node->data.cmd.exec_argv)
+        {
+            for (char **arg = node->data.cmd.exec_argv; *arg; arg++)
+                free(*arg);
+            free(node->data.cmd.exec_argv);
+        }
+        free_redir_list(&node->data.cmd.redirs);
+    }
+    else if (node->type == NODE_PIPE || node->type == NODE_AND || node->type == NODE_OR)
+    {
+        free_ast_node(node->data.binary_op.left);
+        free_ast_node(node->data.binary_op.right);
+    }
+    else if (node->type == NODE_SUBSHELL)
+    {
+        free_ast_node(node->data.sub_shell.subshell);
+        free_redir_list(&node->data.sub_shell.sub_shell_redir);
+    }
+    free(node);
+}

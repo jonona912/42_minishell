@@ -29,24 +29,37 @@ void	execute_cmd_child_beginning(int *pipe_fd,
 		if (handle_redirection_fd(ast_node->data.cmd.redirs, in_fd) == -1)
 		{
 			close(pipe_fd[1]);
-			exit (1);
+			exit (2); // problem here for exit status echo hi | echo bye > invalid_file 
 		}
 	}
 }
 
 void	execute_cmd_child_if_else(t_ast_node *ast_node, int *pipe_fd)
 {
+	int	exec_return;
+
+	exec_return = 0;
 	if (ast_node->data.cmd.executable)
 	{
 		close(pipe_fd[1]);
-		if (execve(ast_node->data.cmd.executable,
-				ast_node->data.cmd.exec_argv, NULL) == -1)
+		exec_return = execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL);
+		if (exec_return == -1 && !ast_node->data.cmd.executable[0])
 		{
-			ft_putstr_fd(ast_node->data.cmd.executable, 2);
-			ft_putstr_fd(": ", 2);
-			perror("");
+			exit (0);
 		}
-		exit(127);
+		// 
+		ft_putstr_fd(ast_node->data.cmd.executable, 2);
+		ft_putstr_fd(": ", 2);
+		perror("");
+		if (exec_return == -1 && opendir(ast_node->data.cmd.executable) != NULL)
+		{
+			exit (126);
+		}
+		else if (exec_return == -1 && ast_node->data.cmd.exec_argv[0])
+		{
+			exit (127);
+		}
+		// exit(127);
 	}
 	else
 	{
