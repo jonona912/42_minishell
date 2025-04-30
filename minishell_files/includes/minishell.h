@@ -267,5 +267,7 @@ int		ft_cd_special_cases(char **argv, t_shell *shell, char **tmp, char *oldpwd);
 void	ft_echo_loop(char **argv, t_shell *shell, int *i);
 void	ft_exit(char **argv);
 
+extern volatile int signal_received;
+
 
 #endif

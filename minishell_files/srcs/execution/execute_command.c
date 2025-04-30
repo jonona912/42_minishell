@@ -5,10 +5,12 @@ int	execute_cmd_parent(pid_t fork_pid, int *pipe_fd, t_shell *shell)
 	int		status;
 	char	**new_env;
 	int		count;
-
+	// (void)(shell);
 	close(pipe_fd[1]);
 	waitpid(fork_pid, &status, 0);
-	if ((status >> 8) == 96)
+	// close(pipe_fd[0]);
+	// return (get_exit_status(status));
+	if ((status >> 8) == 96) // need to change exit status
 	{
 		if (read(pipe_fd[0], &count, sizeof(count)) != sizeof(count))
 		{
@@ -48,7 +50,7 @@ void	execute_cmd_child_builtin(t_ast_node *ast_node,
 		}
 		execute_cmd_child_builtin_loop(count, pipe_fd, shell);
 		close(pipe_fd[1]);
-		exit (0);
+		exit (96);
 	}
 }
 

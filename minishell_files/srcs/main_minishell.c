@@ -8,6 +8,10 @@ int	check_user_input(char **line)
 	{
 		free(*line);
 		*line = NULL;
+		// write(1, "\n", 1);
+		// rl_replace_line("", 0);
+		// rl_on_new_line();
+		// rl_redisplay();
 		return (-1);
 	}
 	return (0);
@@ -20,7 +24,7 @@ void signal_handler(int signum)
 	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
-	rl_redisplay();
+	// rl_redisplay();
 }
 
 char	**copy_env(char **envp)
@@ -69,7 +73,7 @@ int	main(int argc, char **argv, char **envp)
 	struct sigaction sa;
 	sa.sa_handler = signal_handler;
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
+	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
 	// if (is_test)

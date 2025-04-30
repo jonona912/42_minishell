@@ -350,7 +350,3 @@ test_command "echo * | wc -w" "no"
 # minishel> cat^C
 # minishel> cat
 # minishel> minishel> fdgdfg
-
-# Problem with unset
-
-# Problem with export
