@@ -2,16 +2,16 @@
 
 volatile int signal_received = 0;
 
-int	check_user_input(char **line)
-{
-	if (ft_strcmp(*line, "") == 0 || signal_received)
-	{
-		free(*line);
-		*line = NULL;
-		return (-1);
-	}
-	return (0);
-}
+// int	check_user_input(char **line)
+// {
+// 	if (ft_strcmp(*line, "") == 0 || signal_received)
+// 	{
+// 		free(*line);
+// 		*line = NULL;
+// 		return (-1);
+// 	}
+// 	return (0);
+// }
 
 char	**copy_env(char **envp)
 {
@@ -34,14 +34,19 @@ char	**copy_env(char **envp)
 	return (copy);
 }
 
-void signal_handler(int signum)
-{
-	(void)signum;
-	signal_received = 1;
-	write(1, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
+void signal_handler(int signum) {
+    (void)signum;
+    // Only modify behavior if there's actual input
+    if (rl_end > 0) {  // rl_end is readline's cursor position (0 means empty line)
+        rl_replace_line("", 0);
+        rl_crlf();
+        rl_redisplay();
+    } else {
+        // For empty line, just let readline handle it
+        rl_crlf();
+        rl_on_new_line();
+        rl_redisplay();
+    }
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -58,30 +63,28 @@ int	main(int argc, char **argv, char **envp)
 	shell.env = copy_env(envp);
 	head = NULL;
 	token_lst = NULL;
-	char	*line = NULL;
-	struct sigaction sa;
-	sa.sa_handler = signal_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
+	// char	*line = NULL;
+	struct sigaction sa_int;
+    sa_int.sa_handler = signal_handler;
+    sigemptyset(&sa_int.sa_mask);
+    sa_int.sa_flags = SA_RESTART;
+    sigaction(SIGINT, &sa_int, NULL);
+    signal(SIGQUIT, SIG_IGN);
+
+    // Ігнорувати SIGQUIT (Ctrl+\)
+    signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
-		if (signal_received)
-			continue ;
-		signal_received = 0;
-		line = readline("minishel> ");
-		if (!line)
-		{
-			free(line);
-			write(1, "exit\n", 5);
-			break;
-		}
-		if (check_user_input(&line) == -1)
-			continue ;
+		char *line = readline("minishell> ");
+        if (!line) {
+            printf("exit\n");
+            break;
+        }
+
+        if (*line != '\0') {
+            add_history(line);
+        }
 		token_lst = ft_tokenize(line);
-		if (token_lst)
-			add_history(line);
 		if (!token_lst || token_lst->type == TOKEN_END)
 		{
 			free(line);
