@@ -84,6 +84,7 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)
 		return (ft_cd(ast_node->data.cmd.exec_argv, shell));
 	if (execute_cmd_beginning(&fork_pid, pipe_fd, ast_node))
 		return (-1);
+	preprocess_heredocs(ast_node, shell);
 	if (fork_pid == 0)
 	{
 		execute_cmd_child_beginning(pipe_fd, ast_node, &in_fd);

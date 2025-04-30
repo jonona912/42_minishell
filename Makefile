@@ -30,6 +30,7 @@ SRCS = main_minishell.c \
 		$(PARSER_DIR)/parse_cmd.c \
 		$(EXECUTE_DIR)/execute_command.c \
 		$(EXECUTE_DIR)/execution.c \
+		$(EXECUTE_DIR)/here_doc_processing.c \
 		$(EXECUTE_DIR)/utils_ex.c \
 		$(EXECUTE_DIR)/utils2_ex.c \
 		$(EXECUTE_DIR)/execution_utils.c \

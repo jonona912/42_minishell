@@ -197,6 +197,11 @@ int	execute_builtin(char **argv, t_shell *shell);
 // here_doc.c
 int run_heredoc(char *end_delimitor, int *in_fd);
 int	handle_heredoc(char *end_delimitor, int in_fd);
+
+// here_doc_processing.c
+void preprocess_heredocs(t_ast_node *node, t_shell *shell);
+void	cleanup_heredocs(t_ast_node *node, t_shell *shell);
+
 // redirections.c
 int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd);
 

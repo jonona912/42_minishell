@@ -19,8 +19,7 @@ void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell)
 	}
 }
 
-void	execute_cmd_child_beginning(int *pipe_fd,
-	t_ast_node *ast_node, int *in_fd)
+void	execute_cmd_child_beginning(int *pipe_fd, t_ast_node *ast_node, int *in_fd)
 {
 	close(pipe_fd[0]);
 	if (ast_node->data.cmd.redirs
