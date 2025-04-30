@@ -97,7 +97,7 @@ void	cleanup_heredocs(t_ast_node *node, t_shell *shell)
             {
                 unlink(redir->target);
 				shell->heredoc_temp_counter--;
-				
+
             }
             redir = redir->next;
         }

@@ -63,11 +63,13 @@ void	ft_echo_loop(char **argv, t_shell *shell, int *i)
 	}
 }
 
-void	ft_exit(char **argv)
+int	ft_exit(char **argv)
 {
 	int	i;
 
 	i = 0;
+	if (argv[2])
+		return (printf("exit: too many arguments\n"), 1);
 	if (argv[1])
 	{
 		while (argv[1][i])
@@ -75,12 +77,12 @@ void	ft_exit(char **argv)
 			if (ft_isalpha(argv[1][i]))
 			{
 				printf("exit: %s: numeric argument required\n", argv[1]);
-				exit(0);
+				exit(2);
 			}
 			i++;
 		}
 		printf("exit\n");
-		exit(0);
+		exit(ft_atoi(argv[1]));
 	}
 	printf("exit\n");
 	exit(0);

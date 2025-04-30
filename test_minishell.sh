@@ -349,25 +349,3 @@ test_command "echo \$? + \$? - \$?" \
 
 
 ############################### opopov's territory
-
-# Solve problem with CTRL+C and cat
-# % ./minishell
-# minishel> cat^C
-# minishel> cat
-# minishel> minishel> fdgdfg
-
-
-# minishel> echo "somme test" >>>> testfile1.txt
-# minishell: Redirection without or wrong target
-# minishell: syntax error near unexpected token
-
-
-# minishel> hgfdgfd
-# hgfdgfd: No such file or directory
-# minishel> hgfdgfd
-# hgfdgfd: No such file or directory
-# minishel> echo "Start" & echo "middle"
-# ^C
-# minishel> echo start
-# ^C
-# minishel> ^[[A^[[A^[[B^[[B^[[A^[[A^[[A

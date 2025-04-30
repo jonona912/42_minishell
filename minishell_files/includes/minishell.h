@@ -256,12 +256,12 @@ void	handle_subshell_if(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *sh
 void	execute_cmd_parent_free(t_shell *shell, char **new_env);
 int		execute_cmd_parent_loop_if(char **new_env, int *i, int *pipe_fd, int *len);
 int		execute_cmd_parent_loop(int count, char **new_env, int *pipe_fd);
-void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd);
+void	execute_cmd_child_fd(int in_fd, int out_fd);
 void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell);
 int		get_exit_status(int status);
-void	execute_cmd_child_beginning(int *pipe_fd, t_ast_node *ast_node, int *in_fd);
-void	execute_cmd_child_if_else(t_ast_node *ast_node, int *pipe_fd);
-void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd);
+void	execute_cmd_child_beginning(t_ast_node *ast_node, int *in_fd);
+void	execute_cmd_child_if_else(t_ast_node *ast_node);
+void	execute_cmd_child_fd(int in_fd, int out_fd);
 void	close_pipe_fd(int *pipe_fd);
 void	handle_pipe_left_pid_error(int *pipe_fd);
 void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head, int in_fd, t_shell *shell);
@@ -270,9 +270,11 @@ void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head, int in_fd, t
 //built_in_commands
 int		ft_cd_special_cases(char **argv, t_shell *shell, char **tmp, char *oldpwd);
 void	ft_echo_loop(char **argv, t_shell *shell, int *i);
-void	ft_exit(char **argv);
+int		ft_exit(char **argv);
 
-extern volatile int signal_received;
+
+// main
+void	signal_handler_heredoc(int signum);
 
 
 #endif
