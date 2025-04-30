@@ -19,34 +19,29 @@ void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell)
 	}
 }
 
-void	execute_cmd_child_beginning(int *pipe_fd, t_ast_node *ast_node, int *in_fd)
+void	execute_cmd_child_beginning(t_ast_node *ast_node, int *in_fd)
 {
-	close(pipe_fd[0]);
-	if (ast_node->data.cmd.redirs
-		&& is_redirection(ast_node->data.cmd.redirs->type))
+	if (ast_node->data.cmd.redirs && is_redirection(ast_node->data.cmd.redirs->type))
 	{
 		if (handle_redirection_fd(ast_node->data.cmd.redirs, in_fd) == -1)
 		{
-			close(pipe_fd[1]);
-			exit (2); // problem here for exit status echo hi | echo bye > invalid_file 
+			exit (2); // problem here for exit status echo hi | echo bye > invalid_file
 		}
 	}
 }
 
-void	execute_cmd_child_if_else(t_ast_node *ast_node, int *pipe_fd)
+void	execute_cmd_child_if_else(t_ast_node *ast_node)
 {
 	int	exec_return;
 
 	exec_return = 0;
 	if (ast_node->data.cmd.executable)
 	{
-		close(pipe_fd[1]);
 		exec_return = execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL);
 		if (exec_return == -1 && !ast_node->data.cmd.executable[0])
 		{
 			exit (0);
 		}
-		// 
 		ft_putstr_fd(ast_node->data.cmd.executable, 2);
 		ft_putstr_fd(": ", 2);
 		perror("");
@@ -58,23 +53,20 @@ void	execute_cmd_child_if_else(t_ast_node *ast_node, int *pipe_fd)
 		{
 			exit (127);
 		}
-		// exit(127);
 	}
 	else
 	{
-		close(pipe_fd[1]);
 		exit (1);
 	}
 }
 
-void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd)
+void	execute_cmd_child_fd(int in_fd, int out_fd)
 {
 	if (in_fd != -1)
 	{
 		if (dup2(in_fd, STDIN_FILENO) == -1)
 		{
 			perror("dup2 in_fd");
-			close(pipe_fd[1]);
 			exit (1);
 		}
 		close(in_fd);
@@ -84,7 +76,6 @@ void	execute_cmd_child_fd(int in_fd, int out_fd, int *pipe_fd)
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
 		{
 			perror("dup2 out_fd");
-			close(pipe_fd[1]);
 			exit (1);
 		}
 		close(out_fd);

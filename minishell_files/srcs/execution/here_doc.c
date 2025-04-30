@@ -21,7 +21,6 @@ int	handle_heredoc(char *end_delimitor, int in_fd) // should hangle signal
 	while (1)
 	{
 		input = readline("\033[0;35mheredoc>\033[0m");
-		printf("heredoc input = %s\n", input);
 		if (ms_strcmp_until(end_delimitor, input, '\n') == 0)
 		{
 			free(input);

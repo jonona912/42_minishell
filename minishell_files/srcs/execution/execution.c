@@ -17,6 +17,7 @@ void	handle_pipe_right_pid_child(int *pipe_fd, int out_fd,
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[0]);
 	status = execute(ast_head->data.binary_op.right, -1, out_fd, shell);
+	// fprintf(stderr, "right exit status for %s = %d\n", ast_head->data.binary_op.right->data.cmd.executable, status);
 	exit(status);
 }
 
@@ -35,13 +36,11 @@ int	handle_pipe(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 		perror("pipe");
 		return (-1);
 	}
-	// search for here_doc, if found then run it and make temporary file
 	left_pid = fork();
 	if (left_pid == -1)
 		return (handle_pipe_left_pid_error(pipe_fd), -1);
 	if (left_pid == 0)
 		handle_pipe_left_pid_child(pipe_fd, ast_head, in_fd, shell);
-	// search for here_doc, if found then run it and make temporary file
 	right_pid = fork();
 	if (right_pid == -1)
 		return (handle_pipe_right_pid_error(pipe_fd, &left_pid), -1);
@@ -52,7 +51,8 @@ int	handle_pipe(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	waitpid(left_pid, &left_status, 0);
 	waitpid(right_pid, &right_status, 0);
 	cleanup_heredocs(ast_head, shell);
-	return (right_status);
+	// printf("right_status = %d\n", get_exit_status(right_status));
+	return (get_exit_status(right_status));
 }
 
 int	handle_subshell(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
@@ -73,7 +73,8 @@ int	handle_subshell(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 		close(in_fd);
 	if (out_fd != -1)
 		close(out_fd);
-	return (status);
+	// fprintf(stderr, "subshell exit status = %d\n", get_exit_status(status));
+	return (get_exit_status(status));
 }
 
 int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
@@ -91,7 +92,6 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	else if (ast_head->type == NODE_AND)
 	{
 		status = execute(ast_head->data.binary_op.left, in_fd, out_fd, shell);
-		printf("status = %d\n", status);
 		if (!status)
 			status = execute(ast_head->data.binary_op.right,
 					in_fd, out_fd, shell);
@@ -100,6 +100,7 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	else if (ast_head->type == NODE_OR)
 	{
 		status = execute(ast_head->data.binary_op.left, in_fd, out_fd, shell);
+		// printf("statusssss = %d\n", status);
 		if (status)
 			status = execute(ast_head->data.binary_op.right,
 					in_fd, out_fd, shell);

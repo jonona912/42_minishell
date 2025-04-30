@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-volatile int signal_received = 0;
+// volatile int signal_received = 0;
 
 // int	check_user_input(char **line)
 // {
@@ -34,19 +34,20 @@ char	**copy_env(char **envp)
 	return (copy);
 }
 
-void signal_handler(int signum) {
-    (void)signum;
-    // Only modify behavior if there's actual input
-    if (rl_end > 0) {  // rl_end is readline's cursor position (0 means empty line)
-        rl_replace_line("", 0);
-        rl_crlf();
-        rl_redisplay();
-    } else {
-        // For empty line, just let readline handle it
-        rl_crlf();
-        rl_on_new_line();
-        rl_redisplay();
-    }
+void	signal_handler(int signum) {
+	(void)signum;
+	if (rl_end > 0)
+	{
+		rl_replace_line("", 0);
+		rl_crlf();
+		rl_redisplay();
+	}
+	else
+	{
+		rl_crlf();
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -57,33 +58,30 @@ int	main(int argc, char **argv, char **envp)
 	t_token_lst *token_lst;
 	t_ast_node	*head;
 	t_shell		shell;
+	char	*line;
 
 	shell.heredoc_temp_counter = 0;
 	shell.last_status = 0;
 	shell.env = copy_env(envp);
 	head = NULL;
 	token_lst = NULL;
-	// char	*line = NULL;
+	line = NULL;
 	struct sigaction sa_int;
-    sa_int.sa_handler = signal_handler;
-    sigemptyset(&sa_int.sa_mask);
-    sa_int.sa_flags = SA_RESTART;
-    sigaction(SIGINT, &sa_int, NULL);
-    signal(SIGQUIT, SIG_IGN);
-
-    // Ігнорувати SIGQUIT (Ctrl+\)
-    signal(SIGQUIT, SIG_IGN);
+	sa_int.sa_handler = signal_handler;
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa_int, NULL);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
-		char *line = readline("minishell> ");
-        if (!line) {
-            printf("exit\n");
-            break;
-        }
-
-        if (*line != '\0') {
-            add_history(line);
-        }
+		line = readline("minishell> ");
+		if (!line)
+		{
+			printf("exit\n");
+			break;
+		}
+		if (*line != '\0')
+			add_history(line);
 		token_lst = ft_tokenize(line);
 		if (!token_lst || token_lst->type == TOKEN_END)
 		{
@@ -97,7 +95,7 @@ int	main(int argc, char **argv, char **envp)
 			free(line);
 			continue ;
 		}
-		print_ast(head);
+		// print_ast(head);
 		// token_free_list(token_lst);
 		shell.last_status = execute(head, -1, -1, &shell);
 		free_ast_node(head);
@@ -105,6 +103,77 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (0);
 }
+
+
+// void signal_handler(int signum) {
+// 	(void)signum;
+// 	if (rl_end > 0)
+// 	{
+// 		rl_replace_line("", 0);
+// 		rl_crlf();
+// 		rl_redisplay();
+// 	}
+// 	else
+// 	{
+// 		rl_crlf();
+// 		rl_on_new_line();
+// 		rl_redisplay();
+// 	}
+// }
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	(void)argv;
+// 	(void)envp;
+// 	(void)argc;
+// 	t_token_lst *token_lst;
+// 	t_ast_node	*head;
+// 	t_shell		shell;
+// 	char	*line;
+
+// 	shell.heredoc_temp_counter = 0;
+// 	shell.last_status = 0;
+// 	shell.env = copy_env(envp);
+// 	head = NULL;
+// 	token_lst = NULL;
+// 	line = NULL;
+// 	struct sigaction sa_int;
+// 	sa_int.sa_handler = signal_handler;
+// 	sigemptyset(&sa_int.sa_mask);
+// 	sa_int.sa_flags = SA_RESTART;
+// 	sigaction(SIGINT, &sa_int, NULL);
+// 	signal(SIGQUIT, SIG_IGN);
+// 	signal(SIGQUIT, SIG_IGN);
+// 	while (1)
+// 	{
+// 		line = readline("minishell> ");
+// 		if (!line)
+// 		{
+// 			printf("exit\n");
+// 			break;
+// 		}
+// 		if (*line != '\0')
+// 			add_history(line);
+// 		token_lst = ft_tokenize(line);
+// 		if (!token_lst || token_lst->type == TOKEN_END)
+// 		{
+// 			free(line);
+// 			shell.last_status = 1;
+// 			continue;
+// 		}
+// 		if (!parse_or(token_lst, &head, &shell))
+// 		{
+// 			token_free_list(token_lst);
+// 			free(line);
+// 			continue ;
+// 		}
+// 		token_free_list(token_lst);
+// 		shell.last_status = execute(head, -1, -1, &shell);
+// 		free_ast_node(head);
+// 		free(line);
+// 	}
+// 	return (0);
+// }
 
 // int main(int argc, char **argv, char **envp)
 // {

@@ -393,6 +393,13 @@ test_command "echo \$? + \$? - \$?" \
 # exit 12 292 393 (error too many arguments...) exit asdfasdf (different exit status, probably 2)
 
 # export display should be different from env
-
+# echo 'exit_code ->$? user ->$USER home -> $HOME'
 
 # execution of PATH (Unsetting Path should disable the execution of ls) -----> DONE
+
+
+# echo 'exit_code ->$? user ->$USER home -> $HOME' - Does not behave same as bash
+# wrong exit status for this:  export A-, export =      
+# this should fail:  export HELLO-=123
+#  cd $PWD hi (similar to exit)
+# echo hi | > outfile01 echo bye >invalid_permission   ===> DONE

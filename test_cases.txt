@@ -39,13 +39,19 @@ cat << ""
 TEST AND / OR
 
 (ls -a | grep mini) || (ls -l | grep mini)
+(ls -a | grep non_existant_arg) || (ls -l | grep mini)
 (ls -a | grep mini) && (ls -l | grep mini)
+(ls -a | grep non_existant_arg) && (ls -l | grep mini)
 
 (ls -a | grep mini > output.txt) || (ls -l | grep mini > output.txt)
+(ls -a | grep non_existant_arg > output.txt) || (ls -l | grep mini > output.txt)
 (ls -a | grep mini > output.txt) && (ls -l | grep mini >> output.txt)
+(ls -a | grep non_existant_arg > output.txt) && (ls -l | grep mini >> output.txt)
 
 ls -a | grep mini > output.txt || ls -l | grep mini > output.txt
+ls -a | grep non_existant_arg > output.txt || ls -l | grep mini > output.txt
 ls -a | grep mini > output.txt && ls -l | grep mini >> output.txt
+ls -a | grep non_existant_arg > output.txt && ls -l | grep mini >> output.txt
 
 (ls -a | grep mini) > output.txt || (ls -l | grep mini) > output.txt
 (ls -a | grep mini) > output.txt && (ls -l | grep mini) >> output.txt
