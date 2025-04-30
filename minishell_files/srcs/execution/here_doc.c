@@ -12,7 +12,7 @@ int	ms_strcmp_until(char *s1, char *s2, char c)
 	return (*(s1 + i) - *(s2 + i));
 }
 
-int	handle_heredoc(char *end_delimitor, int in_fd)
+int	handle_heredoc(char *end_delimitor, int in_fd) // should hangle signal
 {
 	char	*input;
 
@@ -21,6 +21,7 @@ int	handle_heredoc(char *end_delimitor, int in_fd)
 	while (1)
 	{
 		input = readline("\033[0;35mheredoc>\033[0m");
+		printf("heredoc input = %s\n", input);
 		if (ms_strcmp_until(end_delimitor, input, '\n') == 0)
 		{
 			free(input);

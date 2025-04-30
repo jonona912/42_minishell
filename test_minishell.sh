@@ -371,3 +371,28 @@ test_command "echo \$? + \$? - \$?" \
 # minishel> echo start
 # ^C
 # minishel> ^[[A^[[A^[[B^[[B^[[A^[[A^[[A
+
+
+
+
+
+
+
+# new issues:
+#### Ctrl+C doesn't work in heredoc (Maybe need to work on this together)
+# ^Cminishell> 
+# heredoc>
+# minishell> ^C
+# heredoc>
+# minishell> ^C
+# heredoc>
+# minishell> ^C
+
+
+# exit should exit with the specified number e.g. exit 12 -> exit status 12, 
+# exit 12 292 393 (error too many arguments...) exit asdfasdf (different exit status, probably 2)
+
+# export display should be different from env
+
+
+# execution of PATH (Unsetting Path should disable the execution of ls) -----> DONE

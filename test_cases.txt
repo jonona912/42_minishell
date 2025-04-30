@@ -81,6 +81,9 @@ export TEST=123
 (export TEST=456 && ls -a) > output.txt
 echo $TEST  # Should still be unset or original value
 
+
+(lsasd -a | grep minih) > output.txt || (ls -l | grep mini) > output.txt
+
 ==================================== TESTS DONE =======================================
 ** first check token_lst
 ** then handle in parser most probably (yep.......)

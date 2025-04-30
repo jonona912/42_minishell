@@ -173,7 +173,7 @@ void add_redir_back(t_redir_lst **lst, t_redir_lst *new_node);
 void free_redir_list(t_redir_lst **lst);
 
 // return_executable_path.c
-char *return_executable_path(const char *name);
+char	*return_executable_path(const char *name, t_shell *shell);
 
 // parse_cmd.c
 t_token_lst *parse_cmd(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell);

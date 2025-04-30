@@ -75,7 +75,11 @@ int	set_executable_and_argv(t_ast_node **ast_node,
 {
 	int	ctr;
 
+	if (!cmd_lst)
+		return (0);
 	ctr = token_lst_size(cmd_lst);
+	if (ctr == 0)
+		return (0);
 	(*ast_node)->data.cmd.exec_argv
 		= (char **) malloc((ctr + 1) * sizeof(char *));
 	if (!(*ast_node)->data.cmd.exec_argv)
@@ -85,7 +89,7 @@ int	set_executable_and_argv(t_ast_node **ast_node,
 			= arg_return(cmd_lst->value, cmd_lst->type, shell);
 	else
 		(*ast_node)->data.cmd.executable
-			= return_executable_path(cmd_lst->value);
+			= return_executable_path(cmd_lst->value, shell); // fix path here
 	ctr = 0;
 	while (cmd_lst)
 	{

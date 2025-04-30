@@ -37,7 +37,7 @@ int	copy_wildcard_string_loop(char *line, int i, char **dest)
 	return (i);
 }
 
-char	*return_executable_path(const char *name)
+char	*return_executable_path(const char *name, t_shell *shell)
 {
 	char	*path;
 	char	**path_split;
@@ -53,12 +53,15 @@ char	*return_executable_path(const char *name)
 			return (ft_strdup((char *) name));
 		return (NULL);
 	}
-	path = getenv("PATH");
+	path = ft_getenv("PATH", *shell);
 	if (path == NULL)
-		return (NULL);
+		return (ft_strdup((char *) name));
 	path_split = ft_split(path, ':');
 	if (path_split == NULL)
-		return (NULL);
+	{
+		ft_free_double_ptr(path_split);
+		return (ft_strdup((char *) name));
+	}
 	ch = return_executable_path_loop(path_split, name, &temp_path); // delete ch
 	ft_free_double_ptr(path_split);
 	// if (!ch) // ch == 0?

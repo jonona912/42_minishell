@@ -97,7 +97,8 @@ int	main(int argc, char **argv, char **envp)
 			free(line);
 			continue ;
 		}
-		token_free_list(token_lst);
+		print_ast(head);
+		// token_free_list(token_lst);
 		shell.last_status = execute(head, -1, -1, &shell);
 		free_ast_node(head);
 		free(line);

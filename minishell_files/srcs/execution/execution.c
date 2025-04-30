@@ -35,41 +35,40 @@ char *append_str_and_int(char *str, int num)
 
 void preprocess_heredocs(t_ast_node *node, t_shell *shell)
 {
-	t_redir_lst *redir;
+	t_redir_lst	*redir;
+	int			fd;
 
 	char *tmp_file;
     if (!node)
         return;
-
     if (node->type == NODE_CMD)
-    {
-        redir = node->data.cmd.redirs;
-        while (redir)
-        {
-            if (redir->type == TOKEN_HEREDOC)
-            {
+	{
+		redir = node->data.cmd.redirs;
+		while (redir)
+		{
+			if (redir->type == TOKEN_HEREDOC)
+			{
 				tmp_file = append_str_and_int("/tmp/heredoc_", shell->heredoc_temp_counter);
 				shell->heredoc_temp_counter++;
-				int fd = open(tmp_file, O_RDWR | O_CREAT | O_EXCL, 0644);
-                if (fd == -1)
-                {
-                    perror("open");
-                    exit(1);
-                }
-
+				fd = open(tmp_file, O_RDWR | O_CREAT | O_EXCL, 0644);
+				if (fd == -1)
+				{
+					perror("open");
+					exit(1);
+				}
 				handle_heredoc(redir->target, fd);
-                close(fd);
-                redir->type = TOKEN_REDIRECTION_IN;
-                free(redir->target);
-                redir->target = ft_strdup(tmp_file);
-                if (!redir->target)
-                {
+				close(fd);
+				redir->type = TOKEN_REDIRECTION_IN;
+				free(redir->target);
+				redir->target = tmp_file;
+				if (!redir->target)
+				{
 					return ;
-                }
-            }
-            redir = redir->next;
-        }
-    }
+				}
+			}
+			redir = redir->next;
+		}
+	}
     else if (node->type == NODE_PIPE)
     {
         preprocess_heredocs(node->data.binary_op.left, shell);
@@ -174,7 +173,9 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	int	status;
 
 	if (ast_head->type == NODE_CMD)
+	{
 		return (execute_cmd(ast_head, in_fd, out_fd, shell));
+	}
 	else if (ast_head->type == NODE_SUBSHELL)
 		return (handle_subshell(ast_head, in_fd, out_fd, shell));
 	else if (ast_head->type == NODE_PIPE)
@@ -182,6 +183,7 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	else if (ast_head->type == NODE_AND)
 	{
 		status = execute(ast_head->data.binary_op.left, in_fd, out_fd, shell);
+		printf("status = %d\n", status);
 		if (!status)
 			status = execute(ast_head->data.binary_op.right,
 					in_fd, out_fd, shell);

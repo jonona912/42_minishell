@@ -62,7 +62,7 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst,
 		(*ast_node)->data.cmd.executable = arg_return
 			(token_lst->value, token_lst->type, shell);
 	else
-		(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value);
+		(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value, shell);
 	// if (!(*ast_node)->data.cmd.executable)
 	// {
 	// 	ft_putstr_fd(token_lst->value, 2);
