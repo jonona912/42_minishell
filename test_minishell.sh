@@ -407,7 +407,7 @@ test_command "echo \$? + \$? - \$?" \
 
 
 
-# 'exit_code ->$? user ->$USER home -> $HOME'
+# 'exit_code ->$? user ->$USER home -> $HOME' =====> DONE
 
 # minishell> sdfg^C
 # ^C
