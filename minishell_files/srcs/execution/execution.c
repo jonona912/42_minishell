@@ -82,9 +82,7 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	int	status;
 
 	if (ast_head->type == NODE_CMD)
-	{
 		return (execute_cmd(ast_head, in_fd, out_fd, shell));
-	}
 	else if (ast_head->type == NODE_SUBSHELL)
 		return (handle_subshell(ast_head, in_fd, out_fd, shell));
 	else if (ast_head->type == NODE_PIPE)
@@ -100,7 +98,6 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	else if (ast_head->type == NODE_OR)
 	{
 		status = execute(ast_head->data.binary_op.left, in_fd, out_fd, shell);
-		// printf("statusssss = %d\n", status);
 		if (status)
 			status = execute(ast_head->data.binary_op.right,
 					in_fd, out_fd, shell);
