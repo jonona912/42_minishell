@@ -39,12 +39,12 @@ void	signal_handler(int signum) {
 	if (rl_end > 0)
 	{
 		rl_replace_line("", 0);
-		rl_crlf();
+		write(1, "\r\n", 2);
 		rl_redisplay();
 	}
 	else
 	{
-		rl_crlf();
+		write(1, "\r\n", 2);
 		rl_on_new_line();
 		rl_redisplay();
 	}
@@ -95,8 +95,6 @@ int	main(int argc, char **argv, char **envp)
 			free(line);
 			continue ;
 		}
-		// print_ast(head);
-		// token_free_list(token_lst);
 		shell.last_status = execute(head, -1, -1, &shell);
 		free_ast_node(head);
 		free(line);

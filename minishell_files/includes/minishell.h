@@ -1,6 +1,8 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
+#include <sys/ioctl.h>
+#include <termios.h>
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -280,6 +282,8 @@ int		ft_exit(char **argv);
 
 // main
 void	signal_handler_heredoc(int signum);
+
+static volatile int  g_signal_received;
 
 
 #endif
