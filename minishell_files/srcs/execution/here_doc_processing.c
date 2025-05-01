@@ -13,14 +13,14 @@ char *append_str_and_int(char *str, int num)
 	return (result);
 }
 
-void preprocess_heredocs(t_ast_node *node, t_shell *shell)
+int	preprocess_heredocs(t_ast_node *node, t_shell *shell)
 {
 	t_redir_lst	*redir;
 	int			fd;
 
 	char *tmp_file;
     if (!node)
-        return;
+        return (-1);
     if (node->type == NODE_CMD)
 	{
 		redir = node->data.cmd.redirs;
@@ -36,28 +36,32 @@ void preprocess_heredocs(t_ast_node *node, t_shell *shell)
 					perror("open");
 					exit(1);
 				}
-				handle_heredoc(redir->target, fd);
+				if (handle_heredoc(redir->target, fd) == -1)
+				{
+					shell->last_status = 130;
+					close(fd);
+					return (-1);
+				}
 				close(fd);
 				redir->type = TOKEN_REDIRECTION_IN;
 				free(redir->target);
 				redir->target = tmp_file;
-				if (!redir->target)
-				{
-					return ;
-				}
 			}
 			redir = redir->next;
 		}
 	}
     else if (node->type == NODE_PIPE)
     {
-        preprocess_heredocs(node->data.binary_op.left, shell);
-        preprocess_heredocs(node->data.binary_op.right, shell);
+        if (preprocess_heredocs(node->data.binary_op.left, shell) == -1)
+			return (-1);
+        if (preprocess_heredocs(node->data.binary_op.right, shell) == -1)
+			return (-1);
     }
 	// else if (node->type == SUBSHELL)
 	// {
 	//     preprocess_heredocs(node->data.sub_shell.subshell);
 	// }
+	return (0);
 }
 
 void	cleanup_heredocs(t_ast_node *node, t_shell *shell)

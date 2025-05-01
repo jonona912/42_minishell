@@ -81,6 +81,8 @@ ls -a | grep non_existant_arg > output.txt && ls -l | grep mini >> output.txt
 (lasdfs -aasdf || cat < input.txt) 2> error.log > output.tx
 (echo $TEST && cat < input.txt) > output.txt
 
+(mkdir test_dir || echo "Creation failed") && (cd test_dir && touch file.txt)
+
 export TEST=123
 (echo $TEST && cat < input.txt) > output.txt
 

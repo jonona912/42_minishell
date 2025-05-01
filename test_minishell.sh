@@ -403,3 +403,16 @@ test_command "echo \$? + \$? - \$?" \
 # this should fail:  export HELLO-=123 ===> DONE
 #  cd $PWD hi (similar to exit) ===> DONE
 # echo hi | > outfile01 echo bye >invalid_permission   ===> DONE
+
+
+
+
+# 'exit_code ->$? user ->$USER home -> $HOME'
+
+# minishell> sdfg^C
+# ^C
+# minishell> dgdfgfg^C
+# ff
+# ff: No such file or director
+
+

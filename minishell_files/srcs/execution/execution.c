@@ -30,7 +30,8 @@ int	handle_pipe(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	int		left_status;
 	int		right_status;
 
-	preprocess_heredocs(ast_head, shell);
+	if (preprocess_heredocs(ast_head, shell) == -1)
+		return (-1);
 	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe");

@@ -78,7 +78,10 @@ int	ft_exit(char **argv)
 
 	i = 0;
 	if (argv[2])
+	{
 		return (printf("exit: too many arguments\n"), 1);
+	}
+
 	if (argv[1])
 	{
 		while (argv[1][i])

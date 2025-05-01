@@ -40,11 +40,12 @@ int	handle_heredoc(char *end_delimitor, int in_fd)
 		if (g_signal_received)
 		{
 			sigaction(SIGINT, &old_sa, NULL);
-			return (1);
+			return (-1);
 		}
 		if (!input)
 		{
 			sigaction(SIGINT, &old_sa, NULL);
+			printf("minishell: warning: here-document at line 10 delimited by end-of-file (wanted `EOF')\n");
 			return (1);
 		}
 		if (ms_strcmp_until(end_delimitor, input, '\n') == 0)
@@ -60,44 +61,44 @@ int	handle_heredoc(char *end_delimitor, int in_fd)
 	return (1);
 }
 
-int	run_heredoc_error_handler(int *pipe_fd, char *end_delimitor)
-{
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (0);
-	}
-	if (handle_heredoc(end_delimitor, pipe_fd[1]) == -1)
-	{
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		return (0);
-	}
-	return (1);
-}
+// int	run_heredoc_error_handler(int *pipe_fd, char *end_delimitor)
+// {
+// 	if (pipe(pipe_fd) == -1)
+// 	{
+// 		perror("pipe");
+// 		return (0);
+// 	}
+// 	if (handle_heredoc(end_delimitor, pipe_fd[1]) == -1)
+// 	{
+// 		close(pipe_fd[0]);
+// 		close(pipe_fd[1]);
+// 		return (0);
+// 	}
+// 	return (1);
+// }
 
-int	run_heredoc(char *end_delimitor, int *in_fd)
-{
-	int		pipe_fd[2];
-	int		is_interprete;
-	char	*temp;
+// int	run_heredoc(char *end_delimitor, int *in_fd)
+// {
+// 	int		pipe_fd[2];
+// 	int		is_interprete;
+// 	char	*temp;
 
-	temp = end_delimitor;
-	is_interprete = 1;
-	if (end_delimitor == NULL)
-		return (-1);
-	if (*end_delimitor == '\"' || *end_delimitor == '\'')
-	{
-		end_delimitor = ft_strtrim(end_delimitor, "\"\'");
-		if (!end_delimitor)
-			return (-1);
-		is_interprete = 0;
-	}
-	if (!run_heredoc_error_handler(pipe_fd, end_delimitor))
-		return (-1);
-	close(pipe_fd[1]);
-	*in_fd = pipe_fd[0];
-	if (!is_interprete)
-		free(end_delimitor);
-	return (0);
-}
+// 	temp = end_delimitor;
+// 	is_interprete = 1;
+// 	if (end_delimitor == NULL)
+// 		return (-1);
+// 	if (*end_delimitor == '\"' || *end_delimitor == '\'')
+// 	{
+// 		end_delimitor = ft_strtrim(end_delimitor, "\"\'");
+// 		if (!end_delimitor)
+// 			return (-1);
+// 		is_interprete = 0;
+// 	}
+// 	if (!run_heredoc_error_handler(pipe_fd, end_delimitor))
+// 		return (-1);
+// 	close(pipe_fd[1]);
+// 	*in_fd = pipe_fd[0];
+// 	if (!is_interprete)
+// 		free(end_delimitor);
+// 	return (0);
+// }
