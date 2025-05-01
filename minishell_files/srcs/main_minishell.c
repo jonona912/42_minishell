@@ -84,6 +84,7 @@ int	main(int argc, char **argv, char **envp)
 		if (*line != '\0')
 			add_history(line);
 		token_lst = ft_tokenize(line);
+		// ft_print_tokens(token_lst);
 		if (!token_lst || token_lst->type == TOKEN_END)
 		{
 			free(line);
@@ -94,13 +95,17 @@ int	main(int argc, char **argv, char **envp)
 		{
 			token_free_list(token_lst);
 			if (head)
+			{
 				free_ast_node(head);
+				head = NULL;
+			}
 			free(line);
 			continue ;
 		}
 		shell.last_status = execute(head, -1, -1, &shell);
 		token_free_list(token_lst);
 		free_ast_node(head);
+		head = NULL;
 		free(line);
 	}
 	return (0);

@@ -106,11 +106,11 @@ t_token_lst	*parse_cmd(t_token_lst *token_lst,
 						t_ast_node **ast_node,
 						t_shell *shell)
 {
-	int			is_cmd_created;
+	// int			is_cmd_created;
 	t_token_lst	*cmd_lst;
 
 	cmd_lst = NULL;
-	is_cmd_created = 0;
+	// is_cmd_created = 0;
 	*ast_node = create_cmd_node(NODE_CMD, NULL, NULL, NULL);
 	token_lst = make_cmd_and_redir_lst(token_lst,
 			&cmd_lst, &(*ast_node)->data.cmd.redirs, shell);
