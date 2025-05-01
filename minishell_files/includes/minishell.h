@@ -141,10 +141,10 @@ int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
 char	*ft_getenv(const char *name, t_shell shell);
-void	ft_echo(char **argv, t_shell *shell);
+void	ft_echo(char **argv);
 void	ft_pwd();
 // int		ft_exit(char **argv);
-void	ft_env(t_shell *shell);
+void	ft_env(t_shell *shell, int is_exp);
 int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
 int		ft_unset(char **argv, t_shell *shell);
@@ -274,12 +274,13 @@ void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head, int in_fd, t
 
 //built_in_commands
 int		ft_cd_special_cases(char **argv, t_shell *shell, char **tmp, char *oldpwd);
-void	ft_echo_loop(char **argv, t_shell *shell, int *i);
+void	ft_echo_loop(char **argv, int *i);
 int		ft_exit(char **argv);
+int		is_n_flag(char *argv);
 
 
 // main
-void	signal_handler_heredoc(int signum);
+
 
 
 #endif

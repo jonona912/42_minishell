@@ -28,10 +28,9 @@ void preprocess_heredocs(t_ast_node *node, t_shell *shell)
 		{
 			if (redir->type == TOKEN_HEREDOC)
 			{
-				printf("preprocess_heredocs: %s\n", redir->target);
 				tmp_file = append_str_and_int("/tmp/heredoc_", shell->heredoc_temp_counter);
 				shell->heredoc_temp_counter++;
-				fd = open(tmp_file, O_RDWR | O_CREAT, 0644);
+				fd = open(tmp_file, O_RDWR | O_CREAT | O_TRUNC, 0644);
 				if (fd == -1)
 				{
 					perror("open");
@@ -77,7 +76,7 @@ void	cleanup_heredocs(t_ast_node *node, t_shell *shell)
             {
                 unlink(redir->target);
 				shell->heredoc_temp_counter--;
-				
+
             }
             redir = redir->next;
         }

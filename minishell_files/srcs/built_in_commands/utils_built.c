@@ -38,7 +38,23 @@ void	ft_pwd(void)
 		ft_putstr_fd("Error: path is not found\n", 2);
 }
 
-void	ft_echo_loop(char **argv, t_shell *shell, int *i)
+int	is_n_flag(char *argv)
+{
+	int i;
+
+	if (!argv || argv[0] != '-')
+		return (0);
+	i = 1;
+	while (argv[i])
+	{
+		if (argv[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	ft_echo_loop(char **argv, int *i)
 {
 	int	j;
 
@@ -47,14 +63,7 @@ void	ft_echo_loop(char **argv, t_shell *shell, int *i)
 		j = 0;
 		while (argv[*i][j])
 		{
-			if (argv[*i][j] == '$' && argv[*i][j + 1] == '?')
-			{
-				printf("%d", shell->last_status);
-				j += 2;
-				continue ;
-			}
-			else
-				printf("%c", argv[*i][j]);
+			printf("%c", argv[*i][j]);
 			j++;
 		}
 		if (argv[*i + 1])

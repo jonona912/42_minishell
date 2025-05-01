@@ -16,11 +16,11 @@ int	builtin_check(char *cmd)
 int	execute_builtin(char **argv, t_shell *shell) // handle $P
 {
 	if (ft_strcmp(argv[0], "echo") == 0)
-		ft_echo(argv, shell);
+		ft_echo(argv);
 	else if (ft_strcmp(argv[0], "pwd") == 0)
 		ft_pwd(shell);
 	else if (ft_strcmp(argv[0], "env") == 0)
-		ft_env(shell);
+		ft_env(shell, 0);
 	return (0);
 }
 

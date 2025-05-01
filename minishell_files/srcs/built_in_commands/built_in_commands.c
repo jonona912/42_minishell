@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-void	ft_echo(char **argv, t_shell *shell)
+void	ft_echo(char **argv)
 {
 	int	i;
 	int	n;
@@ -9,26 +9,25 @@ void	ft_echo(char **argv, t_shell *shell)
 	i = 1;
 	if (!argv[i])
 		return ;
-	// printf("argv[0]: %s\n", argv[0]); // doesn't reach it
-	while (ft_strncmp(argv[i], "-n", 2) == 0) //  echo -nnnn -nff
+	while (argv[i] && is_n_flag(argv[i]))
 	{
-		if (!argv[i + 1])
-			return ;
 		n = 1;
 		i++;
 	}
-	ft_echo_loop(argv, shell, &i);
+	ft_echo_loop(argv, &i);
 	if (!n)
 		printf("\n");
 }
 
-void	ft_env(t_shell *shell)
+void	ft_env(t_shell *shell, int is_exp)
 {
 	int	i;
 
 	i = 0;
 	while (shell->env[i])
 	{
+		if (is_exp)
+			write(1, "declared -x ", 12);
 		write(1, shell->env[i], ft_strlen(shell->env[i]));
 		write(1, "\n", 1);
 		i++;
@@ -42,25 +41,43 @@ int	ft_cd(char **argv, t_shell *shell)
 	char		new_cwd[4096];
 	char		*tmp;
 
+	if (argv[2])
+		return (printf("Error: too many arguments\n"), 1);
 	if (ft_cd_special_cases(argv, shell, &tmp, oldpwd))
 		return (1);
 	if (!getcwd(cwd, sizeof(cwd)))
-		return (ft_putstr_fd
-			("Error: current working directory name not found\n", 2), 1);
+		return (printf("Error: current working directory name not found\n"), 1);
 	if (chdir(tmp) != 0)
-		return (ft_putstr_fd
-			("Error: directory cannot be changed\n", 2), 1);
+		return (printf("Error: directory cannot be changed\n"), 1);
 	if (ft_setenv("OLDPWD", cwd, 1, shell))
 		return (1);
 	if (!getcwd(new_cwd, sizeof(new_cwd)))
-		return (ft_putstr_fd
-			("Error: cannot set PWD to new directory\n", 2), 1);
+		return (printf("Error: directory cannot be changed\n"), 1);
 	if (ft_setenv("PWD", new_cwd, 1, shell))
 		return (1);
 	if (oldpwd)
 		free(oldpwd);
 	oldpwd = ft_strdup(cwd);
 	return (0);
+}
+
+int	is_valid_name(char *name)
+{
+	int	i;
+
+	i = 0;
+	if (!name || !*name)
+		return (0);
+	if (!(ft_isalpha(name[i]) || name[i] == '_'))
+		return (0);
+	i++;
+	while (name[i])
+	{
+		if (!(ft_isalnum(name[i]) || name[i] == '_'))
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 int	ft_export(char **argv, t_shell *shell)
@@ -71,22 +88,27 @@ int	ft_export(char **argv, t_shell *shell)
 
 	if (!argv[1])
 	{
-		ft_env(shell);
+		ft_env(shell, 1);
 		return (0);
 	}
 	equal = ft_strchr(argv[1], '=');
-	if (!equal || equal == argv[1])
-		return (perror("Error: invalid syntax input"), 1);
-	name_len = equal - argv[1];
+	if (!equal)
+		name_len = ft_strlen(argv[1]);
+	else
+		name_len = equal - argv[1];
 	name = (char *) malloc(name_len + 1);
 	if (!name)
-		return (perror("Error: memory allocation failed"), 1);
+		return (printf("Error: memory allocation failed\n"), 1);
 	ft_strlcpy(name, argv[1], name_len + 1);
+	if (!is_valid_name(name))
+	{
+		free(name);
+		return (printf("Error: invalid variable name\n"), 1);
+	}
 	if (ft_setenv(name, equal + 1, 1, shell))
 	{
-		perror("Error: invalid syntax input");
 		free(name);
-		return (1);
+		return (printf("Error: invalid syntax input\n"), 1);
 	}
 	free(name);
 	return (0);

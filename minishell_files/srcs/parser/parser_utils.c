@@ -29,14 +29,25 @@ int	dollar_structure_if(char *value, int *i, t_shell shell, char **res)
 	char	*new;
 	char	*tmp;
 
-	if (value[*i] == '$' && value[*i + 1] && !ft_isspace(value[*i + 1]))
+	if (value[*i] == '$' && (value[*i + 1] || value[*i + 1] == '?'))
 	{
-		tmp = dollar_check(value, i, shell);
-		new = ft_strjoin(*res, tmp);
-		free(*res);
-		free(tmp);
-		*res = new;
-		return (1);
+		if (value[*i] == '$' && value[*i + 1] == '?')
+		{
+			new = ft_strjoin(*res, ft_itoa(shell.last_status));
+			free(*res);
+			*res = new;
+			*i += 2;
+			return (1);
+		}
+		if (!ft_isspace(value[*i + 1]))
+		{
+			tmp = dollar_check(value, i, shell);
+			new = ft_strjoin(*res, tmp);
+			free(*res);
+			free(tmp);
+			*res = new;
+			return (1);
+		}
 	}
 	return (0);
 }

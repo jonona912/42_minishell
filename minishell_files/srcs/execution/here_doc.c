@@ -12,7 +12,7 @@ int	ms_strcmp_until(char *s1, char *s2, char c)
 	return (*(s1 + i) - *(s2 + i));
 }
 
-int	handle_heredoc(char *end_delimitor, int in_fd) // should hangle signal
+int	handle_heredoc(char *end_delimitor, int in_fd)
 {
 	char	*input;
 

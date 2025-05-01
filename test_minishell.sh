@@ -380,7 +380,7 @@ test_command "echo \$? + \$? - \$?" \
 
 # new issues:
 #### Ctrl+C doesn't work in heredoc (Maybe need to work on this together)
-# ^Cminishell> 
+# ^Cminishell>
 # heredoc>
 # minishell> ^C
 # heredoc>
@@ -389,7 +389,7 @@ test_command "echo \$? + \$? - \$?" \
 # minishell> ^C
 
 
-# exit should exit with the specified number e.g. exit 12 -> exit status 12, 
+# exit should exit with the specified number e.g. exit 12 -> exit status 12,
 # exit 12 292 393 (error too many arguments...) exit asdfasdf (different exit status, probably 2)
 
 # export display should be different from env
@@ -398,8 +398,8 @@ test_command "echo \$? + \$? - \$?" \
 # execution of PATH (Unsetting Path should disable the execution of ls) -----> DONE
 
 
-# echo 'exit_code ->$? user ->$USER home -> $HOME' - Does not behave same as bash
-# wrong exit status for this:  export A-, export =      
-# this should fail:  export HELLO-=123
-#  cd $PWD hi (similar to exit)
+# echo 'exit_code ->$? user ->$USER home -> $HOME' - Does not behave same as bash ===> DONE
+# wrong exit status for this:  export A-, export = ===> DONE
+# this should fail:  export HELLO-=123 ===> DONE
+#  cd $PWD hi (similar to exit) ===> DONE
 # echo hi | > outfile01 echo bye >invalid_permission   ===> DONE
