@@ -1,7 +1,7 @@
 NAME = minishell
 TESTER = token_tester
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
 INCLUDE = minishell_files/includes/minishell.h
 
 SRCS_DIR = minishell_files/srcs
@@ -19,6 +19,7 @@ SRCS = main_minishell.c \
 		$(TOKENIZER_DIR)/tokenizer_utils_utils.c \
 		$(TOKENIZER_DIR)/tokenizer.c \
 		$(PARSER_DIR)/ast_binary_tree_functions.c \
+		$(PARSER_DIR)/is_functions.c \
 		$(PARSER_DIR)/parser.c \
 		$(PARSER_DIR)/utils_par.c \
 		$(PARSER_DIR)/parser_helper_1.c \

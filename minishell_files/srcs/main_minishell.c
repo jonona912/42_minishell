@@ -103,8 +103,7 @@ int	main(int argc, char **argv, char **envp)
 			token_free_list(token_lst);
 			if (head)
 			{
-				free_ast_node(head);
-				head = NULL;
+				free_ast_node(&head);
 			}
 			free(line);
 			continue ;
@@ -112,8 +111,7 @@ int	main(int argc, char **argv, char **envp)
 		g_signal_received = 1;
 		shell.last_status = execute(head, -1, -1, &shell);
 		g_signal_received = 0;
-		free_ast_node(head);
-		head = NULL;
+		free_ast_node(&head);
 		free(line);
 	}
 	shell_env_free(&shell);
