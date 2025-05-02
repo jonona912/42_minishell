@@ -38,28 +38,42 @@ int	ft_cd(char **argv, t_shell *shell)
 {
 	char		cwd[4096];
 	static char	*oldpwd = NULL;
-	char		new_cwd[4096];
+	char		*oldpwd_tmp;
+	char		*curr_pwd;
 	char		*tmp;
 
 	if (argv[2])
 		return (printf("Error: too many arguments\n"), 1);
 	if (ft_cd_special_cases(argv, shell, &tmp, oldpwd))
 		return (1);
-	if (!getcwd(cwd, sizeof(cwd)))
-		return (printf("Error: current working directory name not found\n"), 1);
+	if (getcwd(cwd, sizeof(cwd)))
+		curr_pwd = cwd;
+	else
+	{
+		curr_pwd = ft_getenv("PWD", *shell);
+		if (!curr_pwd)
+			curr_pwd = "";
+	}
 	if (chdir(tmp) != 0)
 		return (printf("Error: directory cannot be changed\n"), 1);
-	if (ft_setenv("OLDPWD", cwd, 1, shell))
-		return (1);
-	if (!getcwd(new_cwd, sizeof(new_cwd)))
-		return (printf("Error: directory cannot be changed\n"), 1);
-	if (ft_setenv("PWD", new_cwd, 1, shell))
-		return (1);
+	if (*curr_pwd)
+	{
+		oldpwd_tmp = ft_strdup(curr_pwd);
+		if (!oldpwd_tmp)
+			return (printf("Error: allocation memory failes\n"), 1);
+		if (ft_setenv("OLDPWD", oldpwd_tmp, 1, shell))
+			return (free(oldpwd_tmp), 1);
+	}
+	check_cwd(shell);
 	if (oldpwd)
 		free(oldpwd);
-	oldpwd = ft_strdup(cwd);
+	if (*curr_pwd)
+		oldpwd = ft_strdup(curr_pwd);
+	else
+		oldpwd = ft_strdup(cwd);
 	return (0);
 }
+
 
 int	is_valid_name(char *name)
 {
@@ -93,9 +107,8 @@ int	ft_export(char **argv, t_shell *shell)
 	}
 	equal = ft_strchr(argv[1], '=');
 	if (!equal)
-		name_len = ft_strlen(argv[1]);
-	else
-		name_len = equal - argv[1];
+		return (printf("Error: invalid export input\n"), 1);
+	name_len = equal - argv[1];
 	name = (char *) malloc(name_len + 1);
 	if (!name)
 		return (printf("Error: memory allocation failed\n"), 1);

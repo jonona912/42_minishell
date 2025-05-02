@@ -144,7 +144,7 @@ int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
 char	*ft_getenv(const char *name, t_shell shell);
 void	ft_echo(char **argv);
-void	ft_pwd();
+void	ft_pwd(t_shell *shell);
 // int		ft_exit(char **argv);
 void	ft_env(t_shell *shell, int is_exp);
 int		ft_cd (char **argv, t_shell *shell);
@@ -279,6 +279,7 @@ int		ft_cd_special_cases(char **argv, t_shell *shell, char **tmp, char *oldpwd);
 void	ft_echo_loop(char **argv, int *i);
 int		ft_exit(char **argv);
 int		is_n_flag(char *argv);
+int		check_cwd(t_shell *shell);
 
 
 // main

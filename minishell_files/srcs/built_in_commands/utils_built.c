@@ -19,7 +19,7 @@ int	ft_cd_special_cases(char **argv, t_shell *shell,
 			*tmp = oldpwd;
 		else
 			*tmp = ft_getenv("OLDPWD", *shell);
-		if (!tmp)
+		if (!*tmp)
 		{
 			ft_putstr_fd("Error: OLDPWD is not set\n", 2);
 			return (1);
@@ -28,12 +28,33 @@ int	ft_cd_special_cases(char **argv, t_shell *shell,
 	return (0);
 }
 
-void	ft_pwd(void)
+int	check_cwd(t_shell *shell)
 {
 	char	cwd[4096];
+	char	*old_pwd;
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s\n", cwd);
+	{
+		ft_setenv("PWD", cwd, 1, shell);
+		return (0);
+	}
+	old_pwd = ft_getenv("OLDPWD", *shell);
+	if (old_pwd)
+	{
+		ft_setenv("PWD", old_pwd, 1, shell);
+		return (1);
+	}
+	return (0);
+}
+
+void	ft_pwd(t_shell *shell)
+{
+	char	*pwd;
+
+	check_cwd(shell);
+	pwd = ft_getenv("PWD", *shell);
+	if (pwd)
+		printf("%s\n", pwd);
 	else
 		ft_putstr_fd("Error: path is not found\n", 2);
 }

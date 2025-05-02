@@ -1,7 +1,7 @@
 NAME = minishell
 TESTER = token_tester
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
 INCLUDE = minishell_files/includes/minishell.h
 
 SRCS_DIR = minishell_files/srcs
