@@ -2,7 +2,8 @@
 
 int	execute_cmd_parent(pid_t fork_pid)
 {
-	int		status;
+	int	status;
+
 	waitpid(fork_pid, &status, 0);
 	if (WTERMSIG(status) == SIGQUIT)
 		printf("Quit (core dumped)\n");
@@ -51,7 +52,8 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)
 
 	if (preprocess_heredocs(ast_node, shell) == -1)
 		return (130);
-	if (ast_node->data.cmd.exec_argv && ft_strcmp(ast_node->data.cmd.exec_argv[0], "cd") == 0)
+	if (ast_node->data.cmd.exec_argv
+		&& ft_strcmp(ast_node->data.cmd.exec_argv[0], "cd") == 0)
 		return (ft_cd(ast_node->data.cmd.exec_argv, shell));
 	n = execute_cmd_beginning(&fork_pid, ast_node, shell);
 	if (n != 0)
@@ -64,12 +66,9 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)
 		execute_cmd_child_if_else(ast_node, shell);
 		exit(1);
 	}
-	else
-	{
-		if (in_fd != -1)
-			close(in_fd);
-		if (out_fd != -1)
-			close(out_fd);
-		return (execute_cmd_parent(fork_pid));
-	}
+	if (in_fd != -1)
+		close(in_fd);
+	if (out_fd != -1)
+		close(out_fd);
+	return (execute_cmd_parent(fork_pid));
 }

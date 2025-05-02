@@ -40,6 +40,5 @@ void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head,
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	status = execute(ast_head->data.binary_op.left, in_fd, -1, shell);
-	// fprintf(stderr, "left exit status for %s = %d\n", ast_head->data.binary_op.left->data.cmd.executable, status);
 	exit(status);
 }

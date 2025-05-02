@@ -23,7 +23,7 @@ typedef struct s_shell
 	char	**env;
 	int		exp_pipe[2];
 	int		last_status;
-	int		heredoc_temp_counter;
+	int		heredoc_ctr;
 }	t_shell;
 
 typedef enum	s_token_type

@@ -28,7 +28,6 @@ void	handle_subshell_if(t_ast_node *ast_head, int in_fd,
 		close(out_fd);
 	}
 	status = execute(ast_head->data.sub_shell.subshell, -1, -1, shell);
-	// fprintf(stderr, "subshell exit status for= %d\n", status);
 	exit(status);
 }
 

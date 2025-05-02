@@ -17,11 +17,9 @@ void	handle_pipe_right_pid_child(int *pipe_fd, int out_fd,
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[0]);
 	status = execute(ast_head->data.binary_op.right, -1, out_fd, shell);
-	// fprintf(stderr, "right exit status for %s = %d\n", ast_head->data.binary_op.right->data.cmd.executable, status);
 	exit(status);
 }
 
-// solve this later
 int	handle_pipe(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 {
 	int		pipe_fd[2];
@@ -33,10 +31,7 @@ int	handle_pipe(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	if (preprocess_heredocs(ast_head, shell) == -1)
 		return (-1);
 	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
+		return (perror("pipe"), -1);
 	left_pid = fork();
 	if (left_pid == -1)
 		return (handle_pipe_left_pid_error(pipe_fd), -1);
@@ -48,11 +43,9 @@ int	handle_pipe(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	if (right_pid == 0)
 		handle_pipe_right_pid_child(pipe_fd, out_fd, shell, ast_head);
 	close_pipe_fd(pipe_fd);
-	// delete temporary file
 	waitpid(left_pid, &left_status, 0);
 	waitpid(right_pid, &right_status, 0);
 	cleanup_heredocs(ast_head, shell);
-	// printf("right_status = %d\n", get_exit_status(right_status));
 	return (get_exit_status(right_status));
 }
 
@@ -74,7 +67,6 @@ int	handle_subshell(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 		close(in_fd);
 	if (out_fd != -1)
 		close(out_fd);
-	// fprintf(stderr, "subshell exit status = %d\n", get_exit_status(status));
 	return (get_exit_status(status));
 }
 
