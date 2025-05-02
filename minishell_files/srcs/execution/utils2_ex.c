@@ -30,14 +30,15 @@ void	execute_cmd_child_beginning(t_ast_node *ast_node, int *in_fd)
 	}
 }
 
-void	execute_cmd_child_if_else(t_ast_node *ast_node)
+void	execute_cmd_child_if_else(t_ast_node *ast_node, t_shell *shell)
 {
 	int	exec_return;
 
 	exec_return = 0;
 	if (ast_node->data.cmd.executable)
 	{
-		exec_return = execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, NULL);
+		signal(SIGQUIT, SIG_DFL);
+		exec_return = execve(ast_node->data.cmd.executable, ast_node->data.cmd.exec_argv, shell->env);
 		if (exec_return == -1 && !ast_node->data.cmd.executable[0])
 		{
 			exit (0);

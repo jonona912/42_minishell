@@ -42,7 +42,7 @@ char	*return_executable_path(const char *name, t_shell *shell)
 	char	*path;
 	char	**path_split;
 	char	*temp_path;
-	int		ch;
+	// int		ch;
 
 	temp_path = NULL;
 	if (name == NULL)
@@ -62,7 +62,7 @@ char	*return_executable_path(const char *name, t_shell *shell)
 		ft_free_double_ptr(path_split);
 		return (ft_strdup((char *) name));
 	}
-	ch = return_executable_path_loop(path_split, name, &temp_path); // delete ch
+	return_executable_path_loop(path_split, name, &temp_path); // delete ch
 	ft_free_double_ptr(path_split);
 	// if (!ch) // ch == 0?
 	// 	return (NULL);

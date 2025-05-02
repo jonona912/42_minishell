@@ -407,12 +407,13 @@ test_command "echo \$? + \$? - \$?" \
 
 
 
-# 'exit_code ->$? user ->$USER home -> $HOME'
+# 'exit_code ->$? user ->$USER home -> $HOME' =====> DONE
 
 # minishell> sdfg^C
-# ^C
+# ^Cctrl-C
 # minishell> dgdfgfg^C
 # ff
 # ff: No such file or director
 
-
+# need to update SHLVL
+# now minishell inside minishell works

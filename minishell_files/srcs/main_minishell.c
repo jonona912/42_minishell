@@ -69,7 +69,7 @@ int	main(int argc, char **argv, char **envp)
 
 	shell.heredoc_temp_counter = 0;
 	shell.last_status = 0;
-	shell.env = copy_env(envp);
+	shell.env = copy_env(envp); // do we free this?
 	head = NULL;
 	token_lst = NULL;
 	line = NULL;
@@ -84,12 +84,14 @@ int	main(int argc, char **argv, char **envp)
 		line = readline("minishell> ");
 		if (!line)
 		{
+			rl_clear_history();
 			printf("exit\n");
 			break;
 		}
 		if (*line != '\0')
 			add_history(line);
 		token_lst = ft_tokenize(line);
+		// ft_print_tokens(token_lst);
 		if (!token_lst || token_lst->type == TOKEN_END)
 		{
 			free(line);
@@ -99,6 +101,11 @@ int	main(int argc, char **argv, char **envp)
 		if (!parse_or(token_lst, &head, &shell))
 		{
 			token_free_list(token_lst);
+			if (head)
+			{
+				free_ast_node(head);
+				head = NULL;
+			}
 			free(line);
 			continue ;
 		}
@@ -106,6 +113,7 @@ int	main(int argc, char **argv, char **envp)
 		shell.last_status = execute(head, -1, -1, &shell);
 		g_signal_received = 0;
 		free_ast_node(head);
+		head = NULL;
 		free(line);
 	}
 	shell_env_free(&shell);

@@ -53,9 +53,9 @@ int	handle_redirection_fd_if(t_redir_lst *redir_lst)
 
 int	handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)
 {
-	t_redir_lst	*traverse_redir_lst;
+	// t_redir_lst	*traverse_redir_lst;
 	(void)in_fd;
-	traverse_redir_lst = redir_lst;
+	// traverse_redir_lst = redir_lst;
 	// while (traverse_redir_lst)
 	// {
 	// 	if (traverse_redir_lst->type == TOKEN_HEREDOC)

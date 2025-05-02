@@ -267,7 +267,7 @@ void	execute_cmd_child_fd(int in_fd, int out_fd);
 void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell);
 int		get_exit_status(int status);
 void	execute_cmd_child_beginning(t_ast_node *ast_node, int *in_fd);
-void	execute_cmd_child_if_else(t_ast_node *ast_node);
+void	execute_cmd_child_if_else(t_ast_node *ast_node, t_shell *shell);
 void	execute_cmd_child_fd(int in_fd, int out_fd);
 void	close_pipe_fd(int *pipe_fd);
 void	handle_pipe_left_pid_error(int *pipe_fd);

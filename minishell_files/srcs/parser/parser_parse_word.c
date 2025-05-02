@@ -182,7 +182,7 @@ t_token_lst	*populate_command_data(t_token_lst *token_lst,
 
 t_token_lst	*parse_word(t_token_lst *token_lst, t_ast_node **ast_node, t_shell *shell)
 {
-	if (token_lst && (token_lst->type == TOKEN_WORD || is_redirection(token_lst->type) || token_lst->type == TOKEN_ENV_VAR))
+	if (token_lst && (token_lst->type == TOKEN_WORD || is_redirection(token_lst->type) || token_lst->type == TOKEN_ENV_VAR || token_lst->type == TOKEN_D_QUOTE || token_lst->type == TOKEN_S_QUOTE))
 	{
 		token_lst = parse_cmd(token_lst, ast_node, shell);
 		// *ast_node = create_cmd_node(NODE_CMD, NULL, NULL, NULL);

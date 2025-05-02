@@ -4,6 +4,8 @@ int	execute_cmd_parent(pid_t fork_pid)
 {
 	int		status;
 	waitpid(fork_pid, &status, 0);
+	if (WTERMSIG(status) == SIGQUIT)
+		printf("Quit (core dumped)\n");
 	return (get_exit_status(status));
 }
 
@@ -59,7 +61,7 @@ int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)
 		execute_cmd_child_beginning(ast_node, &in_fd);
 		execute_cmd_child_fd(in_fd, out_fd);
 		execute_cmd_child_builtin(ast_node, shell);
-		execute_cmd_child_if_else(ast_node);
+		execute_cmd_child_if_else(ast_node, shell);
 		exit(1);
 	}
 	else

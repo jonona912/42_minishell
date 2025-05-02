@@ -45,13 +45,14 @@ t_token_lst	*make_cmd_and_redir_lst(t_token_lst *token_lst,
 									t_redir_lst **redir_lst, t_shell *shell)
 {
 	t_token_lst		*temp;
-
+	char			*temp_str;
 	while (is_cmd_valid(token_lst->type))
 	{
 		if (token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_ENV_VAR
 			|| token_lst->type == TOKEN_D_QUOTE || token_lst->type == TOKEN_S_QUOTE)
 		{
-			temp = token_new_node(token_lst->type, arg_return(token_lst->value, token_lst->type, shell)); // potential fix 
+			temp_str = arg_return(token_lst->value, token_lst->type, shell);
+			temp = token_new_node(token_lst->type, temp_str); // potential fix 
 			if (!temp)
 				return (NULL);
 			token_add_node_back(cmd_lst, temp);
@@ -105,11 +106,11 @@ t_token_lst	*parse_cmd(t_token_lst *token_lst,
 						t_ast_node **ast_node,
 						t_shell *shell)
 {
-	int			is_cmd_created;
+	// int			is_cmd_created;
 	t_token_lst	*cmd_lst;
 
 	cmd_lst = NULL;
-	is_cmd_created = 0;
+	// is_cmd_created = 0;
 	*ast_node = create_cmd_node(NODE_CMD, NULL, NULL, NULL);
 	token_lst = make_cmd_and_redir_lst(token_lst,
 			&cmd_lst, &(*ast_node)->data.cmd.redirs, shell);
@@ -123,5 +124,6 @@ t_token_lst	*parse_cmd(t_token_lst *token_lst,
 		token_free_list(cmd_lst);
 		return (NULL);
 	}
+	token_free_list(cmd_lst);
 	return (token_lst);
 }

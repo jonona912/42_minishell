@@ -46,7 +46,7 @@ t_ast_node	*create_subshell_node(t_node_type type,
 void free_ast_node(t_ast_node *node)
 {
     if (!node)
-        return;
+        return ;
     if (node->type == NODE_CMD)
     {
         free(node->data.cmd.executable);
