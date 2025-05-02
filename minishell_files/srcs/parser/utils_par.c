@@ -57,43 +57,43 @@ void	join_wildcar_token_if(char *(ft_strstr_func)
 	}
 }
 
-t_token_lst	*populate_command_data_loop2(t_token_lst *token_lst, t_shell *shell,
-		t_ast_node *ast_node)
-{
-	int			ctr;
+// t_token_lst	*populate_command_data_loop2(t_token_lst *token_lst, t_shell *shell,
+// 		t_ast_node *ast_node)
+// {
+// 	int			ctr;
 
-	ctr = 0;
-	while (token_lst && (token_lst->type == TOKEN_ENV_VAR
-			|| token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_D_QUOTE
-			|| token_lst->type == TOKEN_S_QUOTE))
-	{
-		ast_node->data.cmd.exec_argv[ctr] = arg_return
-			(token_lst->value, token_lst->type, shell);
-		if (!ast_node->data.cmd.exec_argv[ctr])
-			return (NULL);
-		token_lst = token_lst->next;
-		ctr++;
-	}
-	ast_node->data.cmd.exec_argv[ctr] = NULL;
-	return (token_lst);
-}
+// 	ctr = 0;
+// 	while (token_lst && (token_lst->type == TOKEN_ENV_VAR
+// 			|| token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_D_QUOTE
+// 			|| token_lst->type == TOKEN_S_QUOTE))
+// 	{
+// 		ast_node->data.cmd.exec_argv[ctr] = arg_return
+// 			(token_lst->value, token_lst->type, shell);
+// 		if (!ast_node->data.cmd.exec_argv[ctr])
+// 			return (NULL);
+// 		token_lst = token_lst->next;
+// 		ctr++;
+// 	}
+// 	ast_node->data.cmd.exec_argv[ctr] = NULL;
+// 	return (token_lst);
+// }
 
-int	populate_command_data_loop1(t_token_lst *token_lst)
-{
-	t_token_lst	*current_token;
-	int			ctr;
+// int	populate_command_data_loop1(t_token_lst *token_lst)
+// {
+// 	t_token_lst	*current_token;
+// 	int			ctr;
 
-	current_token = token_lst;
-	ctr = 0;
-	while (current_token && (token_lst->type == TOKEN_ENV_VAR
-			|| token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_D_QUOTE
-			|| token_lst->type == TOKEN_S_QUOTE))
-	{
-		ctr++;
-		current_token = current_token->next;
-	}
-	return (ctr);
-}
+// 	current_token = token_lst;
+// 	ctr = 0;
+// 	while (current_token && (token_lst->type == TOKEN_ENV_VAR
+// 			|| token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_D_QUOTE
+// 			|| token_lst->type == TOKEN_S_QUOTE))
+// 	{
+// 		ctr++;
+// 		current_token = current_token->next;
+// 	}
+// 	return (ctr);
+// }
 
 char	*dollar_execute(char *name, t_shell shell)
 {

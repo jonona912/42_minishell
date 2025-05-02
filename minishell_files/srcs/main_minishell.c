@@ -67,7 +67,7 @@ int	main(int argc, char **argv, char **envp)
 	t_shell		shell;
 	char	*line;
 
-	shell.heredoc_temp_counter = 0;
+	shell.heredoc_ctr = 0;
 	shell.last_status = 0;
 	shell.env = copy_env(envp); // do we free this?
 	head = NULL;
@@ -103,8 +103,7 @@ int	main(int argc, char **argv, char **envp)
 			token_free_list(token_lst);
 			if (head)
 			{
-				free_ast_node(head);
-				head = NULL;
+				free_ast_node(&head);
 			}
 			free(line);
 			continue ;
@@ -112,8 +111,7 @@ int	main(int argc, char **argv, char **envp)
 		g_signal_received = 1;
 		shell.last_status = execute(head, -1, -1, &shell);
 		g_signal_received = 0;
-		free_ast_node(head);
-		head = NULL;
+		free_ast_node(&head);
 		free(line);
 	}
 	shell_env_free(&shell);
@@ -147,7 +145,7 @@ int	main(int argc, char **argv, char **envp)
 // 	t_shell		shell;
 // 	char	*line;
 
-// 	shell.heredoc_temp_counter = 0;
+// 	shell.heredoc_ctr = 0;
 // 	shell.last_status = 0;
 // 	shell.env = copy_env(envp);
 // 	head = NULL;
@@ -200,7 +198,7 @@ int	main(int argc, char **argv, char **envp)
 //     t_ast_node *head;
 //     t_shell shell;
 
-//     shell.heredoc_temp_counter = 0;
+//     shell.heredoc_ctr = 0;
 //     shell.last_status = 0;
 //     shell.env = copy_env(envp);
 //     head = NULL;
@@ -268,7 +266,7 @@ int	main(int argc, char **argv, char **envp)
 // 	t_ast_node	*head;
 // 	// int		is_test;
 // 	t_shell	shell;
-// 	shell.heredoc_temp_counter = 0;
+// 	shell.heredoc_ctr = 0;
 // 	shell.last_status = 0;
 // 	shell.env = copy_env(envp);
 // 	// if (argc == 2 && ft_strcmp(argv[1], "-test") == 0)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:06:19 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/26 10:50:49 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/02 11:04:15 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ t_token_lst	*ft_tokenize(char *line)
 	free(vars.current_token);
 	if (vars.paren_counter != 0)
 	{
-		ft_putstr_fd("Error: unmatched parenthesis", 2);
+		ft_putstr_fd("Error: unmatched parenthesis\n", 2);
 		token_free_list(token_lst);
 		return (NULL);
 	}

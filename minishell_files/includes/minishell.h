@@ -23,7 +23,7 @@ typedef struct s_shell
 	char	**env;
 	int		exp_pipe[2];
 	int		last_status;
-	int		heredoc_temp_counter;
+	int		heredoc_ctr;
 }	t_shell;
 
 typedef enum	s_token_type
@@ -157,7 +157,12 @@ int		ft_unset(char **argv, t_shell *shell);
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
 t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
 t_ast_node	*create_subshell_node(t_node_type type, t_ast_node *subshell, t_redir_lst *sub_shell_redir);
-void free_ast_node(t_ast_node *node);
+void free_ast_node(t_ast_node **node);
+
+// is_functions.c
+int	is_cmd_valid(t_token_type type);
+int	is_token_valid_for_cmd(t_token_type type);
+
 // parser_helper_1.c
 t_token_lst	*append_redirections(t_redir_lst **node_redirs, t_token_lst *token_lst, t_shell *shell);
 int	is_quote_or_word(t_token_type type);
@@ -209,7 +214,7 @@ int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd);
 
 
 // check_user_input.c
-int	check_user_input(char **line);
+// int	check_user_input(char **line);
 
 /////////////////////////// print_structs ///////////////////////////
 void	ft_print_tokens(t_token_lst *token_lst);
@@ -252,8 +257,8 @@ t_token_lst	*wildcard_function_if(t_wildcard_type_string *wildcard_string, t_tok
 t_token_lst	*join_wildcar_token(t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, char *(ft_strstr_func)(const char *str, const char *wildcard));
 void		join_wildcar_token_if(char *(ft_strstr_func)(const char *str, const char *wildcard), t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, t_token_lst **wildcard_list);
 int			is_word_or_quote(t_token_type type);
-t_token_lst	*populate_command_data_loop2(t_token_lst *token_lst, t_shell *shell, t_ast_node *ast_node);
-int			populate_command_data_loop1(t_token_lst *token_lst);
+// t_token_lst	*populate_command_data_loop2(t_token_lst *token_lst, t_shell *shell, t_ast_node *ast_node);
+// int			populate_command_data_loop1(t_token_lst *token_lst);
 char		*dollar_execute(char *name, t_shell shell);
 char		*name_finder(char *value, int pos);
 
