@@ -28,7 +28,7 @@ int	process_heredoc_helper(t_redir_lst *redir,
 				perror("open");
 				exit(1);
 			}
-			if (handle_heredoc(redir->target, fd) == -1)
+			if (handle_heredoc(redir->target, fd, &tmp_file) == -1)
 			{
 				shell->last_status = 130;
 				return (close(fd), -1);

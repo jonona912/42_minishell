@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 11:05:16 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/26 13:15:50 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/02 17:57:02 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	initialize_tokenize_struct(t_tokenize_struct *vars, char *line)
 {
 	int	line_len;
 
-	line_len = strlen(line);
+	line_len = ft_strlen(line);
 	vars->current_token = (char *)malloc((line_len + 1) * sizeof(char));
 	if (!vars->current_token)
 	{

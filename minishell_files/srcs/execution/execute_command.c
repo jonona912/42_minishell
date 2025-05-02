@@ -7,6 +7,8 @@ int	execute_cmd_parent(pid_t fork_pid)
 	waitpid(fork_pid, &status, 0);
 	if (WTERMSIG(status) == SIGQUIT)
 		printf("Quit (core dumped)\n");
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		printf("\n"); 
 	return (get_exit_status(status));
 }
 

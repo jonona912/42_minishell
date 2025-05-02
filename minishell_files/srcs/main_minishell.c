@@ -3,10 +3,11 @@
 void	signal_handler(int signum)
 {
 	(void)signum;
+	if (g_signal_received)
+		return ;
 	rl_replace_line("", 0);
 	write(1, "\r\n", 2);
-	if (!g_signal_received)
-		rl_on_new_line();
+	rl_on_new_line();
 	rl_redisplay();
 }
 
@@ -48,6 +49,7 @@ void	main_loop(t_shell *shell)
 	head = NULL;
 	while (1)
 	{
+		g_signal_received = 0;
 		line = readline("minishell> ");
 		if (!line)
 		{
@@ -64,18 +66,17 @@ void	main_loop(t_shell *shell)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_shell		shell;
+	t_shell				shell;
+	struct sigaction	sa_int;
 
 	(void)argv;
-	(void)envp;
 	(void)argc;
 	shell.heredoc_ctr = 0;
 	shell.last_status = 0;
 	shell.env = copy_env(envp);
-	struct sigaction sa_int;
-	sa_int.sa_handler = signal_handler;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;
+	sa_int.sa_handler = signal_handler;
 	sigaction(SIGINT, &sa_int, NULL);
 	signal(SIGQUIT, SIG_IGN);
 	main_loop(&shell);

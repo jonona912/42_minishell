@@ -1,22 +1,22 @@
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <signal.h>
-#include <termios.h>
-#include <limits.h>
+# include <sys/ioctl.h>
+# include <termios.h>
+# include <stdio.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/wait.h>
+# include <signal.h>
+# include <termios.h>
+# include <limits.h>
 # include <fcntl.h>
-#include <dirent.h>
-#include <sys/stat.h>
-
-#include "../../libft/libft.h"
+# include <dirent.h>
+# include <sys/stat.h>
+# include <termios.h>
+# include "../../libft/libft.h"
 
 typedef struct s_shell
 {
@@ -26,7 +26,7 @@ typedef struct s_shell
 	int		heredoc_ctr;
 }	t_shell;
 
-typedef enum	s_token_type
+typedef enum s_token_type
 {
 	TOKEN_WORD,
 	TOKEN_S_QUOTE,
@@ -61,13 +61,14 @@ typedef struct s_tokenize_struct
 	int		paren_counter;
 }	t_tokenize_struct;
 
-typedef enum {
+typedef enum
+{
 	NODE_CMD,
 	NODE_PIPE,
 	NODE_AND,
 	NODE_OR,
 	NODE_SUBSHELL
-} t_node_type;
+}	t_node_type;
 
 typedef enum
 {
@@ -79,8 +80,8 @@ typedef enum
 
 typedef struct s_wildcard_type_string
 {
-	t_wildcard_type type;
-	char *data;
+	t_wildcard_type	type;
+	char			*data;
 }	t_wildcard_type_string;
 
 typedef struct s_read_dir
@@ -100,7 +101,7 @@ typedef struct s_redir_lst {
 // AST node structure
 typedef struct s_ast_node
 {
-	t_node_type type; // CMD or PIPE
+	t_node_type type;
 	union {
 		struct
 		{
@@ -136,14 +137,12 @@ int			ft_append_char(char *str, char c);
 int			initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
 t_token_lst	*ft_tokenize(char *line);
 int			is_not_special_char(char c);
-// NEEDS TO BE CHANGED
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
 char	*ft_getenv(const char *name, t_shell shell);
 void	ft_echo(char **argv);
 void	ft_pwd(t_shell *shell);
-// int		ft_exit(char **argv);
 void	ft_env(t_shell *shell, int is_exp);
 int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
@@ -188,19 +187,17 @@ t_token_lst	*wildcard_function(char *line, int *char_ctr);
 
 ///////////////////// execution ////////////////////////
 // execute_command.c
-// int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd);
 int execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell);
 
 // execution.c
-// int execute(t_ast_node *ast_head, int in_fd, int out_fd);
 int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell);
 int	ms_strcmp_until(char *s1, char *s2, char c);
 int	builtin_check(char *cmd);
 int	execute_builtin(char **argv, t_shell *shell);
 
 // here_doc.c
-// int run_heredoc(char *end_delimitor, int *in_fd);
-int	handle_heredoc(char *end_delimitor, int in_fd);
+// int	handle_heredoc(char *end_delimitor, int in_fd);
+int	handle_heredoc(char *end_delimitor, int in_fd, char **tmp_file);
 
 // here_doc_processing.c
 int preprocess_heredocs(t_ast_node *node, t_shell *shell);
@@ -210,16 +207,12 @@ void	cleanup_heredocs(t_ast_node *node, t_shell *shell);
 int handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd);
 
 
-// check_user_input.c
-// int	check_user_input(char **line);
-
 /////////////////////////// print_structs ///////////////////////////
 void	ft_print_tokens(t_token_lst *token_lst);
 void print_ast(t_ast_node *root);
 
 // NEW FUNCTIONS FROM MERGING BUILTINS
 char	*arg_return(char *value, t_token_type type, t_shell *shell);
-void	set_and_move_eight_bits_left(int *x, int set_num);
 
 
 // tokenizer
@@ -254,8 +247,6 @@ t_token_lst	*wildcard_function_if(t_wildcard_type_string *wildcard_string, t_tok
 t_token_lst	*join_wildcar_token(t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, char *(ft_strstr_func)(const char *str, const char *wildcard));
 void		join_wildcar_token_if(char *(ft_strstr_func)(const char *str, const char *wildcard), t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, t_token_lst **wildcard_list);
 int			is_word_or_quote(t_token_type type);
-// t_token_lst	*populate_command_data_loop2(t_token_lst *token_lst, t_shell *shell, t_ast_node *ast_node);
-// int			populate_command_data_loop1(t_token_lst *token_lst);
 char		*dollar_execute(char *name, t_shell shell);
 char		*name_finder(char *value, int pos);
 
@@ -289,7 +280,9 @@ int		ft_cd_end(char *curr_pwd, t_shell *shell, char **oldpwd, char *cwd);
 // main
 void	shell_env_free(t_shell *shell);
 char	**copy_env(char **envp);
-
+void	shell_env_free(t_shell *shell);
+int		search_my_shlvl(t_shell shell);
+void	signal_handler(int signum);
 
 
 static volatile int  g_signal_received;

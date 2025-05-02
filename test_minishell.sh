@@ -416,4 +416,18 @@ test_command "echo \$? + \$? - \$?" \
 # ff: No such file or director
 
 # need to update SHLVL
-# now minishell inside minishell works
+# now minishell inside minishell works\
+#in heredoce ctrl+c and then ctrl+d mem leak =====> DONE
+# ctrl+c and ctrl+c in double minishell
+# ./invalid_executable - no error =====> DONE
+
+# minishell> cd
+# Error: too many arguments
+# | echo a | echo b
+
+# ctrl c
+# opopov@c2r12s4:~$ echo $?
+# 130
+
+
+# export x1="one two three"

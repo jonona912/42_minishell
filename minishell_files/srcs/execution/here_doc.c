@@ -21,7 +21,7 @@ void	heredoc_signal_handler(int signum)
 	rl_done = 1;
 }
 
-int	heredoc_loop(char *end_delimitor, int in_fd, struct sigaction *old_sa)
+int	heredoc_loop(char *end_delimitor, int in_fd, struct sigaction *old_sa, char **tmp_file)
 {
 	char	*input;
 
@@ -29,7 +29,13 @@ int	heredoc_loop(char *end_delimitor, int in_fd, struct sigaction *old_sa)
 	{
 		input = readline("\033[0;35mheredoc>\033[0m");
 		if (g_signal_received)
+		{
+			free(input);
+			input = NULL;
+			free(*tmp_file);
+			*tmp_file = NULL;
 			return (sigaction(SIGINT, old_sa, NULL), -1);
+		}
 		if (!input)
 		{
 			sigaction(SIGINT, old_sa, NULL);
@@ -49,7 +55,7 @@ int	heredoc_loop(char *end_delimitor, int in_fd, struct sigaction *old_sa)
 	return (0);
 }
 
-int	handle_heredoc(char *end_delimitor, int in_fd)
+int	handle_heredoc(char *end_delimitor, int in_fd, char **tmp_file)
 {
 	struct sigaction	sa;
 	struct sigaction	old_sa;
@@ -61,5 +67,5 @@ int	handle_heredoc(char *end_delimitor, int in_fd)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, &old_sa);
-	return (heredoc_loop(end_delimitor, in_fd, &old_sa));
+	return (heredoc_loop(end_delimitor, in_fd, &old_sa, tmp_file));
 }

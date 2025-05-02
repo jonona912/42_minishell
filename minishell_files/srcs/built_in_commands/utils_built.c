@@ -4,7 +4,7 @@ int	ft_cd_special_cases(char **argv, t_shell *shell,
 		char **tmp, char *oldpwd)
 {
 	*tmp = argv[1];
-	if (!argv[1] || strcmp(argv[1], "~") == 0)
+	if (!argv[1] || ft_strcmp(argv[1], "~") == 0)
 	{
 		*tmp = ft_getenv("HOME", *shell);
 		if (!*tmp)
@@ -13,7 +13,7 @@ int	ft_cd_special_cases(char **argv, t_shell *shell,
 			return (1);
 		}
 	}
-	else if (strcmp(argv[1], "-") == 0)
+	else if (ft_strcmp(argv[1], "-") == 0)
 	{
 		if (oldpwd)
 			*tmp = oldpwd;

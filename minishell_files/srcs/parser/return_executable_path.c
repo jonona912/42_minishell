@@ -50,6 +50,7 @@ char	*return_executable_path(const char *name, t_shell *shell)
 	{
 		if (access(name, X_OK) == 0)
 			return (ft_strdup((char *) name));
+		perror("minishell");
 		return (NULL);
 	}
 	path = ft_getenv("PATH", *shell);
