@@ -13,6 +13,19 @@
 // 	return (0);
 // }
 
+void	shell_env_free(t_shell *shell)
+{
+	int	i;
+
+	i = 0;
+	while(shell->env[i])
+	{
+		free(shell->env[i]);
+		i++;
+	}
+	free(shell->env);
+}
+
 char	**copy_env(char **envp)
 {
 	int		count = 0;
@@ -34,20 +47,14 @@ char	**copy_env(char **envp)
 	return (copy);
 }
 
-void	signal_handler(int signum) {
+void	signal_handler(int signum)
+{
 	(void)signum;
-	if (rl_end > 0)
-	{
-		rl_replace_line("", 0);
-		write(1, "\r\n", 2);
-		rl_redisplay();
-	}
-	else
-	{
-		write(1, "\r\n", 2);
+	rl_replace_line("", 0);
+	write(1, "\r\n", 2);
+	if (!g_signal_received)
 		rl_on_new_line();
-		rl_redisplay();
-	}
+	rl_redisplay();
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -95,10 +102,13 @@ int	main(int argc, char **argv, char **envp)
 			free(line);
 			continue ;
 		}
+		g_signal_received = 1;
 		shell.last_status = execute(head, -1, -1, &shell);
+		g_signal_received = 0;
 		free_ast_node(head);
 		free(line);
 	}
+	shell_env_free(&shell);
 	return (0);
 }
 
