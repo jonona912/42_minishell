@@ -28,25 +28,6 @@ int	ft_cd_special_cases(char **argv, t_shell *shell,
 	return (0);
 }
 
-int	check_cwd(t_shell *shell)
-{
-	char	cwd[4096];
-	char	*old_pwd;
-
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-	{
-		ft_setenv("PWD", cwd, 1, shell);
-		return (0);
-	}
-	old_pwd = ft_getenv("OLDPWD", *shell);
-	if (old_pwd)
-	{
-		ft_setenv("PWD", old_pwd, 1, shell);
-		return (1);
-	}
-	return (0);
-}
-
 void	ft_pwd(t_shell *shell)
 {
 	char	*pwd;
@@ -61,7 +42,7 @@ void	ft_pwd(t_shell *shell)
 
 int	is_n_flag(char *argv)
 {
-	int i;
+	int	i;
 
 	if (!argv || argv[0] != '-')
 		return (0);
@@ -99,10 +80,7 @@ int	ft_exit(char **argv)
 
 	i = 0;
 	if (argv[2])
-	{
 		return (printf("exit: too many arguments\n"), 1);
-	}
-
 	if (argv[1])
 	{
 		while (argv[1][i])

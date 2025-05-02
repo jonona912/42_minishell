@@ -121,9 +121,6 @@ typedef struct s_ast_node
 	} data;
 }	t_ast_node;
 
-
-
-
 ///////////// lists /////////////
 
 // ms_token_lst.c
@@ -132,6 +129,7 @@ void		token_free_list(t_token_lst *head);
 t_token_lst	*token_get_last_node(t_token_lst *head);
 void		token_add_node_back(t_token_lst **head, t_token_lst *new_node);
 int	token_lst_size(t_token_lst *head);
+
 ////////////// tokenizer ////////////
 // ms_tokenizer.c
 int			ft_append_char(char *str, char c);
@@ -152,7 +150,6 @@ int		ft_export(char **argv, t_shell *shell);
 int		ft_unset(char **argv, t_shell *shell);
 
 /////////////////////// parser /////////////////////////
-
 // ast_binary_tree_function.c
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
 t_ast_node *create_binary_op_node(t_node_type type, t_ast_node *left, t_ast_node *right);
@@ -285,9 +282,14 @@ void	ft_echo_loop(char **argv, int *i);
 int		ft_exit(char **argv);
 int		is_n_flag(char *argv);
 int		check_cwd(t_shell *shell);
+int		is_valid_name(char *name);
+int		ft_cd_end(char *curr_pwd, t_shell *shell, char **oldpwd, char *cwd);
 
 
 // main
+void	shell_env_free(t_shell *shell);
+char	**copy_env(char **envp);
+
 
 
 static volatile int  g_signal_received;

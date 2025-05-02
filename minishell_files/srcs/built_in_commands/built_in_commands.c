@@ -38,7 +38,6 @@ int	ft_cd(char **argv, t_shell *shell)
 {
 	char		cwd[4096];
 	static char	*oldpwd = NULL;
-	char		*oldpwd_tmp;
 	char		*curr_pwd;
 	char		*tmp;
 
@@ -56,42 +55,9 @@ int	ft_cd(char **argv, t_shell *shell)
 	}
 	if (chdir(tmp) != 0)
 		return (printf("Error: directory cannot be changed\n"), 1);
-	if (*curr_pwd)
-	{
-		oldpwd_tmp = ft_strdup(curr_pwd);
-		if (!oldpwd_tmp)
-			return (printf("Error: allocation memory failes\n"), 1);
-		if (ft_setenv("OLDPWD", oldpwd_tmp, 1, shell))
-			return (free(oldpwd_tmp), 1);
-	}
-	check_cwd(shell);
-	if (oldpwd)
-		free(oldpwd);
-	if (*curr_pwd)
-		oldpwd = ft_strdup(curr_pwd);
-	else
-		oldpwd = ft_strdup(cwd);
+	if (ft_cd_end(curr_pwd, shell, &oldpwd, cwd))
+		return (1);
 	return (0);
-}
-
-
-int	is_valid_name(char *name)
-{
-	int	i;
-
-	i = 0;
-	if (!name || !*name)
-		return (0);
-	if (!(ft_isalpha(name[i]) || name[i] == '_'))
-		return (0);
-	i++;
-	while (name[i])
-	{
-		if (!(ft_isalnum(name[i]) || name[i] == '_'))
-			return (0);
-		i++;
-	}
-	return (1);
 }
 
 int	ft_export(char **argv, t_shell *shell)
@@ -101,10 +67,7 @@ int	ft_export(char **argv, t_shell *shell)
 	int		name_len;
 
 	if (!argv[1])
-	{
-		ft_env(shell, 1);
-		return (0);
-	}
+		return (ft_env(shell, 1), 0);
 	equal = ft_strchr(argv[1], '=');
 	if (!equal)
 		return (printf("Error: invalid export input\n"), 1);
@@ -114,10 +77,7 @@ int	ft_export(char **argv, t_shell *shell)
 		return (printf("Error: memory allocation failed\n"), 1);
 	ft_strlcpy(name, argv[1], name_len + 1);
 	if (!is_valid_name(name))
-	{
-		free(name);
-		return (printf("Error: invalid variable name\n"), 1);
-	}
+		return (free(name), printf("Error: invalid variable name\n"), 1);
 	if (ft_setenv(name, equal + 1, 1, shell))
 	{
 		free(name);

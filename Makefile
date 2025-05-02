@@ -11,6 +11,7 @@ EXECUTE_DIR = execution
 COMMANDS_DIR = built_in_commands
 
 SRCS = main_minishell.c \
+		main_utils.c \
 		print_structs.c \
 		$(TOKENIZER_DIR)/tokenizer_helper_1.c \
 		$(TOKENIZER_DIR)/token_lst_functions.c \
@@ -39,6 +40,7 @@ SRCS = main_minishell.c \
 		$(EXECUTE_DIR)/redirections.c \
 		$(COMMANDS_DIR)/built_in_commands.c \
 		$(COMMANDS_DIR)/utils_built.c \
+		$(COMMANDS_DIR)/utils2_built.c \
 		$(COMMANDS_DIR)/built_in_commands_utils.c \
 
 # Test files
