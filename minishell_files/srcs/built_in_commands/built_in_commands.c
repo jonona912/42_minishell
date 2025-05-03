@@ -65,7 +65,15 @@ int	ft_export(char **argv, t_shell *shell)
 	char	*equal;
 	char	*name;
 	int		name_len;
+	// (void)shell;
+	// int		i;
 
+	// i = 0;
+	// while (argv[i])
+	// {
+	// 	printf("DEBUG: %s\n", argv[i]);
+	// 	i++;
+	// }
 	if (!argv[1])
 		return (ft_env(shell, 1), 0);
 	equal = ft_strchr(argv[1], '=');

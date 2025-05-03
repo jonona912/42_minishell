@@ -73,6 +73,7 @@ char	*arg_word_return(char *value, t_shell shell)
 		res = tmp;
 		i++;
 	}
+	// printf("DEBUG (words): %s\n", res);
 	return (res);
 }
 
@@ -83,6 +84,7 @@ char	*arg_d_quote_return(char *value, t_shell shell)
 
 	if (!value)
 		return (NULL);
+	// printf("DEBUG (quotes): %s\n", value);
 	tmp = ft_strtrim(value, "\"");
 	if (!tmp)
 		return (NULL);
@@ -96,10 +98,19 @@ char	*arg_return(char *value, t_token_type type, t_shell *shell)
 	if (!value)
 		return (NULL);
 	if (type == TOKEN_D_QUOTE)
+	{
+		// printf("DEBUG (TOKEN_D_QUOTE): %s\n", value);
 		return (arg_d_quote_return(value, *shell));
+	}
 	if (type == TOKEN_S_QUOTE)
+	{
+		// printf("DEBUG (TOKEN_S_QUOTE): %s\n", value);
 		return (ft_strtrim(value, "\'"));
+	}
 	if (type == TOKEN_ENV_VAR || type == TOKEN_WORD)
+	{
+		// printf("DEBUG (TOKEN_WORD): %s\n", value);
 		return (arg_word_return(value, *shell));
+	}
 	return (ft_strdup(value));
 }

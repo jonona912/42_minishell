@@ -1,17 +1,17 @@
 #include "../includes/minishell.h"
 
-int	search_my_shlvl(t_shell shell)
+int	search_shlvl(char **env)
 {
 	int	i;
 
 	i = 0;
-	while (shell.env[i])
+	while (env[i])
 	{
-		if (ft_strncmp(shell.env[i], "MY_SHLVL=", 9) == 0)
-			return (ft_atoi(shell.env[i] + 9));
+		if (ft_strncmp(env[i], "SHLVL=", 6) == 0)
+			return (1);
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 void	shell_env_free(t_shell *shell)
@@ -45,22 +45,30 @@ char	**copy_env(char **envp)
 	int		count;
 	char	**copy;
 	int		i;
-	int		is_shlvl;
 	int		curr_shlvl;
+	char	*tmp;
 
 	count = 0;
 	while (envp[count])
 		count++;
-	copy = malloc(sizeof(char *) * (count + 1));
-	if (!copy)
-		return (NULL);
 	i = 0;
-	is_shlvl = 0;
+	if (!search_shlvl(envp))
+	{
+		copy = malloc(sizeof(char *) * (count + 2));
+		if (!copy)
+			return (NULL);
+		copy[i++] = ft_strdup("SHLVL=1");
+	}
+	else
+	{
+		copy = malloc(sizeof(char *) * (count + 1));
+		if (!copy)
+			return (NULL);
+	}
 	while (i < count)
 	{
 		if (ft_strncmp(envp[i], "SHLVL=", 6) == 0)
 		{
-			is_shlvl = 1;
 			curr_shlvl = ft_atoi(envp[i] + 6);
 			if (curr_shlvl >= 999)
 			{
@@ -68,14 +76,14 @@ char	**copy_env(char **envp)
 				env_free(copy);
 				exit(1);
 			}
-			copy[i] = ft_strjoin("SHLVL=", ft_itoa(curr_shlvl + 1));
+			tmp = ft_itoa(curr_shlvl + 1);
+			copy[i] = ft_strjoin("SHLVL=", tmp);
+			free(tmp);
 		}
 		else
 			copy[i] = ft_strdup(envp[i]);
 		i++;
 	}
-	if (!is_shlvl)
-		copy[i++] = ft_strdup("SHLVL=1");
 	copy[i] = NULL;
 	return (copy);
 }
