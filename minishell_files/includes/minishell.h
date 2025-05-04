@@ -142,8 +142,8 @@ int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
 int		ft_setenv(char *name, char *value, int overwrite, t_shell *shell);
 char	*ft_getenv(const char *name, t_shell shell);
 void	ft_echo(char **argv);
-void	ft_pwd(t_shell *shell);
-void	ft_env(t_shell *shell, int is_exp);
+void	ft_pwd(void);
+void	ft_env(t_shell *shell);
 int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
 int		ft_unset(char **argv, t_shell *shell);
@@ -240,49 +240,23 @@ int				ft_tokenize_loop_part2_error_handler(int temp, t_tokenize_struct *vars, t
 
 
 //parser
-int			copy_wildcard_string_loop(char *line, int i, char **dest);
-void		identify_wildcard_type_if(t_wildcard_type_string *wildcard_type_string, int *char_ctr, char *line);
-int			copy_wildcard_string(char **dest, char *line);
-t_token_lst	*wildcard_function_if(t_wildcard_type_string *wildcard_string, t_token_lst *wildcard_list, t_read_dir *read_dir);
-t_token_lst	*join_wildcar_token(t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, char *(ft_strstr_func)(const char *str, const char *wildcard));
-void		join_wildcar_token_if(char *(ft_strstr_func)(const char *str, const char *wildcard), t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, t_token_lst **wildcard_list);
-int			is_word_or_quote(t_token_type type);
-char		*dollar_execute(char *name, t_shell shell);
-char		*name_finder(char *value, int pos);
-
-
-//execution
-void	handle_subshell_if(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell);
-void	execute_cmd_parent_free(t_shell *shell, char **new_env);
-int		execute_cmd_parent_loop_if(char **new_env, int *i, int *pipe_fd, int *len);
-int		execute_cmd_parent_loop(int count, char **new_env, int *pipe_fd);
-void	execute_cmd_child_fd(int in_fd, int out_fd);
-void	execute_cmd_child_builtin_loop(int count, int *pipe_fd, t_shell *shell);
-int		get_exit_status(int status);
-void	execute_cmd_child_beginning(t_ast_node *ast_node, int *in_fd);
-void	execute_cmd_child_if_else(t_ast_node *ast_node, t_shell *shell);
-void	execute_cmd_child_fd(int in_fd, int out_fd);
-void	close_pipe_fd(int *pipe_fd);
-void	handle_pipe_left_pid_error(int *pipe_fd);
-void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head, int in_fd, t_shell *shell);
-
-
-//built_in_commands
-int		ft_cd_special_cases(char **argv, t_shell *shell, char **tmp, char *oldpwd);
-void	ft_echo_loop(char **argv, int *i);
-int		ft_exit(char **argv);
-int		is_n_flag(char *argv);
-int		check_cwd(t_shell *shell);
-int		is_valid_name(char *name);
-int		ft_cd_end(char *curr_pwd, t_shell *shell, char **oldpwd, char *cwd);
-
+// int			extract_non_wildcard_text(char *line, int i, char **dest);
+// void		extract_wildcard_content(t_wildcard_type_string *wildcard_type_string, int *char_ctr, char *line);
+// int			copy_wildcard_string(char **dest, char *line);
+// t_token_lst	*handle_wildcard_variants(t_wildcard_type_string *wildcard_string, t_token_lst *wildcard_list, t_read_dir *read_dir);
+// t_token_lst	*join_wildcar_token(t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, char *(ft_strstr_func)(const char *str, const char *wildcard));
+// void		add_matching_wildcard_token(char *(ft_strstr_func)(const char *str, const char *wildcard), t_read_dir *read_dir, t_wildcard_type_string *wildcard_string, t_token_lst **wildcard_list);
+// int			is_word_or_quote(t_token_type type);
+// char		*dollar_execute(char *name, t_shell shell);
+// char		*name_finder(char *value, int pos);
 
 // main
 void	shell_env_free(t_shell *shell);
 char	**copy_env(char **envp);
 void	shell_env_free(t_shell *shell);
-int		search_my_shlvl(t_shell shell);
+int		search_shlvl(char **env);
 void	signal_handler(int signum);
+void	env_free(char **str);
 
 
 static volatile int  g_signal_received;

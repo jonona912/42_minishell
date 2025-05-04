@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "includes/parser.h"
 
 t_wildcard_type	find_wildcard_type(char *line)
 {
@@ -49,7 +49,7 @@ int	copy_wildcard_string(char **dest, char *line)
 		perror("malloc");
 		return (-1);
 	}
-	i = copy_wildcard_string_loop(line, i, dest);
+	i = extract_non_wildcard_text(line, i, dest);
 	return (i);
 }
 
@@ -70,7 +70,7 @@ t_wildcard_type_string	*identify_wildcard_type(char *line, int *char_ctr)
 		return (wildcard_type_string);
 	}
 	wildcard_type_string->type = find_wildcard_type(line);
-	identify_wildcard_type_if(wildcard_type_string, char_ctr, line);
+	extract_wildcard_content(wildcard_type_string, char_ctr, line);
 	return (wildcard_type_string);
 }
 
@@ -93,7 +93,7 @@ t_token_lst	*join_wildcar_token(t_read_dir *read_dir,
 		}
 		if (read_dir->entry->d_name[0] == '.')
 			continue ;
-		join_wildcar_token_if(ft_strstr_func, read_dir,
+		add_matching_wildcard_token(ft_strstr_func, read_dir,
 			wildcard_string, &wildcard_list);
 	}
 	return (wildcard_list);
@@ -113,7 +113,7 @@ t_token_lst	*wildcard_function(char *line, int *char_ctr)
 		perror("opendir");
 		return (NULL);
 	}
-	wildcard_list = wildcard_function_if(wildcard_string,
+	wildcard_list = handle_wildcard_variants(wildcard_string,
 			wildcard_list, &read_dir);
 	if (closedir(read_dir.dir))
 	{
