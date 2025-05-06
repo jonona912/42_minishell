@@ -21,13 +21,18 @@ void	ft_echo(char **argv)
 
 void	ft_env(t_shell *shell)
 {
-	int	i;
+	int		i;
+	char	*tmp;
 
 	i = 0;
 	while (shell->env[i])
 	{
-		write(1, shell->env[i], ft_strlen(shell->env[i]));
-		write(1, "\n", 1);
+		tmp = ft_strchr(shell->env[i], '=');
+		if (tmp && tmp[1])
+		{
+			write(1, shell->env[i], ft_strlen(shell->env[i]));
+			write(1, "\n", 1);
+		}
 		i++;
 	}
 }
@@ -67,26 +72,50 @@ int	ft_export(char **argv, t_shell *shell)
 	char	*equal;
 	char	*name;
 	int		name_len;
+	int		i;
+	int		exit_status;
 
 	if (!argv[1])
 		return (ft_export_env(*shell), 0);
-	equal = ft_strchr(argv[1], '=');
-	if (!equal)
-		return (printf("Error: invalid export input\n"), 1);
-	name_len = equal - argv[1];
-	name = (char *) malloc(name_len + 1);
-	if (!name)
-		return (printf("Error: memory allocation failed\n"), 1);
-	ft_strlcpy(name, argv[1], name_len + 1);
-	if (!is_valid_name(name))
-		return (free(name), printf("Error: invalid variable name\n"), 1);
-	if (ft_setenv(name, equal + 1, 1, shell))
+	i = 1;
+	exit_status = 0;
+	while (argv[i])
 	{
+		equal = ft_strchr(argv[i], '=');
+		if (!equal)
+		{
+			if (!is_valid_name(argv[i]))
+			{
+				printf("Error: invalid export input\n");
+				exit_status = 1;
+			}
+			else
+				ft_setenv(argv[i], "", 0, shell);
+			i++;
+			continue ;
+		}
+		name_len = equal - argv[i];
+		name = (char *) malloc(name_len + 1);
+		if (!name)
+			return (printf("Error: memory allocation failed\n"), 1);
+		ft_strlcpy(name, argv[i], name_len + 1);
+		if (!is_valid_name(name))
+		{
+			printf("Error: invalid variable name\n");
+			free(name);
+			exit_status = 1;
+			i++;
+			continue ;
+		}
+		if (ft_setenv(name, equal + 1, 1, shell))
+		{
+			free(name);
+			return (printf("Error: invalid syntax input\n"), 1);
+		}
 		free(name);
-		return (printf("Error: invalid syntax input\n"), 1);
+		i++;
 	}
-	free(name);
-	return (0);
+	return (exit_status);
 }
 
 int	ft_unset(char **argv, t_shell *shell)

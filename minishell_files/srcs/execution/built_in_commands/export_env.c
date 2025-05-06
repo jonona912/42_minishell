@@ -24,20 +24,14 @@ void	ft_sort_env(char **env, int len)
 	}
 }
 
-int	ft_count_env_special(t_shell shell)
+int	ft_count_env(t_shell shell)
 {
 	int	i;
-	int	count;
 
 	i = 0;
-	count = 0;
 	while (shell.env[i])
-	{
-		if (ft_isalpha(shell.env[i][0]))
-			count++;
 		i++;
-	}
-	return (count);
+	return (i);
 }
 
 char	**ft_copy_env(t_shell shell)
@@ -46,20 +40,25 @@ char	**ft_copy_env(t_shell shell)
 	char	**res;
 	int		count;
 
-	count = ft_count_env_special(shell);
+	count = ft_count_env(shell);
 	res = (char **)malloc(sizeof(char *) * (count + 1));
 	if (!res)
 		return (NULL);
 	i = 0;
-	count = 0;
 	while (shell.env[i])
 	{
-		if (ft_isalpha(shell.env[i][0]))
-			res[count++] = ft_strdup(shell.env[i]);
+		res[i] = ft_strdup(shell.env[i]);
+		if (!res[i])
+		{
+			while (i-- > 0)
+				free(res[i]);
+			free(res);
+			return (NULL);
+		}
 		i++;
 	}
-	res[count] = NULL;
-	ft_sort_env(res, count);
+	res[i] = NULL;
+	ft_sort_env(res, i);
 	return (res);
 }
 
@@ -75,6 +74,11 @@ void	ft_export_env(t_shell shell)
 	i = 0;
 	while (copy[i])
 	{
+		if (!ft_strncmp(copy[i], "_=", 2))
+		{
+			i++;
+			continue ;
+		}
 		write(1, "declare -x ", 11);
 		value = ft_strchr(copy[i], '=');
 		if (value)

@@ -30,6 +30,8 @@ t_token_lst	*append_redirections(t_redir_lst **node_redirs,
 	t_redir_lst		*redir_node;
 	char			*temp_str;
 
+
+	(void) shell;
 	redir_node = NULL;
 	while (token_lst && is_redirection(token_lst->type))
 	{
@@ -37,7 +39,8 @@ t_token_lst	*append_redirections(t_redir_lst **node_redirs,
 		token_lst = token_lst->next;
 		if (!append_redirections_if(token_lst))
 			return (NULL);
-		temp_str = arg_return(token_lst->value, token_lst->type, shell);
+		// temp_str = arg_return(token_lst->value, token_lst->type, shell);
+		temp_str = ft_strdup(token_lst->value);
 		if (!temp_str)
 			return (NULL);
 		redir_node = new_redir_node(redir_type, temp_str);

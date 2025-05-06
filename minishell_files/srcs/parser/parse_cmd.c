@@ -7,13 +7,15 @@ t_token_lst	*handle_cmd_redir(t_token_lst *token_lst,
 	t_token_type	type;
 	char			*temp_str;
 
+	(void)shell;
 	type = token_lst->type;
 	token_lst = token_lst->next;
 	if (token_lst && (token_lst->type == TOKEN_WORD
 			|| token_lst->type == TOKEN_S_QUOTE
 			|| token_lst->type == TOKEN_D_QUOTE))
 	{
-		temp_str = arg_return(token_lst->value, token_lst->type, shell);
+		// temp_str = arg_return(token_lst->value, token_lst->type, shell);
+		temp_str = ft_strdup(token_lst->value);
 		if (!temp_str)
 			return (NULL);
 		redir_temp = new_redir_node(type, temp_str);
@@ -40,7 +42,8 @@ t_token_lst	*make_cmd_and_redir_lst(t_token_lst *token_lst,
 	{
 		if (is_token_valid_for_cmd(token_lst->type))
 		{
-			temp_str = arg_return(token_lst->value, token_lst->type, shell);
+			// temp_str = arg_return(token_lst->value, token_lst->type, shell);
+			temp_str = ft_strdup(token_lst->value);
 			temp = token_new_node(token_lst->type, temp_str);
 			if (!temp)
 				return (free(temp_str), NULL);
@@ -74,6 +77,7 @@ int	set_executable_and_argv(t_ast_node **ast_node,
 {
 	int	ctr;
 
+	(void)shell;
 	if (!cmd_lst)
 		return (0);
 	ctr = token_lst_size(cmd_lst);
@@ -83,7 +87,7 @@ int	set_executable_and_argv(t_ast_node **ast_node,
 		return (-1);
 	if (builtin_check(cmd_lst->value))
 		(*ast_node)->data.cmd.executable
-			= arg_return(cmd_lst->value, cmd_lst->type, shell);
+			= ft_strdup(cmd_lst->value);
 	else
 		(*ast_node)->data.cmd.executable
 			= return_executable_path(cmd_lst->value, shell);
@@ -91,7 +95,7 @@ int	set_executable_and_argv(t_ast_node **ast_node,
 	while (cmd_lst)
 	{
 		(*ast_node)->data.cmd.exec_argv[ctr]
-			= arg_return(cmd_lst->value, cmd_lst->type, shell);
+			= ft_strdup(cmd_lst->value);
 		cmd_lst = cmd_lst->next;
 		ctr++;
 	}

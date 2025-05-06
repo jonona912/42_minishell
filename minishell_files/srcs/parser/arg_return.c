@@ -33,8 +33,10 @@ int	dollar_structure_if(char *value, int *i, t_shell shell, char **res)
 	{
 		if (value[*i] == '$' && value[*i + 1] == '?')
 		{
-			new = ft_strjoin(*res, ft_itoa(shell.last_status));
+			tmp = ft_itoa(shell.last_status);
+			new = ft_strjoin(*res, tmp);
 			free(*res);
+			free(tmp);
 			*res = new;
 			*i += 2;
 			return (1);

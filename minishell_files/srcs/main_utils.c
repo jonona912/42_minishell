@@ -32,6 +32,7 @@ char	**copy_env(char **envp)
 	int		count;
 	char	**copy;
 	int		i;
+	int		j;
 	int		curr_shlvl;
 	char	*tmp;
 
@@ -39,12 +40,13 @@ char	**copy_env(char **envp)
 	while (envp[count])
 		count++;
 	i = 0;
+	j = 0;
 	if (!search_shlvl(envp))
 	{
 		copy = malloc(sizeof(char *) * (count + 2));
 		if (!copy)
 			return (NULL);
-		copy[i++] = ft_strdup("SHLVL=1");
+		copy[j++] = ft_strdup("SHLVL=1");
 	}
 	else
 	{
@@ -59,18 +61,20 @@ char	**copy_env(char **envp)
 			curr_shlvl = ft_atoi(envp[i] + 6);
 			if (curr_shlvl >= 999)
 			{
-				printf("Error: SHLVL is too high\n");
-				env_free(copy);
-				exit(1);
+				printf("warning: shell level (%d) too high, resetting to 1\n", curr_shlvl + 1);
+				copy[j++] = ft_strdup("SHLVL=1");
 			}
-			tmp = ft_itoa(curr_shlvl + 1);
-			copy[i] = ft_strjoin("SHLVL=", tmp);
-			free(tmp);
+			else
+			{
+				tmp = ft_itoa(curr_shlvl + 1);
+				copy[j++] = ft_strjoin("SHLVL=", tmp);
+				free(tmp);
+			}
 		}
 		else
-			copy[i] = ft_strdup(envp[i]);
+			copy[j++] = ft_strdup(envp[i]);
 		i++;
 	}
-	copy[i] = NULL;
+	copy[j] = NULL;
 	return (copy);
 }

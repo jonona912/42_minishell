@@ -21,7 +21,7 @@ int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 		shell->last_status = 1;
 		return (1);
 	}
-	ft_print_tokens(*token_lst);
+	// ft_print_tokens(*token_lst);
 	if (!parse_or(*token_lst, head, shell))
 	{
 		token_free_list(*token_lst);
@@ -87,6 +87,7 @@ void	main_loop(t_shell *shell)
 		{
 			rl_clear_history();
 			printf("exit\n");
+			free(line);
 			break ;
 		}
 		if (*line != '\0')
