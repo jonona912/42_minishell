@@ -26,6 +26,8 @@ t_token_lst	*parse_pipe(t_token_lst *token_lst,
 		if (token_lst && !is_valid_after_pipe(token_lst->type))
 			return (ft_putstr_fd("minishell: incomplete command\n", 2), NULL);
 		token_lst = parse_word(token_lst, &right, shell);
+		if (token_lst == NULL)
+			return (NULL);
 		left = *ast_node;
 		*ast_node = create_binary_op_node(NODE_PIPE, left, right);
 		right = NULL;

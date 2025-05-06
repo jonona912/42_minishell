@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 11:00:01 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/06 20:05:11 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/05/06 22:37:39 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,11 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst, 
 				*current_token = '\0';
 			}
 		}
+	}
+	if (line[i] && line[i] == '&' && line[i + 1] != '&')
+	{
+		ft_putstr_fd("Error: single '&' is not allowed\n", 2);
+		return (free(final_word), -1);
 	}
 	if (final_word)
 	{

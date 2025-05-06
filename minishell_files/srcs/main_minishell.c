@@ -11,6 +11,17 @@ void	signal_handler(int signum)
 	rl_redisplay();
 }
 
+int	is_first_token_valid(t_token_type type)
+{
+	return (type == TOKEN_WORD ||
+			type == TOKEN_REDIRECTION_IN ||
+			type == TOKEN_REDIRECTION_OUT ||
+			type == TOKEN_APPEND ||
+			type == TOKEN_HEREDOC ||
+			type == TOKEN_L_PAREN ||
+			type == TOKEN_R_PAREN);
+}
+
 int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 	t_token_lst **token_lst, t_ast_node **head)
 {
@@ -21,13 +32,19 @@ int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 		return (1);
 	}
 	// ft_print_tokens(*token_lst);
+	if (!is_first_token_valid((*token_lst)->type))
+	{
+		token_free_list(*token_lst);
+		*head = NULL;
+		shell->last_status = 2;
+		return (ft_putstr_fd("minishell: syntax error\n", 2), 1);
+	}
 	if (!parse_or(*token_lst, head, shell))
 	{
 		token_free_list(*token_lst);
 		if (head)
 			free_ast_node(head);
 		free(*line);
-		shell->last_status = 1;
 		return (1);
 	}
 	g_signal_received = 1;

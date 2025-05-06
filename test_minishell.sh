@@ -431,3 +431,9 @@ test_command "echo \$? + \$? - \$?" \
 
 
 # export x1="one two three"
+
+
+# || echo oi
+# & 
+# |& #-> não precisa
+# > & # valido para < e >>

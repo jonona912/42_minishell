@@ -89,8 +89,11 @@ int	set_executable_and_argv(t_ast_node **ast_node,
 		(*ast_node)->data.cmd.executable
 			= ft_strdup(cmd_lst->value);
 	else
-		(*ast_node)->data.cmd.executable
-			= return_executable_path(cmd_lst->value, shell);
+	{	
+		(*ast_node)->data.cmd.executable = return_executable_path(cmd_lst->value, shell);
+		if (!(*ast_node)->data.cmd.executable)
+			return (-1);
+	}
 	ctr = 0;
 	while (cmd_lst)
 	{
