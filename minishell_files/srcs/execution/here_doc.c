@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "includes/execution.h"
 
 int	ms_strcmp_until(char *s1, char *s2, char c)
 {
@@ -21,7 +21,7 @@ void	heredoc_signal_handler(int signum)
 	rl_done = 1;
 }
 
-int	heredoc_loop(char *end_delimitor, int in_fd, struct sigaction *old_sa, char **tmp_file)
+int	read_heredoc_input(char *end_delimitor, int in_fd, struct sigaction *old_sa, char **tmp_file)
 {
 	char	*input;
 
@@ -67,5 +67,5 @@ int	handle_heredoc(char *end_delimitor, int in_fd, char **tmp_file)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, &old_sa);
-	return (heredoc_loop(end_delimitor, in_fd, &old_sa, tmp_file));
+	return (read_heredoc_input(end_delimitor, in_fd, &old_sa, tmp_file));
 }

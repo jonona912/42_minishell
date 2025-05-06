@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "includes/execution.h"
 
 void	print_error(const char *message)
 {
@@ -23,7 +23,7 @@ int	dup2_fd(int fd, int std_fd_fileno, const char *file_name)
 	return (0);
 }
 
-int	handle_redirection_fd_if(t_redir_lst *redir_lst)
+int	process_redirection_type(t_redir_lst *redir_lst)
 {
 	int	fd;
 
@@ -56,7 +56,7 @@ int	handle_redirection_fd(t_redir_lst *redir_lst, int *in_fd)
 	(void)in_fd;
 	while (redir_lst)
 	{
-		if (!handle_redirection_fd_if(redir_lst))
+		if (!process_redirection_type(redir_lst))
 			return (-1);
 		redir_lst = redir_lst->next;
 	}

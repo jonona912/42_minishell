@@ -1,24 +1,4 @@
-#include "../../includes/minishell.h"
-
-void	handle_pipe_right_pid_error(int *pipe_fd, pid_t *left_pid)
-{
-	perror("fork");
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
-	kill(*left_pid, SIGTERM);
-}
-
-void	handle_pipe_right_pid_child(int *pipe_fd, int out_fd,
-	t_shell *shell, t_ast_node *ast_head)
-{
-	int	status;
-
-	close(pipe_fd[1]);
-	dup2(pipe_fd[0], STDIN_FILENO);
-	close(pipe_fd[0]);
-	status = execute(ast_head->data.binary_op.right, -1, out_fd, shell);
-	exit(status);
-}
+#include "includes/execution.h"
 
 int	handle_pipe(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 {
@@ -34,14 +14,14 @@ int	handle_pipe(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 		return (perror("pipe"), -1);
 	left_pid = fork();
 	if (left_pid == -1)
-		return (handle_pipe_left_pid_error(pipe_fd), -1);
+		return (cleanup_after_left_fork_failure(pipe_fd), -1);
 	if (left_pid == 0)
-		handle_pipe_left_pid_child(pipe_fd, ast_head, in_fd, shell);
+		exec_left_pipe_command(pipe_fd, ast_head, in_fd, shell);
 	right_pid = fork();
 	if (right_pid == -1)
-		return (handle_pipe_right_pid_error(pipe_fd, &left_pid), -1);
+		return (cleanup_after_right_fork_failure(pipe_fd, &left_pid), -1);
 	if (right_pid == 0)
-		handle_pipe_right_pid_child(pipe_fd, out_fd, shell, ast_head);
+		exec_right_pipe_command(pipe_fd, out_fd, shell, ast_head);
 	close_pipe_fd(pipe_fd);
 	waitpid(left_pid, &left_status, 0);
 	waitpid(right_pid, &right_status, 0);
@@ -61,7 +41,7 @@ int	handle_subshell(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 		return (-1);
 	}
 	if (fork_pid == 0)
-		handle_subshell_if(ast_head, in_fd, out_fd, shell);
+		exec_subshell_with_redirections(ast_head, in_fd, out_fd, shell);
 	waitpid(fork_pid, &status, 0);
 	if (in_fd != -1)
 		close(in_fd);

@@ -14,19 +14,6 @@ int	search_shlvl(char **env)
 	return (0);
 }
 
-void	shell_env_free(t_shell *shell)
-{
-	int	i;
-
-	i = 0;
-	while (shell->env[i])
-	{
-		free(shell->env[i]);
-		i++;
-	}
-	free(shell->env);
-}
-
 void	env_free(char **str)
 {
 	int	i;

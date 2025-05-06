@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "includes/parser.h"
 
 t_token_lst	*handle_cmd_redir(t_token_lst *token_lst,
 								t_redir_lst **redir_lst, t_shell *shell)

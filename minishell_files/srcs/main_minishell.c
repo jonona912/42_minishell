@@ -39,6 +39,37 @@ int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 	return (0);
 }
 
+int	ft_update_path(t_shell *shell)
+{
+	char	cwd[4096];
+	char	*old_pwd;
+
+	if (getcwd(cwd, sizeof(cwd)))
+	{
+		ft_setenv("PWD", cwd, 1, shell);
+		return (0);
+	}
+	old_pwd = ft_getenv("OLDPWD", *shell);
+	if (!old_pwd)
+	{
+		ft_putstr_fd("Error: OLDPWD not set\n", 2);
+		return (1);
+	}
+	if (chdir(old_pwd))
+	{
+		ft_putstr_fd("Errror: Can't get back to OLDPWD\n", 2);
+		return (1);
+	}
+	if (!getcwd(cwd, sizeof(cwd)))
+	{
+		ft_putstr_fd("Error: problem with recovered path\n", 2);
+		ft_setenv("PWD", old_pwd, 1, shell);
+	}
+	else
+		ft_setenv("PWD", cwd, 1, shell);
+	return (0);
+}
+
 void	main_loop(t_shell *shell)
 {
 	char		*line;
@@ -60,8 +91,10 @@ void	main_loop(t_shell *shell)
 		}
 		if (*line != '\0')
 			add_history(line);
+		ft_update_path(shell);
 		if (main_loop_tokenize_parse_execute(&line, shell, &token_lst, &head))
 			continue ;
+		// ft_update_path(shell);
 	}
 }
 
@@ -81,6 +114,6 @@ int	main(int argc, char **argv, char **envp)
 	sigaction(SIGINT, &sa_int, NULL);
 	signal(SIGQUIT, SIG_IGN);
 	main_loop(&shell);
-	shell_env_free(&shell);
+	env_free(shell.env);
 	return (0);
 }

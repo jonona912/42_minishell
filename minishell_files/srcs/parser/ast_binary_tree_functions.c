@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "includes/parser.h"
 
 t_ast_node	*create_cmd_node(t_node_type type, char *executable,
 	char **exec_argv, t_redir_lst *redirs)

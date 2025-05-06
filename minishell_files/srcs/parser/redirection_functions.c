@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "includes/parser.h"
 
 t_redir_lst	*new_redir_node(t_token_type type, char *target)
 {

@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "includes/parser.h"
 
 t_token_lst	*handle_parentheses(t_token_lst *token_lst,
 		t_ast_node **ast_node, t_shell *shell)

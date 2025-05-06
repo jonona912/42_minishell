@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "../includes/built_in_commands.h"
 
 void	ft_echo(char **argv)
 {
@@ -14,20 +14,18 @@ void	ft_echo(char **argv)
 		n = 1;
 		i++;
 	}
-	ft_echo_loop(argv, &i);
+	ft_echo_print_loop(argv, &i);
 	if (!n)
 		printf("\n");
 }
 
-void	ft_env(t_shell *shell, int is_exp)
+void	ft_env(t_shell *shell)
 {
 	int	i;
 
 	i = 0;
 	while (shell->env[i])
 	{
-		if (is_exp)
-			write(1, "declared -x ", 12);
 		write(1, shell->env[i], ft_strlen(shell->env[i]));
 		write(1, "\n", 1);
 		i++;
@@ -38,25 +36,29 @@ int	ft_cd(char **argv, t_shell *shell)
 {
 	char		cwd[4096];
 	static char	*oldpwd = NULL;
-	char		*curr_pwd;
+	char		new_cwd[4096];
 	char		*tmp;
 
-	if (argv[2])
-		return (printf("Error: too many arguments\n"), 1);
+	if (argv[2] && argv[1])
+		return (printf("Error: too many argunemtns\n"), 1);
 	if (ft_cd_special_cases(argv, shell, &tmp, oldpwd))
 		return (1);
-	if (getcwd(cwd, sizeof(cwd)))
-		curr_pwd = cwd;
-	else
-	{
-		curr_pwd = ft_getenv("PWD", *shell);
-		if (!curr_pwd)
-			curr_pwd = "";
-	}
+	if (!getcwd(cwd, sizeof(cwd)))
+		return (ft_putstr_fd
+			("Error: current working directory name not found\n", 2), 1);
 	if (chdir(tmp) != 0)
-		return (printf("Error: directory cannot be changed\n"), 1);
-	if (ft_cd_end(curr_pwd, shell, &oldpwd, cwd))
+		return (ft_putstr_fd
+			("Error: directory cannot be changed\n", 2), 1);
+	if (ft_setenv("OLDPWD", cwd, 1, shell))
 		return (1);
+	if (!getcwd(new_cwd, sizeof(new_cwd)))
+		return (ft_putstr_fd
+			("Error: cannot set PWD to new directory\n", 2), 1);
+	if (ft_setenv("PWD", new_cwd, 1, shell))
+		return (1);
+	if (oldpwd)
+		free(oldpwd);
+	oldpwd = ft_strdup(cwd);
 	return (0);
 }
 
@@ -65,17 +67,9 @@ int	ft_export(char **argv, t_shell *shell)
 	char	*equal;
 	char	*name;
 	int		name_len;
-	// (void)shell;
-	// int		i;
 
-	// i = 0;
-	// while (argv[i])
-	// {
-	// 	printf("DEBUG: %s\n", argv[i]);
-	// 	i++;
-	// }
 	if (!argv[1])
-		return (ft_env(shell, 1), 0);
+		return (ft_export_env(*shell), 0);
 	equal = ft_strchr(argv[1], '=');
 	if (!equal)
 		return (printf("Error: invalid export input\n"), 1);

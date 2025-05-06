@@ -1,6 +1,6 @@
-#include "../../includes/minishell.h"
+#include "includes/parser.h"
 
-void	identify_wildcard_type_if(t_wildcard_type_string *wildcard_type_string,
+void	extract_wildcard_content(t_wildcard_type_string *wildcard_type_string,
 	int *char_ctr, char *line)
 {
 	if (wildcard_type_string->type == WILDCARD_START
@@ -16,7 +16,7 @@ void	identify_wildcard_type_if(t_wildcard_type_string *wildcard_type_string,
 		wildcard_type_string->data = NULL;
 }
 
-t_token_lst	*wildcard_function_if(t_wildcard_type_string *wildcard_string,
+t_token_lst	*handle_wildcard_variants(t_wildcard_type_string *wildcard_string,
 		t_token_lst *wildcard_list, t_read_dir *read_dir)
 {
 	if (wildcard_string->type == WILDCARD_START)
@@ -31,7 +31,7 @@ t_token_lst	*wildcard_function_if(t_wildcard_type_string *wildcard_string,
 	return (wildcard_list);
 }
 
-void	join_wildcar_token_if(char *(ft_strstr_func)
+void	add_matching_wildcard_token(char *(ft_strstr_func)
 		(const char *str, const char *wildcard),
 		t_read_dir *read_dir, t_wildcard_type_string *wildcard_string,
 		t_token_lst **wildcard_list)
@@ -94,34 +94,3 @@ void	join_wildcar_token_if(char *(ft_strstr_func)
 // 	}
 // 	return (ctr);
 // }
-
-char	*dollar_execute(char *name, t_shell shell)
-{
-	char	*res;
-
-	if (!name)
-		return (NULL);
-	res = ft_getenv(name, shell);
-	if (!res)
-		return (NULL);
-	return (ft_strdup(res));
-}
-
-char	*name_finder(char *value, int pos)
-{
-	int		i;
-	char	*name;
-
-	i = 0;
-	pos++;
-	while (value[pos + i] && (ft_isalnum(value[pos + i])
-			|| value[pos + i] == '_'))
-		i++;
-	if (i == 0)
-		return (NULL);
-	name = (char *)malloc(i + 1);
-	if (!name)
-		return (NULL);
-	ft_strlcpy(name, value + pos, i + 1);
-	return (name);
-}

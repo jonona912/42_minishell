@@ -1,37 +1,35 @@
-#include "../../includes/minishell.h"
+#include "includes/execution.h"
 
-int	builtin_check(char *cmd)
+void	exec_subshell_with_redirections(t_ast_node *ast_head, int in_fd,
+		int out_fd, t_shell *shell)
 {
-	if (!cmd)
-		return (0);
-	return (ft_strcmp(cmd, "echo") == 0
-		|| ft_strcmp(cmd, "cd") == 0
-		|| ft_strcmp(cmd, "pwd") == 0
-		|| ft_strcmp(cmd, "export") == 0
-		|| ft_strcmp(cmd, "unset") == 0
-		|| ft_strcmp(cmd, "exit") == 0
-		|| ft_strcmp(cmd, "env") == 0);
+	int	status;
+
+	if (handle_redirection_fd
+		(ast_head->data.sub_shell.sub_shell_redir, &in_fd))
+		exit(1);
+	if (in_fd != -1)
+	{
+		dup2(in_fd, STDIN_FILENO);
+		close(in_fd);
+	}
+	if (out_fd != -1)
+	{
+		dup2(out_fd, STDOUT_FILENO);
+		close(out_fd);
+	}
+	status = execute(ast_head->data.sub_shell.subshell, -1, -1, shell);
+	exit(status);
 }
 
-int	execute_builtin(char **argv, t_shell *shell) // handle $P
-{
-	if (ft_strcmp(argv[0], "echo") == 0)
-		ft_echo(argv);
-	else if (ft_strcmp(argv[0], "pwd") == 0)
-		ft_pwd(shell);
-	else if (ft_strcmp(argv[0], "env") == 0)
-		ft_env(shell, 0);
-	return (0);
-}
-
-void	handle_pipe_left_pid_error(int *pipe_fd)
+void	cleanup_after_left_fork_failure(int *pipe_fd)
 {
 	perror("fork");
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
 }
 
-void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head,
+void	exec_left_pipe_command(int *pipe_fd, t_ast_node *ast_head,
 	int in_fd, t_shell *shell)
 {
 	int	status;
@@ -41,4 +39,30 @@ void	handle_pipe_left_pid_child(int *pipe_fd, t_ast_node *ast_head,
 	close(pipe_fd[1]);
 	status = execute(ast_head->data.binary_op.left, in_fd, -1, shell);
 	exit(status);
+}
+
+void	cleanup_after_right_fork_failure(int *pipe_fd, pid_t *left_pid)
+{
+	perror("fork");
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	kill(*left_pid, SIGTERM);
+}
+
+void	exec_right_pipe_command(int *pipe_fd, int out_fd,
+	t_shell *shell, t_ast_node *ast_head)
+{
+	int	status;
+
+	close(pipe_fd[1]);
+	dup2(pipe_fd[0], STDIN_FILENO);
+	close(pipe_fd[0]);
+	status = execute(ast_head->data.binary_op.right, -1, out_fd, shell);
+	exit(status);
+}
+
+void	close_pipe_fd(int *pipe_fd)
+{
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
 }

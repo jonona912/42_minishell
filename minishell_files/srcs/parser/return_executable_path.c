@@ -1,6 +1,6 @@
-#include "../../includes/minishell.h"
+#include "includes/parser.h"
 
-int	return_executable_path_loop(char **path_split, const char *name,
+int	search_path_directories(char **path_split, const char *name,
 		char **temp_path)
 {
 	int		i;
@@ -20,7 +20,7 @@ int	return_executable_path_loop(char **path_split, const char *name,
 	return (0);
 }
 
-int	copy_wildcard_string_loop(char *line, int i, char **dest)
+int	extract_non_wildcard_text(char *line, int i, char **dest)
 {
 	int	len;
 
@@ -59,7 +59,7 @@ char	*return_executable_path(const char *name, t_shell *shell)
 	path_split = ft_split(path, ':');
 	if (path_split == NULL)
 		return (ft_free_double_ptr(path_split), ft_strdup((char *) name));
-	return_executable_path_loop(path_split, name, &temp_path);
+	search_path_directories(path_split, name, &temp_path);
 	ft_free_double_ptr(path_split);
 	if (!temp_path)
 		temp_path = ft_strdup((char *) name);
