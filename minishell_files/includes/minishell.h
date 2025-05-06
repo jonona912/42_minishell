@@ -149,6 +149,9 @@ int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
 int		ft_unset(char **argv, t_shell *shell);
 
+// handle_wildcards.c
+t_token_lst	*handle_wildcard_2(char *line);
+
 /////////////////////// parser /////////////////////////
 // ast_binary_tree_function.c
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
