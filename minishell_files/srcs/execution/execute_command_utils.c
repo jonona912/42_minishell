@@ -7,7 +7,7 @@ void	setup_redirections_in_child(t_ast_node *ast_node, int *in_fd)
 	{
 		if (handle_redirection_fd(ast_node->data.cmd.redirs, in_fd) == -1)
 		{
-			exit (2);
+			exit (1);
 		}
 	}
 }

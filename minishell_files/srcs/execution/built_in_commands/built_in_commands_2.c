@@ -7,18 +7,20 @@ int	ft_exit(char **argv)
 	i = 0;
 	if (argv[1])
 	{
+		while (argv[1][i] == '+' || argv[1][i] == '-')
+			i++;
 		while (argv[1][i])
 		{
 			if (!ft_isdigit(argv[1][i]))
 			{
-				printf("exit: %s: numeric argument required\n", argv[1]);
+				ft_putstr_fd("exit: %s: numeric argument required\n", 2);
 				exit(2);
 			}
 			i++;
 		}
 		if (argv[2])
-			return (printf("exit: too many arguments\n"), 1);
-		exit(ft_atoi(argv[1]) % 256);
+			return (ft_putstr_fd("exit: too many arguments\n", 2), 1);
+		exit(((unsigned int) ft_atoi(argv[1])) % 256);
 	}
 	exit(0);
 }

@@ -45,7 +45,7 @@ int	ft_cd(char **argv, t_shell *shell)
 	char		*tmp;
 
 	if (argv[2] && argv[1])
-		return (printf("Error: too many argunemtns\n"), 1);
+		return (ft_putstr_fd("Error: too many argunents\n", 2), 1);
 	if (ft_cd_special_cases(argv, shell, &tmp, oldpwd))
 		return (1);
 	if (!getcwd(cwd, sizeof(cwd)))
@@ -86,7 +86,7 @@ int	ft_export(char **argv, t_shell *shell)
 		{
 			if (!is_valid_name(argv[i]))
 			{
-				printf("Error: invalid export input\n");
+				ft_putstr_fd("Error: invalid export input\n", 2);
 				exit_status = 1;
 			}
 			else
@@ -101,7 +101,7 @@ int	ft_export(char **argv, t_shell *shell)
 		ft_strlcpy(name, argv[i], name_len + 1);
 		if (!is_valid_name(name))
 		{
-			printf("Error: invalid variable name\n");
+			ft_putstr_fd("Error: invalid variable name\n", 2);
 			free(name);
 			exit_status = 1;
 			i++;
@@ -110,7 +110,7 @@ int	ft_export(char **argv, t_shell *shell)
 		if (ft_setenv(name, equal + 1, 1, shell))
 		{
 			free(name);
-			return (printf("Error: invalid syntax input\n"), 1);
+			return (ft_putstr_fd("Error: invalid syntax input\n", 2), 1);
 		}
 		free(name);
 		i++;
@@ -126,7 +126,7 @@ int	ft_unset(char **argv, t_shell *shell)
 
 	i = 0;
 	if (!argv[1])
-		return (ft_putstr_fd("Error: missing argument for unset\n", 2), 1);
+		return (0);
 	while (shell->env[i])
 	{
 		equal = ft_strchr(shell->env[i], '=');

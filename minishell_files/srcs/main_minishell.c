@@ -18,7 +18,6 @@ int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 	if (!*token_lst || (*token_lst)->type == TOKEN_END)
 	{
 		free(*line);
-		shell->last_status = 1;
 		return (1);
 	}
 	// ft_print_tokens(*token_lst);
@@ -28,6 +27,7 @@ int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 		if (head)
 			free_ast_node(head);
 		free(*line);
+		shell->last_status = 1;
 		return (1);
 	}
 	g_signal_received = 1;
