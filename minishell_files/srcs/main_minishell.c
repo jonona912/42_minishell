@@ -14,13 +14,14 @@ void	signal_handler(int signum)
 int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 	t_token_lst **token_lst, t_ast_node **head)
 {
-	*token_lst = ft_tokenize(*line);
+	*token_lst = ft_tokenize(*line, shell);
 	if (!*token_lst || (*token_lst)->type == TOKEN_END)
 	{
 		free(*line);
 		shell->last_status = 1;
 		return (1);
 	}
+	ft_print_tokens(*token_lst);
 	if (!parse_or(*token_lst, head, shell))
 	{
 		token_free_list(*token_lst);

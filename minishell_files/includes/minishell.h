@@ -28,9 +28,9 @@ typedef struct s_shell
 
 typedef enum s_token_type
 {
-	TOKEN_WORD,
-	TOKEN_S_QUOTE,
-	TOKEN_D_QUOTE,
+	TOKEN_WORD, // hello
+	TOKEN_S_QUOTE, // hello"$USER"  hello    $USER D
+	TOKEN_D_QUOTE, //
 	TOKEN_WILDCARD,
 	TOKEN_PIPE,
 	TOKEN_REDIRECTION_IN,
@@ -135,7 +135,8 @@ int	token_lst_size(t_token_lst *head);
 // ms_tokenizer.c
 int			ft_append_char(char *str, char c);
 int			initialize_tokenize_struct(t_tokenize_struct *vars, char *line);
-t_token_lst	*ft_tokenize(char *line);
+// t_token_lst	*ft_tokenize(char *line);
+t_token_lst	*ft_tokenize(char *line, t_shell *shell);
 int			is_not_special_char(char c);
 int		ft_isblank(int c);
 int		handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst);
@@ -222,13 +223,13 @@ char			*copy_token_till_delimeter_step1(char **dest, char delimiter, int *j);
 t_token_type	return_token_type(char *str);
 int				send_paren_to_token_lst_paren(char *str, char *temp, t_tokenize_struct *vars);
 int				ft_tokenize_loop_part1(char *line, int *i, t_tokenize_struct *vars, t_token_lst **token_lst);
-int				ft_tokenize_loop_part2(char *line, int *i, t_tokenize_struct *vars, t_token_lst **token_lst);
+int				ft_tokenize_loop_part2(char *line, int *i, t_tokenize_struct *vars, t_token_lst **token_lst, t_shell *shell);
 int				is_not_special_char(char c);
 t_token_type	return_token_type(char *str);
 int				send_str_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token_type);
 int				copy_until_special_char(char *current_token, char *line, char *char_set);
 int				send_paren_to_token_lst(char *str, t_token_lst **token_lst, t_token_type token_type, t_tokenize_struct *vars);
-int				create_word_token(char *current_token, char *line, t_token_lst **token_lst);
+int				create_word_token(char *current_token, char *line, t_token_lst **token_lst, t_shell *shell);
 int				is_wildcard_present(char *line);
 int				handle_quotes(t_tokenize_struct *vars, char *line, t_token_lst **token_lst);
 int				handle_other_tokens(char *line, t_token_lst **token_lst, t_tokenize_struct *vars);
@@ -249,7 +250,7 @@ void		join_wildcar_token_if(char *(ft_strstr_func)(const char *str, const char *
 int			is_word_or_quote(t_token_type type);
 char		*dollar_execute(char *name, t_shell shell);
 char		*name_finder(char *value, int pos);
-
+char	*arg_word_return(char *value, t_shell shell);
 
 //execution
 void	handle_subshell_if(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell);

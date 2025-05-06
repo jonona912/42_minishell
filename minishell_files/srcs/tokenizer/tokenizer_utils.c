@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 18:12:05 by opopov            #+#    #+#             */
-/*   Updated: 2025/04/28 19:02:39 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/05/05 20:09:19 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ char	**copy_token_till_delimeter_dest(char **dest, int *i, int *j, char *src)
 	return (dest);
 }
 
-int	ft_tokenize_loop_part1(char *line, int *i,
-		t_tokenize_struct *vars, t_token_lst **token_lst)
+int	ft_tokenize_loop_part1(char *line, int *i, t_tokenize_struct *vars, t_token_lst **token_lst)
 {
 	int	temp;
 
@@ -72,24 +71,54 @@ int	ft_tokenize_loop_part1(char *line, int *i,
 	return (1);
 }
 
-int	ft_tokenize_loop_part2(char *line, int *i,
-		t_tokenize_struct *vars, t_token_lst **token_lst)
+// int	ft_tokenize_loop_part2(char *line, int *i, t_tokenize_struct *vars, t_token_lst **token_lst)
+// {
+// 	int	temp;
+
+// 	temp = handle_other_tokens(line + *i, token_lst, vars);
+// 	if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
+// 		return (0);
+// 	while (ft_isblank(line[*i]))
+// 		(*i)++;
+// 	temp = handle_env_var(vars->current_token, line + *i, token_lst);
+// 	if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
+// 		return (0);
+// 	temp = handle_wildcard(vars->current_token, line + *i, token_lst);
+// 	if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
+// 		return (0);
+// 	temp = create_word_token(vars->current_token, line + *i, token_lst);
+// 	if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
+// 		return (0);
+// 	return (1);
+// }
+
+
+
+int	ft_tokenize_loop_part2(char *line, int *i, t_tokenize_struct *vars, t_token_lst **token_lst, t_shell *shell)
 {
 	int	temp;
 
+	while (ft_isblank(line[*i]))
+		(*i)++;
 	temp = handle_other_tokens(line + *i, token_lst, vars);
 	if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
 		return (0);
 	while (ft_isblank(line[*i]))
 		(*i)++;
-	temp = handle_env_var(vars->current_token, line + *i, token_lst);
-	if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
-		return (0);
+	// temp = handle_env_var(vars->current_token, line + *i, token_lst);
+	// if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
+	// 	return (0);
 	temp = handle_wildcard(vars->current_token, line + *i, token_lst);
 	if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
 		return (0);
-	temp = create_word_token(vars->current_token, line + *i, token_lst);
+	temp = create_word_token(vars->current_token, line + *i, token_lst, shell);
+	if (temp < 0)
+		return (-1);
+	*i += temp;
 	if (!ft_tokenize_loop_part2_error_handler(temp, vars, token_lst, i))
 		return (0);
 	return (1);
 }
+
+// echo adsf$USERafjdf"$PATH"
+// echo adsf$USERafjdf$PATHasdfa 
