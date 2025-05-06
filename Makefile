@@ -13,6 +13,7 @@ COMMANDS_DIR = built_in_commands
 SRCS = main_minishell.c \
 		main_utils.c \
 		print_structs.c \
+		$(TOKENIZER_DIR)/handle_wildcard.c \
 		$(TOKENIZER_DIR)/tokenizer_helper_1.c \
 		$(TOKENIZER_DIR)/token_lst_functions.c \
 		$(TOKENIZER_DIR)/tokenizer_utils.c \

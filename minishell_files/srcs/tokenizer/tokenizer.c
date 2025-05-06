@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:06:19 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/06 09:48:03 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/05/06 19:32:33 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,11 +206,11 @@ t_token_lst	*ft_tokenize(char *line, t_shell *shell)
 		// if (!ft_tokenize_loop_part2_error_handler(temp, &vars, token_lst, i))
 		// 	return (NULL);
 		temp = create_word_token(vars.current_token, line + i, &token_lst, shell);
-		if (temp < 0)
-			return (NULL);
-		i += temp;
+		// if (temp < 0)
+		// 	return (NULL);
 		if (!ft_tokenize_loop_part2_error_handler(temp, &vars, &token_lst, &i))
 			return (NULL);
+		i += temp;
 	}
 	free(vars.current_token);
 	if (vars.paren_counter != 0)
@@ -220,6 +220,7 @@ t_token_lst	*ft_tokenize(char *line, t_shell *shell)
 		return (NULL);
 	}
 	token_add_node_back(&token_lst, token_new_node(TOKEN_END, NULL));
+	printf("REACHED END\n"); // just space takes it to here PROBLEM!!!!
 	return (token_lst);
 }
 

@@ -6,7 +6,7 @@
 /*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 11:00:01 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/06 09:42:52 by zkhojazo         ###   ########.fr       */
+/*   Updated: 2025/05/06 20:05:11 by zkhojazo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,9 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst, 
 	char	*final_word;
 	char	*temp_str;
 	t_token_lst *wildcard_lst = NULL;
+	// int		was_empty;
 
+	// was_empty = 1;
 	final_word = NULL;
 	type = TOKEN_WORD;
 	i = 0;
@@ -89,6 +91,32 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst, 
 		{
 			type = TOKEN_WILDCARD;
 		}
+		if (temp > 0)
+		{
+			temp_str = arg_word_return(current_token, *shell);
+			if (*temp_str == '\0')
+			{
+				free(temp_str);
+				*current_token = '\0';
+				temp_str = NULL;
+				continue;
+			}
+			if (final_word == NULL)
+			{
+				final_word = temp_str;
+				temp_str = NULL;
+				// *current_token = '\0';
+			}
+			else
+			{
+				char *tmp_2 = ft_strjoin(final_word, temp_str);
+				free(final_word);
+				final_word = tmp_2;
+				free(temp_str);
+				temp_str = NULL;
+			}
+			*current_token = '\0';
+		}
 		// save to final_word and append
 		// add double quotes
 		if (line[i] == '\"')
@@ -97,22 +125,27 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst, 
 			if (temp == -1)
 				return (-1);
 			i += temp;
+			if (temp > 0)
+			{
+				temp_str = arg_word_return(current_token, *shell);
+				if (final_word == NULL)
+				{
+					final_word = temp_str;
+					temp_str = NULL;
+				}
+				else
+				{
+					char *tmp_2 = ft_strjoin(final_word, temp_str);
+					free(final_word);
+					final_word = tmp_2;
+					free(temp_str);
+				}
+				*current_token = '\0';
+			}
 		}
 		// env var processing
-		temp_str = arg_word_return(current_token, *shell);
-		if (final_word == NULL)
-		{
-			final_word = temp_str;
-			temp_str = NULL;
-		}
-		else
-		{
-			char *tmp_2 = ft_strjoin(final_word, temp_str);
-			free(final_word);
-			final_word = tmp_2;
-			free(temp_str);
-		}
-		*current_token = '\0';
+		// printf("line: %s temp_str: %s\n", line, temp_str);
+		// printf("bool: %d\n", *temp_str == '\0');
 		// add single quotes
 		// expand wildcard
 		if (line[i] == '\'')
@@ -121,11 +154,28 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst, 
 			if (temp == -1)
 				return (free(final_word), -1);
 			i += temp;
-			if (*current_token)
+			// if (*current_token)
+			// {
+			// 	temp_str = ft_strjoin(final_word, current_token);
+			// 	free(final_word);
+			// 	final_word = temp_str;
+			// 	*current_token = '\0';
+			// }
+			if (temp > 0)
 			{
-				temp_str = ft_strjoin(final_word, current_token);
-				free(final_word);
-				final_word = temp_str;
+				temp_str = ft_strdup(current_token);
+				if (final_word == NULL)
+				{
+					final_word = temp_str;
+					temp_str = NULL;
+				}
+				else
+				{
+					char *tmp_2 = ft_strjoin(final_word, temp_str);
+					free(final_word);
+					final_word = tmp_2;
+					free(temp_str);
+				}
 				*current_token = '\0';
 			}
 		}
@@ -134,8 +184,9 @@ int	create_word_token(char *current_token, char *line, t_token_lst **token_lst, 
 	{
 		if (type == TOKEN_WILDCARD)
 		{
+			wildcard_lst = handle_wildcard_2(final_word);
 			temp = 0;
-			wildcard_lst = wildcard_function(final_word, &temp);
+			// wildcard_lst = wildcard_function(final_word, &temp);
 			if (!wildcard_lst)
 			{
 				append_to_token(TOKEN_WORD, final_word, token_lst);

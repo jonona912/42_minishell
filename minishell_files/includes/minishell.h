@@ -149,6 +149,9 @@ int		ft_cd (char **argv, t_shell *shell);
 int		ft_export(char **argv, t_shell *shell);
 int		ft_unset(char **argv, t_shell *shell);
 
+// handle_wildcards.c
+t_token_lst	*handle_wildcard_2(char *line);
+
 /////////////////////// parser /////////////////////////
 // ast_binary_tree_function.c
 t_ast_node *create_cmd_node(t_node_type type, char *executable, char **exec_argv, t_redir_lst *redirs);
@@ -250,7 +253,7 @@ void		join_wildcar_token_if(char *(ft_strstr_func)(const char *str, const char *
 int			is_word_or_quote(t_token_type type);
 char		*dollar_execute(char *name, t_shell shell);
 char		*name_finder(char *value, int pos);
-char	*arg_word_return(char *value, t_shell shell);
+char		*arg_word_return(char *value, t_shell shell);
 
 //execution
 void	handle_subshell_if(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell);

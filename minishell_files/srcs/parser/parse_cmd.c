@@ -40,7 +40,8 @@ t_token_lst	*make_cmd_and_redir_lst(t_token_lst *token_lst,
 	{
 		if (is_token_valid_for_cmd(token_lst->type))
 		{
-			temp_str = arg_return(token_lst->value, token_lst->type, shell);
+			// temp_str = arg_return(token_lst->value, token_lst->type, shell);
+			temp_str = ft_strdup(token_lst->value);
 			temp = token_new_node(token_lst->type, temp_str);
 			if (!temp)
 				return (free(temp_str), NULL);
