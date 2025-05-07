@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 15:15:01 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 15:15:02 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 19:28:44 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	handle_subshell(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 	return (get_exit_status(status));
 }
 
-int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
+int	ex(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 {
 	int	status;
 
@@ -74,17 +74,17 @@ int	execute(t_ast_node *ast_head, int in_fd, int out_fd, t_shell *shell)
 		return (handle_pipe(ast_head, in_fd, out_fd, shell));
 	else if (ast_head->type == NODE_AND)
 	{
-		status = execute(ast_head->data.binary_op.left, in_fd, out_fd, shell);
+		status = ex(ast_head->u_data.s_binary_op.left, in_fd, out_fd, shell);
 		if (!status)
-			status = execute(ast_head->data.binary_op.right,
+			status = ex(ast_head->u_data.s_binary_op.right,
 					in_fd, out_fd, shell);
 		return (status);
 	}
 	else if (ast_head->type == NODE_OR)
 	{
-		status = execute(ast_head->data.binary_op.left, in_fd, out_fd, shell);
+		status = ex(ast_head->u_data.s_binary_op.left, in_fd, out_fd, shell);
 		if (status)
-			status = execute(ast_head->data.binary_op.right,
+			status = ex(ast_head->u_data.s_binary_op.right,
 					in_fd, out_fd, shell);
 		return (status);
 	}

@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:50:00 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 14:53:40 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 19:17:36 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	cmd_lst_loop(t_token_lst *cmd_lst, t_ast_node **ast_node)
 	ctr = 0;
 	while (cmd_lst)
 	{
-		(*ast_node)->data.cmd.exec_argv[ctr]
+		(*ast_node)->u_data.s_cmd.exec_argv[ctr]
 			= ft_strdup(cmd_lst->value);
 		cmd_lst = cmd_lst->next;
 		ctr++;

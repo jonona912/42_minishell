@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:49:47 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 14:49:47 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 19:27:52 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ t_token_lst	*parse_word(t_token_lst *token_lst,
 			return (NULL);
 		*ast_node = create_subshell_node(NODE_SUBSHELL, *ast_node, NULL);
 		token_lst = append_redirections_if_any
-			(token_lst, &(*ast_node)->data.sub_shell.sub_shell_redir, shell);
+			(token_lst, &(*ast_node)->u_data.s_sub_shell.sub_shell_redir,
+				shell);
 		if (!token_lst)
 			return (NULL);
 	}

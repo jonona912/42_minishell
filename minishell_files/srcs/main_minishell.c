@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:33:08 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 14:33:09 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 19:28:54 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 		return (1);
 	}
 	g_signal_received = 1;
-	shell->last_status = execute(*head, -1, -1, shell);
+	shell->last_status = ex(*head, -1, -1, shell);
 	g_signal_received = 0;
 	free_ast_node(head);
 	token_free_list(*token_lst);

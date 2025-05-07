@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:54:31 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 14:54:32 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 19:17:21 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ t_ast_node	*create_cmd_node(t_node_type type, char *executable,
 	if (!node)
 		return (NULL);
 	node->type = type;
-	node->data.cmd.executable = executable;
-	node->data.cmd.exec_argv = exec_argv;
-	node->data.cmd.redirs = redirs;
+	node->u_data.s_cmd.executable = executable;
+	node->u_data.s_cmd.exec_argv = exec_argv;
+	node->u_data.s_cmd.redirs = redirs;
 	return (node);
 }
 
@@ -36,8 +36,8 @@ t_ast_node	*create_binary_op_node(t_node_type type,
 	if (!node)
 		return (NULL);
 	node->type = type;
-	node->data.binary_op.left = left;
-	node->data.binary_op.right = right;
+	node->u_data.s_binary_op.left = left;
+	node->u_data.s_binary_op.right = right;
 	return (node);
 }
 
@@ -50,8 +50,8 @@ t_ast_node	*create_subshell_node(t_node_type type,
 	if (!node)
 		return (NULL);
 	node->type = type;
-	node->data.sub_shell.subshell = subshell;
-	node->data.sub_shell.sub_shell_redir = sub_shell_redir;
+	node->u_data.s_sub_shell.subshell = subshell;
+	node->u_data.s_sub_shell.sub_shell_redir = sub_shell_redir;
 	return (node);
 }
 
@@ -61,18 +61,18 @@ void	free_cmd_node_data(t_ast_node *node)
 
 	if (!node)
 		return ;
-	free(node->data.cmd.executable);
-	if (node->data.cmd.exec_argv)
+	free(node->u_data.s_cmd.executable);
+	if (node->u_data.s_cmd.exec_argv)
 	{
-		arg = node->data.cmd.exec_argv;
+		arg = node->u_data.s_cmd.exec_argv;
 		while (*arg)
 		{
 			free(*arg);
 			arg++;
 		}
-		free(node->data.cmd.exec_argv);
+		free(node->u_data.s_cmd.exec_argv);
 	}
-	free_redir_list(&node->data.cmd.redirs);
+	free_redir_list(&node->u_data.s_cmd.redirs);
 }
 
 void	free_ast_node(t_ast_node **node)
@@ -86,13 +86,13 @@ void	free_ast_node(t_ast_node **node)
 	else if ((*node)->type == NODE_PIPE
 		|| (*node)->type == NODE_AND || (*node)->type == NODE_OR)
 	{
-		free_ast_node(&(*node)->data.binary_op.left);
-		free_ast_node(&(*node)->data.binary_op.right);
+		free_ast_node(&(*node)->u_data.s_binary_op.left);
+		free_ast_node(&(*node)->u_data.s_binary_op.right);
 	}
 	else if ((*node)->type == NODE_SUBSHELL)
 	{
-		free_ast_node(&(*node)->data.sub_shell.subshell);
-		free_redir_list(&(*node)->data.sub_shell.sub_shell_redir);
+		free_ast_node(&(*node)->u_data.s_sub_shell.subshell);
+		free_redir_list(&(*node)->u_data.s_sub_shell.sub_shell_redir);
 	}
 	free(*node);
 	*node = NULL;

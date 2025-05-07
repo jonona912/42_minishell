@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 15:14:54 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 15:14:55 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 19:25:02 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,14 @@ int	preprocess_heredocs(t_ast_node *node, t_shell *shell)
 		return (-1);
 	if (node->type == NODE_CMD)
 	{
-		return (process_heredoc_helper(node->data.cmd.redirs,
+		return (process_heredoc_helper(node->u_data.s_cmd.redirs,
 				shell, fd, tmp_file));
 	}
 	else if (node->type == NODE_PIPE)
 	{
-		if (preprocess_heredocs(node->data.binary_op.left, shell) == -1)
+		if (preprocess_heredocs(node->u_data.s_binary_op.left, shell) == -1)
 			return (-1);
-		if (preprocess_heredocs(node->data.binary_op.right, shell) == -1)
+		if (preprocess_heredocs(node->u_data.s_binary_op.right, shell) == -1)
 			return (-1);
 	}
 	return (0);
@@ -87,7 +87,7 @@ void	cleanup_heredocs(t_ast_node *node, t_shell *shell)
 		return ;
 	if (node->type == NODE_CMD)
 	{
-		redir = node->data.cmd.redirs;
+		redir = node->u_data.s_cmd.redirs;
 		while (redir)
 		{
 			if (redir->type == TOKEN_REDIRECTION_IN
@@ -102,7 +102,7 @@ void	cleanup_heredocs(t_ast_node *node, t_shell *shell)
 	}
 	else if (node->type == NODE_PIPE)
 	{
-		cleanup_heredocs(node->data.binary_op.left, shell);
-		cleanup_heredocs(node->data.binary_op.right, shell);
+		cleanup_heredocs(node->u_data.s_binary_op.left, shell);
+		cleanup_heredocs(node->u_data.s_binary_op.right, shell);
 	}
 }

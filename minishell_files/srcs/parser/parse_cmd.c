@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:50:26 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 14:53:36 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 19:19:08 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ t_token_lst	*make_cmd_and_redir_lst(t_token_lst *token_lst,
 
 int	allocate_exec_argv(t_ast_node **ast_node, int size)
 {
-	(*ast_node)->data.cmd.exec_argv
+	(*ast_node)->u_data.s_cmd.exec_argv
 		= (char **) malloc((size + 1) * sizeof(char *));
-	if (!(*ast_node)->data.cmd.exec_argv)
+	if (!(*ast_node)->u_data.s_cmd.exec_argv)
 		return (-1);
 	return (0);
 }
@@ -96,17 +96,17 @@ int	set_executable_and_argv(t_ast_node **ast_node,
 	if (allocate_exec_argv(ast_node, ctr) == -1)
 		return (-1);
 	if (builtin_check(cmd_lst->value))
-		(*ast_node)->data.cmd.executable
+		(*ast_node)->u_data.s_cmd.executable
 			= ft_strdup(cmd_lst->value);
 	else
 	{
-		(*ast_node)->data.cmd.executable = return_executable_path
+		(*ast_node)->u_data.s_cmd.executable = return_executable_path
 			(cmd_lst->value, shell);
-		if (!(*ast_node)->data.cmd.executable)
+		if (!(*ast_node)->u_data.s_cmd.executable)
 			return (-1);
 	}
 	ctr = cmd_lst_loop(cmd_lst, ast_node);
-	return ((*ast_node)->data.cmd.exec_argv[ctr] = NULL, 0);
+	return ((*ast_node)->u_data.s_cmd.exec_argv[ctr] = NULL, 0);
 }
 
 t_token_lst	*parse_cmd(t_token_lst *token_lst,
@@ -118,7 +118,7 @@ t_token_lst	*parse_cmd(t_token_lst *token_lst,
 	cmd_lst = NULL;
 	*ast_node = create_cmd_node(NODE_CMD, NULL, NULL, NULL);
 	token_lst = make_cmd_and_redir_lst(token_lst,
-			&cmd_lst, &(*ast_node)->data.cmd.redirs, shell);
+			&cmd_lst, &(*ast_node)->u_data.s_cmd.redirs, shell);
 	if (!token_lst)
 	{
 		token_free_list(cmd_lst);

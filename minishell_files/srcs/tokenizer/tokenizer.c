@@ -6,38 +6,11 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:06:19 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 14:40:00 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 20:01:57 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int	handle_quotes(t_tokenize_struct *vars, char *line, t_token_lst **token_lst)
-{
-	int	i;
-	int	temp;
-
-	i = 0;
-	if (line[i] == '\"')
-	{
-		temp = i;
-		temp += copy_token_till_delimiter(&vars->current_token,
-				line + i, '\"', token_lst);
-		if (temp < i)
-			return (-1);
-		i = temp;
-	}
-	if (line[i] == '\'')
-	{
-		temp = i;
-		temp += copy_token_till_delimiter(&vars->current_token,
-				line + i, '\'', token_lst);
-		if (temp < i)
-			return (-1);
-		i = temp;
-	}
-	return (i);
-}
 
 int	handle_other_tokens(char *line, t_token_lst **token_lst,
 		t_tokenize_struct *vars)
@@ -118,34 +91,45 @@ int	handle_wildcard(char *current_token, char *line, t_token_lst **token_lst)
 	return (i);
 }
 
-t_token_lst	*ft_tokenize(char *line, t_shell *shell)
+t_token_lst	*create_tokens_from_string(char *line,
+	t_tokenize_struct *vars, t_shell *shell)
 {
-	t_token_lst			*token_lst;
-	t_tokenize_struct	vars;
-	int					i;
-	int					temp;
+	int			i;
+	int			temp;
+	t_token_lst	*token_lst;
 
-	initialize_tokenize_struct(&vars, line);
-	token_lst = NULL;
 	i = 0;
+	token_lst = NULL;
 	while (line[i])
 	{
 		while (ft_isblank(line[i]))
 			(i)++;
-		temp = handle_other_tokens(line + i, &token_lst, &vars);
+		temp = handle_other_tokens(line + i, &token_lst, vars);
 		if (temp < 0)
 			return (NULL);
 		i += temp;
-		if (!ft_tokenize_loop_part2_error_handler(temp, &vars, &token_lst, &i))
+		if (!ft_tokenize_loop_part2_error_handler(temp, vars, &token_lst, &i))
 			return (NULL);
 		while (ft_isblank(line[i]))
 			(i)++;
-		temp = create_word_token(vars.current_token,
+		temp = create_word_token(vars->current_token,
 				line + i, &token_lst, shell);
-		if (!ft_tokenize_loop_part2_error_handler(temp, &vars, &token_lst, &i))
+		if (!ft_tokenize_loop_part2_error_handler(temp, vars, &token_lst, &i))
 			return (NULL);
 		i += temp;
 	}
+	return (token_lst);
+}
+
+t_token_lst	*ft_tokenize(char *line, t_shell *shell)
+{
+	t_token_lst			*token_lst;
+	t_tokenize_struct	vars;
+
+	initialize_tokenize_struct(&vars, line);
+	token_lst = create_tokens_from_string(line, &vars, shell);
+	if (!token_lst)
+		return (NULL);
 	free(vars.current_token);
 	if (vars.paren_counter != 0)
 	{

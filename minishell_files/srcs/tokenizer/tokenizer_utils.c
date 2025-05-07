@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 18:12:05 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 16:24:06 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 20:02:07 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,31 @@ int	ft_tokenize_loop_part1(char *line, int *i,
 	}
 	*i += temp;
 	return (1);
+}
+
+int	handle_quotes(t_tokenize_struct *vars, char *line, t_token_lst **token_lst)
+{
+	int	i;
+	int	temp;
+
+	i = 0;
+	if (line[i] == '\"')
+	{
+		temp = i;
+		temp += copy_token_till_delimiter(&vars->current_token,
+				line + i, '\"', token_lst);
+		if (temp < i)
+			return (-1);
+		i = temp;
+	}
+	if (line[i] == '\'')
+	{
+		temp = i;
+		temp += copy_token_till_delimiter(&vars->current_token,
+				line + i, '\'', token_lst);
+		if (temp < i)
+			return (-1);
+		i = temp;
+	}
+	return (i);
 }
