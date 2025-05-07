@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_par.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 14:48:41 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 14:48:42 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/parser.h"
 
 void	extract_wildcard_content(t_wildcard_type_string *wildcard_type_string,
@@ -56,41 +68,3 @@ void	add_matching_wildcard_token(char *(ft_strstr_func)
 			token_new_node(TOKEN_WORD, str));
 	}
 }
-
-// t_token_lst	*populate_command_data_loop2(t_token_lst *token_lst, t_shell *shell,
-// 		t_ast_node *ast_node)
-// {
-// 	int			ctr;
-
-// 	ctr = 0;
-// 	while (token_lst && (token_lst->type == TOKEN_ENV_VAR
-// 			|| token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_D_QUOTE
-// 			|| token_lst->type == TOKEN_S_QUOTE))
-// 	{
-// 		ast_node->data.cmd.exec_argv[ctr] = arg_return
-// 			(token_lst->value, token_lst->type, shell);
-// 		if (!ast_node->data.cmd.exec_argv[ctr])
-// 			return (NULL);
-// 		token_lst = token_lst->next;
-// 		ctr++;
-// 	}
-// 	ast_node->data.cmd.exec_argv[ctr] = NULL;
-// 	return (token_lst);
-// }
-
-// int	populate_command_data_loop1(t_token_lst *token_lst)
-// {
-// 	t_token_lst	*current_token;
-// 	int			ctr;
-
-// 	current_token = token_lst;
-// 	ctr = 0;
-// 	while (current_token && (token_lst->type == TOKEN_ENV_VAR
-// 			|| token_lst->type == TOKEN_WORD || token_lst->type == TOKEN_D_QUOTE
-// 			|| token_lst->type == TOKEN_S_QUOTE))
-// 	{
-// 		ctr++;
-// 		current_token = current_token->next;
-// 	}
-// 	return (ctr);
-// }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_parse_word.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 14:49:47 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 14:49:47 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/parser.h"
 
 t_token_lst	*handle_parentheses(t_token_lst *token_lst,
@@ -54,28 +66,6 @@ int	count_token_words(t_token_lst *token_lst)
 	}
 	return (count);
 }
-
-// t_token_lst	*populate_command_data(t_token_lst *token_lst,
-// 		t_ast_node **ast_node, t_shell *shell)
-// {
-// 	int			ctr;
-
-// 	if (builtin_check(token_lst->value) || token_lst->type == TOKEN_ENV_VAR)
-// 		(*ast_node)->data.cmd.executable = arg_return
-// 			(token_lst->value, token_lst->type, shell);
-// 	else
-// 		(*ast_node)->data.cmd.executable = return_executable_path(token_lst->value, shell);
-// 	ctr = populate_command_data_loop1(token_lst);
-// 	if (ctr > 0)
-// 	{
-// 		(*ast_node)->data.cmd.exec_argv = (char **)
-// 			malloc((ctr + 1) * sizeof(char *));
-// 		if (!(*ast_node)->data.cmd.exec_argv)
-// 			return (NULL);
-// 		token_lst = populate_command_data_loop2(token_lst, shell, *ast_node);
-// 	}
-// 	return (token_lst);
-// }
 
 t_token_lst	*parse_word(t_token_lst *token_lst,
 						t_ast_node **ast_node,

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   arg_return.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 14:54:56 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 14:55:55 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/parser.h"
 
 char	*dollar_check(char *value, int *i, t_shell shell)
@@ -36,19 +48,17 @@ int	dollar_structure_if(char *value, int *i, t_shell shell, char **res)
 			tmp = ft_itoa(shell.last_status);
 			new = ft_strjoin(*res, tmp);
 			free(*res);
-			free(tmp);
 			*res = new;
 			*i += 2;
-			return (1);
+			return (free(tmp), 1);
 		}
 		if (!ft_isspace(value[*i + 1]))
 		{
 			tmp = dollar_check(value, i, shell);
 			new = ft_strjoin(*res, tmp);
 			free(*res);
-			free(tmp);
 			*res = new;
-			return (1);
+			return (free(tmp), 1);
 		}
 	}
 	return (0);
@@ -75,7 +85,6 @@ char	*arg_word_return(char *value, t_shell shell)
 		res = tmp;
 		i++;
 	}
-	// printf("DEBUG (words): %s\n", res);
 	return (res);
 }
 
@@ -86,7 +95,6 @@ char	*arg_d_quote_return(char *value, t_shell shell)
 
 	if (!value)
 		return (NULL);
-	// printf("DEBUG (quotes): %s\n", value);
 	tmp = ft_strtrim(value, "\"");
 	if (!tmp)
 		return (NULL);
@@ -101,17 +109,14 @@ char	*arg_return(char *value, t_token_type type, t_shell *shell)
 		return (NULL);
 	if (type == TOKEN_D_QUOTE)
 	{
-		// printf("DEBUG (TOKEN_D_QUOTE): %s\n", value);
 		return (arg_d_quote_return(value, *shell));
 	}
 	if (type == TOKEN_S_QUOTE)
 	{
-		// printf("DEBUG (TOKEN_S_QUOTE): %s\n", value);
 		return (ft_strtrim(value, "\'"));
 	}
 	if (type == TOKEN_ENV_VAR || type == TOKEN_WORD)
 	{
-		// printf("DEBUG (TOKEN_WORD): %s\n", value);
 		return (arg_word_return(value, *shell));
 	}
 	return (ft_strdup(value));

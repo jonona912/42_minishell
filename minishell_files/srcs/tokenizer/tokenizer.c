@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:06:19 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/06 20:29:28 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/07 14:40:00 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ int	handle_quotes(t_tokenize_struct *vars, char *line, t_token_lst **token_lst)
 	if (line[i] == '\'')
 	{
 		temp = i;
-		temp += copy_token_till_delimiter(&vars->current_token, line + i, '\'', token_lst);
+		temp += copy_token_till_delimiter(&vars->current_token,
+				line + i, '\'', token_lst);
 		if (temp < i)
 			return (-1);
 		i = temp;
@@ -117,75 +118,12 @@ int	handle_wildcard(char *current_token, char *line, t_token_lst **token_lst)
 	return (i);
 }
 
-// t_token_lst	*ft_tokenize(char *line)
-// {
-// 	t_token_lst			*token_lst;
-// 	t_tokenize_struct	vars;
-// 	int					i;
-
-// 	initialize_tokenize_struct(&vars, line);
-// 	token_lst = NULL;
-// 	i = 0;
-// 	while (line[i])
-// 	{
-// 		if (!ft_tokenize_loop_part1(line, &i, &vars, &token_lst))
-// 			return (NULL);
-// 		if (line[i] == '\0')
-// 			break ;
-// 		if (!ft_tokenize_loop_part2(line, &i, &vars, &token_lst))
-// 			return (NULL);
-// 	}
-// 	free(vars.current_token);
-// 	if (vars.paren_counter != 0)
-// 	{
-// 		ft_putstr_fd("Error: unmatched parenthesis\n", 2);
-// 		token_free_list(token_lst);
-// 		return (NULL);
-// 	}
-// 	token_add_node_back(&token_lst, token_new_node(TOKEN_END, NULL));
-// 	return (token_lst);
-// }
-
-// t_token_lst	*ft_tokenize(char *line, t_shell *shell)
-// {
-// 	t_token_lst			*token_lst;
-// 	t_tokenize_struct	vars;
-// 	int					i;
-// 	int temp;
-
-// 	initialize_tokenize_struct(&vars, line);
-// 	token_lst = NULL;
-// 	i = 0;
-// 	while (line[i])
-// 	{
-// 		// if (!ft_tokenize_loop_part1(line, &i, &vars, &token_lst))
-// 		// 	return (NULL);
-// 		// if (line[i] == '\0')
-// 		// 	break ;
-// 		temp = ft_tokenize_loop_part2(line, &i, &vars, &token_lst, shell);
-// 		if (temp < 0)
-// 			return (token_free_list(token_lst), NULL);
-// 		i += temp;
-// 	}
-// 	free(vars.current_token);
-// 	if (vars.paren_counter != 0)
-// 	{
-// 		ft_putstr_fd("Error: unmatched parenthesis\n", 2);
-// 		token_free_list(token_lst);
-// 		return (NULL);
-// 	}
-// 	token_add_node_back(&token_lst, token_new_node(TOKEN_END, NULL));
-// 	return (token_lst);
-// }
-
-
-
 t_token_lst	*ft_tokenize(char *line, t_shell *shell)
 {
 	t_token_lst			*token_lst;
 	t_tokenize_struct	vars;
 	int					i;
-	int temp;
+	int					temp;
 
 	initialize_tokenize_struct(&vars, line);
 	token_lst = NULL;
@@ -202,12 +140,8 @@ t_token_lst	*ft_tokenize(char *line, t_shell *shell)
 			return (NULL);
 		while (ft_isblank(line[i]))
 			(i)++;
-		// temp = handle_wildcard(vars.current_token, line + i, token_lst);
-		// if (!ft_tokenize_loop_part2_error_handler(temp, &vars, token_lst, i))
-		// 	return (NULL);
-		temp = create_word_token(vars.current_token, line + i, &token_lst, shell);
-		// if (temp < 0)
-		// 	return (NULL);
+		temp = create_word_token(vars.current_token,
+				line + i, &token_lst, shell);
 		if (!ft_tokenize_loop_part2_error_handler(temp, &vars, &token_lst, &i))
 			return (NULL);
 		i += temp;
@@ -220,6 +154,5 @@ t_token_lst	*ft_tokenize(char *line, t_shell *shell)
 		return (NULL);
 	}
 	token_add_node_back(&token_lst, token_new_node(TOKEN_END, NULL));
-	// printf("REACHED END\n"); // just space takes it to here PROBLEM!!!!
 	return (token_lst);
 }

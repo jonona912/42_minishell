@@ -11,6 +11,7 @@ EXECUTE_DIR = execution
 
 SRCS = main_minishell.c \
 		main_utils.c \
+		main_utils_utils.c \
 		print_structs.c \
 		$(TOKENIZER_DIR)/handle_wildcard.c \
 		$(TOKENIZER_DIR)/tokenizer_helper_1.c \
@@ -18,6 +19,8 @@ SRCS = main_minishell.c \
 		$(TOKENIZER_DIR)/tokenizer_utils.c \
 		$(TOKENIZER_DIR)/tokenizer_utils_2.c \
 		$(TOKENIZER_DIR)/tokenizer_utils_utils.c \
+		$(TOKENIZER_DIR)/tokenizer_utils_utils_2.c \
+		$(TOKENIZER_DIR)/tokenizer_utils_utils_3.c \
 		$(TOKENIZER_DIR)/tokenizer.c \
 		$(PARSER_DIR)/ast_binary_tree_functions.c \
 		$(PARSER_DIR)/is_functions.c \

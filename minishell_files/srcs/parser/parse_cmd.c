@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_cmd.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 14:50:26 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 14:53:36 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/parser.h"
 
 t_token_lst	*handle_cmd_redir(t_token_lst *token_lst,
@@ -14,7 +26,6 @@ t_token_lst	*handle_cmd_redir(t_token_lst *token_lst,
 			|| token_lst->type == TOKEN_S_QUOTE
 			|| token_lst->type == TOKEN_D_QUOTE))
 	{
-		// temp_str = arg_return(token_lst->value, token_lst->type, shell);
 		temp_str = ft_strdup(token_lst->value);
 		if (!temp_str)
 			return (NULL);
@@ -42,7 +53,6 @@ t_token_lst	*make_cmd_and_redir_lst(t_token_lst *token_lst,
 	{
 		if (is_token_valid_for_cmd(token_lst->type))
 		{
-			// temp_str = arg_return(token_lst->value, token_lst->type, shell);
 			temp_str = ft_strdup(token_lst->value);
 			temp = token_new_node(token_lst->type, temp_str);
 			if (!temp)
@@ -89,19 +99,13 @@ int	set_executable_and_argv(t_ast_node **ast_node,
 		(*ast_node)->data.cmd.executable
 			= ft_strdup(cmd_lst->value);
 	else
-	{	
-		(*ast_node)->data.cmd.executable = return_executable_path(cmd_lst->value, shell);
+	{
+		(*ast_node)->data.cmd.executable = return_executable_path
+			(cmd_lst->value, shell);
 		if (!(*ast_node)->data.cmd.executable)
 			return (-1);
 	}
-	ctr = 0;
-	while (cmd_lst)
-	{
-		(*ast_node)->data.cmd.exec_argv[ctr]
-			= ft_strdup(cmd_lst->value);
-		cmd_lst = cmd_lst->next;
-		ctr++;
-	}
+	ctr = cmd_lst_loop(cmd_lst, ast_node);
 	return ((*ast_node)->data.cmd.exec_argv[ctr] = NULL, 0);
 }
 

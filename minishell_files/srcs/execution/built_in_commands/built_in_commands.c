@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   built_in_commands.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 16:38:54 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 18:30:21 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/built_in_commands.h"
 
 void	ft_echo(char **argv)
@@ -52,8 +64,7 @@ int	ft_cd(char **argv, t_shell *shell)
 		return (ft_putstr_fd
 			("Error: current working directory name not found\n", 2), 1);
 	if (chdir(tmp) != 0)
-		return (ft_putstr_fd
-			("Error: directory cannot be changed\n", 2), 1);
+		return (ft_putstr_fd ("Error: directory cannot be changed\n", 2), 1);
 	if (ft_setenv("OLDPWD", cwd, 1, shell))
 		return (1);
 	if (!getcwd(new_cwd, sizeof(new_cwd)))
@@ -69,11 +80,9 @@ int	ft_cd(char **argv, t_shell *shell)
 
 int	ft_export(char **argv, t_shell *shell)
 {
-	char	*equal;
-	char	*name;
-	int		name_len;
 	int		i;
 	int		exit_status;
+	char	*equal;
 
 	if (!argv[1])
 		return (ft_export_env(*shell), 0);
@@ -83,37 +92,9 @@ int	ft_export(char **argv, t_shell *shell)
 	{
 		equal = ft_strchr(argv[i], '=');
 		if (!equal)
-		{
-			if (!is_valid_name(argv[i]))
-			{
-				ft_putstr_fd("Error: invalid export input\n", 2);
-				exit_status = 1;
-			}
-			else
-				ft_setenv(argv[i], "", 0, shell);
-			i++;
-			continue ;
-		}
-		name_len = equal - argv[i];
-		name = (char *) malloc(name_len + 1);
-		if (!name)
-			return (printf("Error: memory allocation failed\n"), 1);
-		ft_strlcpy(name, argv[i], name_len + 1);
-		if (!is_valid_name(name))
-		{
-			ft_putstr_fd("Error: invalid variable name\n", 2);
-			free(name);
-			exit_status = 1;
-			i++;
-			continue ;
-		}
-		if (ft_setenv(name, equal + 1, 1, shell))
-		{
-			free(name);
-			return (ft_putstr_fd("Error: invalid syntax input\n", 2), 1);
-		}
-		free(name);
-		i++;
+			handle_no_equal(argv, &exit_status, &i, shell);
+		else
+			handle_equal(argv, &exit_status, &i, shell);
 	}
 	return (exit_status);
 }

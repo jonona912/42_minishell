@@ -1,16 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 14:57:04 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 15:12:52 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/execution.h"
-
-int	ms_strcmp_until(char *s1, char *s2, char c)
-{
-	int	i;
-
-	i = 0;
-	if (!s1 || !s2)
-		return (-1);
-	while (*(s1 + i) && *(s2 + i) && *(s1 + i) != c && *(s1 + i) == *(s2 + i))
-		i++;
-	return (*(s1 + i) - *(s2 + i));
-}
 
 void	heredoc_signal_handler(int signum)
 {
@@ -21,7 +21,8 @@ void	heredoc_signal_handler(int signum)
 	rl_done = 1;
 }
 
-int	read_heredoc_input(char *end_delimitor, int in_fd, struct sigaction *old_sa, char **tmp_file)
+int	read_heredoc_input(char *end_delimitor, int in_fd,
+	struct sigaction *old_sa, char **tmp_file)
 {
 	char	*input;
 
@@ -37,19 +38,13 @@ int	read_heredoc_input(char *end_delimitor, int in_fd, struct sigaction *old_sa,
 			return (sigaction(SIGINT, old_sa, NULL), -1);
 		}
 		if (!input)
-		{
-			sigaction(SIGINT, old_sa, NULL);
-			ft_putstr_fd("warning: here-doc delimited by end-of-file\n", 2);
-			return (1);
-		}
+			return (handle_heredoc_eof(old_sa));
 		if (ms_strcmp_until(end_delimitor, input, '\n') == 0)
 		{
 			free(input);
 			break ;
 		}
-		ft_putstr_fd(input, in_fd);
-		ft_putstr_fd("\n", in_fd);
-		free(input);
+		handle_heredoc_input(input, in_fd);
 	}
 	sigaction(SIGINT, old_sa, NULL);
 	return (0);

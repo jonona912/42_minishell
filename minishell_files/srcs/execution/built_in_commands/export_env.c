@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_env.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 15:19:25 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 16:36:59 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/built_in_commands.h"
 
 void	ft_sort_env(char **env, int len)
@@ -62,6 +74,22 @@ char	**ft_copy_env(t_shell shell)
 	return (res);
 }
 
+void	ft_export_env_write_value(char *value, char **copy, int i)
+{
+	if (value)
+	{
+		write(1, copy[i], value - copy[i]);
+		write(1, "=\"", 2);
+		write(1, value + 1, ft_strlen(value + 1));
+		write(1, "\"\n", 2);
+	}
+	else
+	{
+		write(1, copy[i], ft_strlen(copy[i]));
+		write(1, "\n", 1);
+	}
+}
+
 void	ft_export_env(t_shell shell)
 {
 	char	**copy;
@@ -81,18 +109,7 @@ void	ft_export_env(t_shell shell)
 		}
 		write(1, "declare -x ", 11);
 		value = ft_strchr(copy[i], '=');
-		if (value)
-		{
-			write(1, copy[i], value - copy[i]);
-			write(1, "=\"", 2);
-			write(1, value + 1, ft_strlen(value + 1));
-			write(1, "\"\n", 2);
-		}
-		else
-		{
-			write(1, copy[i], ft_strlen(copy[i]));
-			write(1, "\n", 1);
-		}
+		ft_export_env_write_value(value, copy, i);
 		i++;
 	}
 	env_free(copy);

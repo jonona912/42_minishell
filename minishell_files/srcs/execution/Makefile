@@ -8,9 +8,11 @@ INCLUDES = -I. -I../includes -Ibuilt_in_commands -I..
 # Source files
 EXEC_SRCS = execution.c \
             execution_utils.c \
+            execution_utils_2.c \
             execute_command.c \
             execute_command_utils.c \
             here_doc.c \
+            here_doc_utils.c \
             here_doc_processing.c \
             redirections.c \
             utils_ex.c \
@@ -20,7 +22,8 @@ BUILTIN_SRCS = built_in_commands/built_in_commands.c \
                built_in_commands/built_in_commands_2.c \
                built_in_commands/utils_built.c \
                built_in_commands/export_env.c \
-               built_in_commands/built_in_commands_utils.c
+               built_in_commands/built_in_commands_utils.c \
+               built_in_commands/built_in_commands_env.c
 
 ALL_SRCS = $(EXEC_SRCS) $(BUILTIN_SRCS)
 

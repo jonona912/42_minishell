@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_command.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 15:18:11 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 15:18:29 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/execution.h"
 
 int	get_child_exit_status(pid_t fork_pid)
@@ -22,7 +34,8 @@ void	run_builtin(t_ast_node *ast_node, t_shell *shell)
 	}
 }
 
-int	handle_builtins_or_create_fork(pid_t *fork_pid, t_ast_node *ast_node, t_shell *shell)
+int	handle_builtins_or_create_fork(pid_t *fork_pid,
+	t_ast_node *ast_node, t_shell *shell)
 {
 	int	n;
 

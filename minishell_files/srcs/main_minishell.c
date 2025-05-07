@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_minishell.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 14:33:08 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 14:33:09 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	signal_handler(int signum)
@@ -11,27 +23,12 @@ void	signal_handler(int signum)
 	rl_redisplay();
 }
 
-int	is_first_token_valid(t_token_type type)
-{
-	return (type == TOKEN_WORD ||
-			type == TOKEN_REDIRECTION_IN ||
-			type == TOKEN_REDIRECTION_OUT ||
-			type == TOKEN_APPEND ||
-			type == TOKEN_HEREDOC ||
-			type == TOKEN_L_PAREN ||
-			type == TOKEN_R_PAREN);
-}
-
 int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 	t_token_lst **token_lst, t_ast_node **head)
 {
 	*token_lst = ft_tokenize(*line, shell);
 	if (!*token_lst || (*token_lst)->type == TOKEN_END)
-	{
-		free(*line);
-		return (1);
-	}
-	// ft_print_tokens(*token_lst);
+		return (free(*line), 1);
 	if (!is_first_token_valid((*token_lst)->type))
 	{
 		token_free_list(*token_lst);
@@ -68,10 +65,7 @@ int	ft_update_path(t_shell *shell)
 	}
 	old_pwd = ft_getenv("OLDPWD", *shell);
 	if (!old_pwd)
-	{
-		ft_putstr_fd("Error: OLDPWD not set\n", 2);
-		return (1);
-	}
+		return (ft_putstr_fd("Error: OLDPWD not set\n", 2), 1);
 	if (chdir(old_pwd))
 	{
 		ft_putstr_fd("Errror: Can't get back to OLDPWD\n", 2);
@@ -112,7 +106,6 @@ void	main_loop(t_shell *shell)
 		ft_update_path(shell);
 		if (main_loop_tokenize_parse_execute(&line, shell, &token_lst, &head))
 			continue ;
-		// ft_update_path(shell);
 	}
 }
 
