@@ -54,6 +54,8 @@ LIBFT = libft.a
 
 all: $(NAME)
 
+bonus: $(NAME)
+
 $(NAME): $(OBJS) $(EXECUTE_LIB) $(PARSER_LIB) $(INCLUDE) $(LIBFT_DIR)/$(LIBFT)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(EXECUTE_LIB) $(PARSER_LIB) $(LIBFT_DIR)/$(LIBFT) -lreadline
 

@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:33:08 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 19:28:54 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 13:19:47 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,15 @@ int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
 		token_free_list(*token_lst);
 		*head = NULL;
 		shell->last_status = 2;
-		return (ft_putstr_fd("minishell: syntax error\n", 2), 1);
+		free(*line);
+		return (ft_putstr_fd("minishell:: syntax error\n", 2), 1);
 	}
 	if (!parse_or(*token_lst, head, shell))
 	{
 		token_free_list(*token_lst);
 		if (head)
 			free_ast_node(head);
-		free(*line);
-		return (1);
+		return (free(*line), 1);
 	}
 	g_signal_received = 1;
 	shell->last_status = ex(*head, -1, -1, shell);
@@ -88,7 +88,6 @@ void	main_loop(t_shell *shell)
 	t_ast_node	*head;
 
 	token_lst = NULL;
-	line = NULL;
 	head = NULL;
 	while (1)
 	{
