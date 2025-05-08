@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 16:54:22 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 18:16:30 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 10:04:17 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,17 @@ int	handle_equal(char **argv, int *exit_status, int *i, t_shell *shell)
 		return (return_value_setenv(name, exit_status));
 	free(name);
 	(*i)++;
+	return (0);
+}
+
+int	ft_cd_argc_check(char **argv)
+{
+	int	argc;
+
+	argc = 0;
+	while (argv && argv[argc])
+		argc++;
+	if (argc > 2)
+		return (ft_putstr_fd("Error: too many argunents\n", 2), 1);
 	return (0);
 }

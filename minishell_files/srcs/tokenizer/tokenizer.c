@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:06:19 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 20:01:57 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 12:22:35 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,8 @@ t_token_lst	*ft_tokenize(char *line, t_shell *shell)
 	t_token_lst			*token_lst;
 	t_tokenize_struct	vars;
 
+	if (check_for_space(line))
+		return (NULL);
 	initialize_tokenize_struct(&vars, line);
 	token_lst = create_tokens_from_string(line, &vars, shell);
 	if (!token_lst)

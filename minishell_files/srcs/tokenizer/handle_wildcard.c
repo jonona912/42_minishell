@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:45:00 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 14:47:34 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 12:25:03 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,26 @@ t_token_lst	*handle_wildcard_2(char *line)
 		return (NULL);
 	}
 	return (wildcard_list);
+}
+
+int	check_for_space(char *line)
+{
+	int	c;
+	int	is_space;
+	int	line_len;
+
+	line_len = ft_strlen(line);
+	if (line_len == 0)
+		return (1);
+	c = 0;
+	is_space = 0;
+	while (c < line_len)
+	{
+		if (ft_isspace(line[c]))
+			is_space++;
+		c++;
+	}
+	if (is_space == c)
+		return (1);
+	return (0);
 }

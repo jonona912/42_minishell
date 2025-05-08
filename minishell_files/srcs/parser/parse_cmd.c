@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:50:26 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 19:19:08 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 09:59:59 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,18 @@ t_token_lst	*make_cmd_and_redir_lst(t_token_lst *token_lst,
 
 int	allocate_exec_argv(t_ast_node **ast_node, int size)
 {
+	int	i;
+
 	(*ast_node)->u_data.s_cmd.exec_argv
 		= (char **) malloc((size + 1) * sizeof(char *));
 	if (!(*ast_node)->u_data.s_cmd.exec_argv)
 		return (-1);
+	i = 0;
+	while (i <= size)
+	{
+		(*ast_node)->u_data.s_cmd.exec_argv[i] = NULL;
+		i++;
+	}
 	return (0);
 }
 

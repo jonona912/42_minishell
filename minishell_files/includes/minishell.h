@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:32:36 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 19:28:48 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 12:24:10 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ typedef struct s_ast_node
 	}	u_data;
 }	t_ast_node;
 
+int				check_for_space(char *line);
 t_token_lst		*token_new_node(t_token_type type, char *value);
 void			token_free_list(t_token_lst *head);
 t_token_lst		*token_get_last_node(t_token_lst *head);

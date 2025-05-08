@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:24:19 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 18:25:19 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 11:04:55 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,14 @@ int	copy_quotes_if(char *current_token, char *line,
 	{
 		temp = handle_double_quote(current_token, line + i, final_word, shell);
 		if (temp == -1)
-			return (free(final_word), -1);
+			return (-1);
 		i += temp;
 	}
 	if (line[i] == '\'')
 	{
 		temp = handle_single_quote(current_token, line + i, final_word);
 		if (temp == -1)
-			return (free(final_word), -1);
+			return (-1);
 		i += temp;
 	}
 	return (i);

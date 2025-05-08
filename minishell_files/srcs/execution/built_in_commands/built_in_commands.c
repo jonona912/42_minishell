@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 16:38:54 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 18:30:21 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 10:03:30 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ int	ft_cd(char **argv, t_shell *shell)
 	char		new_cwd[4096];
 	char		*tmp;
 
-	if (argv[2] && argv[1])
-		return (ft_putstr_fd("Error: too many argunents\n", 2), 1);
+	if (ft_cd_argc_check(argv))
+		return (1);
 	if (ft_cd_special_cases(argv, shell, &tmp, oldpwd))
 		return (1);
 	if (!getcwd(cwd, sizeof(cwd)))

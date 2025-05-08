@@ -6,7 +6,7 @@
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:31:30 by opopov            #+#    #+#             */
-/*   Updated: 2025/05/07 18:31:43 by opopov           ###   ########.fr       */
+/*   Updated: 2025/05/08 10:04:01 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,3 +21,4 @@ int		is_valid_name(char *name);
 void	ft_export_env(t_shell shell);
 void	handle_no_equal(char **argv, int *exit_status, int *i, t_shell *shell);
 int		handle_equal(char **argv, int *exit_status, int *i, t_shell *shell);
+int		ft_cd_argc_check(char **argv);
