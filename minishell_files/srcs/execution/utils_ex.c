@@ -1,28 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_tolower.c                                       :+:      :+:    :+:   */
+/*   utils_ex.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/13 19:55:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/05/03 14:51:10 by opopov           ###   ########.fr       */
+/*   Created: 2025/05/07 14:56:51 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 14:56:51 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "includes/execution.h"
 
-static int	ft_isupper(char c)
+int	get_exit_status(int status)
 {
-	return (c >= 'A' && c <= 'Z');
-}
-
-int	ft_tolower(int c)
-{
-	int	char_dif;
-
-	char_dif = 'a' - 'A';
-	if (ft_isupper(c))
-		return (c + char_dif);
-	return (c);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	return (-1);
 }

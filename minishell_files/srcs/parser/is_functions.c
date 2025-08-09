@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_tolower.c                                       :+:      :+:    :+:   */
+/*   is_functions.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/13 19:55:21 by zkhojazo          #+#    #+#             */
-/*   Updated: 2025/05/03 14:51:10 by opopov           ###   ########.fr       */
+/*   Created: 2025/05/07 14:54:17 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 14:54:18 by opopov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "includes/parser.h"
 
-static int	ft_isupper(char c)
+int	is_cmd_valid(t_token_type type)
 {
-	return (c >= 'A' && c <= 'Z');
+	return (type == TOKEN_WORD
+		|| is_redirection(type)
+		|| type == TOKEN_ENV_VAR
+		|| type == TOKEN_D_QUOTE
+		|| type == TOKEN_S_QUOTE);
 }
 
-int	ft_tolower(int c)
+int	is_token_valid_for_cmd(t_token_type type)
 {
-	int	char_dif;
-
-	char_dif = 'a' - 'A';
-	if (ft_isupper(c))
-		return (c + char_dif);
-	return (c);
+	return (type == TOKEN_WORD || type == TOKEN_ENV_VAR
+		|| type == TOKEN_D_QUOTE || type == TOKEN_S_QUOTE);
 }

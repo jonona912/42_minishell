@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_lst_functions.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkhojazo <zkhojazo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 11:07:14 by opopov            #+#    #+#             */
+/*   Updated: 2025/04/29 19:48:27 by zkhojazo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 t_token_lst	*token_new_node(t_token_type type, char *value)
@@ -52,4 +64,17 @@ void	token_add_node_back(t_token_lst **head, t_token_lst *new_node)
 	}
 	last = token_get_last_node(*head);
 	last->next = new_node;
+}
+
+int	token_lst_size(t_token_lst *head)
+{
+	int	count;
+
+	count = 0;
+	while (head)
+	{
+		count++;
+		head = head->next;
+	}
+	return (count);
 }

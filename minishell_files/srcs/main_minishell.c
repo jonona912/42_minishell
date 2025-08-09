@@ -1,236 +1,129 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_minishell.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 14:33:08 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/08 13:19:47 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-void	ft_print_tokens(t_token_lst *token_lst);
-void	print_ast(t_ast_node *root);
-
-volatile int signal_received = 0;
-
-void setup_terminal()
-{
-	struct termios term;
-	tcgetattr(0, &term);
-	term.c_lflag &= ~ECHOCTL;
-	tcsetattr(0, TCSANOW, &term);
-}
-
-void signal_handler(int signum)
+void	signal_handler(int signum)
 {
 	(void)signum;
-	signal_received = 1;
-	write(1, "\n", 1);
-	rl_on_new_line();
+	if (g_signal_received)
+		return ;
 	rl_replace_line("", 0);
+	write(1, "\r\n", 2);
+	rl_on_new_line();
 	rl_redisplay();
 }
 
-char	**copy_env(char **envp)
+int	main_loop_tokenize_parse_execute(char **line, t_shell *shell,
+	t_token_lst **token_lst, t_ast_node **head)
 {
-	int		count = 0;
-	char	**copy;
-	int		i;
-
-	while (envp[count])
-		count++;
-	copy = malloc(sizeof(char *) * (count + 1));
-	if (!copy)
-		return (NULL);
-	i = 0;
-	while (i < count)
+	*token_lst = ft_tokenize(*line, shell);
+	if (!*token_lst || (*token_lst)->type == TOKEN_END)
+		return (free(*line), 1);
+	if (!is_first_token_valid((*token_lst)->type))
 	{
-		copy[i] = ft_strdup(envp[i]);
-		i++;
+		token_free_list(*token_lst);
+		*head = NULL;
+		shell->last_status = 2;
+		free(*line);
+		return (ft_putstr_fd("minishell:: syntax error\n", 2), 1);
 	}
-	copy[count] = NULL;
-	return (copy);
+	if (!parse_or(*token_lst, head, shell))
+	{
+		token_free_list(*token_lst);
+		if (head)
+			free_ast_node(head);
+		return (free(*line), 1);
+	}
+	g_signal_received = 1;
+	shell->last_status = ex(*head, -1, -1, shell);
+	g_signal_received = 0;
+	free_ast_node(head);
+	token_free_list(*token_lst);
+	free(*line);
+	return (0);
+}
+
+int	ft_update_path(t_shell *shell)
+{
+	char	cwd[4096];
+	char	*old_pwd;
+
+	if (getcwd(cwd, sizeof(cwd)))
+	{
+		ft_setenv("PWD", cwd, 1, shell);
+		return (0);
+	}
+	old_pwd = ft_getenv("OLDPWD", *shell);
+	if (!old_pwd)
+		return (ft_putstr_fd("Error: OLDPWD not set\n", 2), 1);
+	if (chdir(old_pwd))
+	{
+		ft_putstr_fd("Errror: Can't get back to OLDPWD\n", 2);
+		return (1);
+	}
+	if (!getcwd(cwd, sizeof(cwd)))
+	{
+		ft_putstr_fd("Error: problem with recovered path\n", 2);
+		ft_setenv("PWD", old_pwd, 1, shell);
+	}
+	else
+		ft_setenv("PWD", cwd, 1, shell);
+	return (0);
+}
+
+void	main_loop(t_shell *shell)
+{
+	char		*line;
+	t_token_lst	*token_lst;
+	t_ast_node	*head;
+
+	token_lst = NULL;
+	head = NULL;
+	while (1)
+	{
+		g_signal_received = 0;
+		line = readline("minishell> ");
+		if (!line)
+		{
+			rl_clear_history();
+			printf("exit\n");
+			free(line);
+			break ;
+		}
+		if (*line != '\0')
+			add_history(line);
+		ft_update_path(shell);
+		if (main_loop_tokenize_parse_execute(&line, shell, &token_lst, &head))
+			continue ;
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
 {
+	t_shell				shell;
+	struct sigaction	sa_int;
+
 	(void)argv;
 	(void)argc;
-	t_shell shell;
-	int prev_status;
-
+	shell.heredoc_ctr = 0;
+	shell.last_status = 0;
 	shell.env = copy_env(envp);
-	// debug_env(&shell);
-	// printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
-	// shell.exit_status = 0;
-	prev_status = 0;
-	t_token_lst *token_lst;
-	t_token_lst	*token_lst_check;
-	t_ast_node *head;
-	int			exec_result;
-
-	exec_result = 0;
-	head = NULL;
-	char	*line;
-	struct sigaction sa;
-	setup_terminal();
-	sa.sa_handler = signal_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = SA_RESTART;
+	sa_int.sa_handler = signal_handler;
+	sigaction(SIGINT, &sa_int, NULL);
 	signal(SIGQUIT, SIG_IGN);
-	token_lst = NULL;
-	while (1)
-	{
-		pipe(shell.exp_pipe); // shell.exp_pipe[1] -> for write side
-		signal_received = 0;
-		// line = readline("\033[0;35mminishell> \033[0m");
-		line = readline("minishel> ");
-		if (!line)
-		{
-			write(1, "exit\n", 5);
-			break;
-		}
-		add_history(line);
-		if (ft_strcmp(line, "") == 0)
-		{
-			free(line);
-			continue;
-		}
-		if (signal_received)
-		{
-			free(line);
-			continue;
-		}
-		token_lst = ft_tokenize(line);
-		if (!token_lst)
-		{
-			// redact later
-			free(line);
-			write(1, "\n", 1);
-			continue;
-		}
-		// ft_print_tokens(token_lst);
-		// wildcard_function(line);
-		add_history(line);
-		token_lst_check = parse_or(token_lst, &head, shell);
-		if (!token_lst_check)
-			exec_result = 127;
-		else
-			exec_result = execute(head, -1, -1, &shell);
-		// print_ast(head);
-		// debug_env(&shell);
-		// printf("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
-		// run_pipeline(head);
-
-		// printf("exec_result = %d\n", exec_result);
-
-		// ms_token_free_list(token_lst);
-
-		rl_on_new_line();
-		free(line);
-	}
+	main_loop(&shell);
+	env_free(shell.env);
 	return (0);
-}
-
-void	ft_print_tokens(t_token_lst *token_lst)
-{
-	const char *token_type_str[] = {
-		"TOKEN_WORD",
-		"TOKEN_S_QUOTE",
-		"TOKEN_D_QUOTE",
-		"TOKEN_WILDCARD",
-		"TOKEN_PIPE",
-		"TOKEN_REDIRECTION_IN",
-		"TOKEN_REDIRECTION_OUT",
-		"TOKEN_APPEND",
-		"TOKEN_HEREDOC",
-		"TOKEN_ENV_VAR",
-		"TOKEN_AND",
-		"TOKEN_OR",
-		"TOKEN_L_PAREN",
-		"TOKEN_R_PAREN",
-		"TOKEN_END"
-	};
-
-	while (token_lst)
-	{
-		printf("Type : %s\nToken: \"%s\"\n\n", token_type_str[token_lst->type], token_lst->value);
-		token_lst = token_lst->next;
-	}
-}
-
-#include <stdio.h>
-#include <stdlib.h>
-
-void print_redirections(t_redir_lst *redirs) {
-    if (!redirs) return;
-    printf(" redirs=[");
-    while (redirs) {
-        printf("%s->%s",
-               redirs->type == TOKEN_REDIRECTION_IN ? "<" :
-               redirs->type == TOKEN_REDIRECTION_OUT ? ">" :
-               redirs->type == TOKEN_APPEND ? ">>" : "<<",
-               redirs->target);
-        redirs = redirs->next;
-        if (redirs) printf(", ");
-    }
-    printf("]");
-}
-
-void print_ast_node(t_ast_node *node, int indent)
-{
-    if (!node) return;
-
-    // Indentation
-    for (int i = 0; i < indent; i++) printf("  ");
-
-    switch (node->type) {
-        case NODE_CMD:
-            printf("CommandNode(");
-            printf("%s", node->data.cmd.executable);
-
-            // Print arguments if they exist
-            if (node->data.cmd.exec_argv && node->data.cmd.exec_argv[0]) {
-                printf(", args=[");
-                for (char **arg = node->data.cmd.exec_argv; *arg; arg++) {
-                    printf("%s", *arg);
-                    if (*(arg + 1)) printf(", ");
-                }
-                printf("]");
-            }
-
-            // Print redirections
-            print_redirections(node->data.cmd.redirs);
-            printf(")");
-            break;
-
-        case NODE_PIPE:
-            printf("PipeNode(\n");
-            print_ast_node(node->data.binary_op.left, indent + 1);
-            printf(",\n");
-            print_ast_node(node->data.binary_op.right, indent + 1);
-            printf("\n");
-            for (int i = 0; i < indent; i++) printf("  ");
-            printf(")");
-            break;
-
-        case NODE_AND:
-            printf("AndNode(\n");
-            print_ast_node(node->data.binary_op.left, indent + 1);
-            printf(",\n");
-            print_ast_node(node->data.binary_op.right, indent + 1);
-            printf("\n");
-            for (int i = 0; i < indent; i++) printf("  ");
-            printf(")");
-            break;
-
-        case NODE_OR:
-            printf("OrNode(\n");
-            print_ast_node(node->data.binary_op.left, indent + 1);
-            printf(",\n");
-            print_ast_node(node->data.binary_op.right, indent + 1);
-            printf("\n");
-            for (int i = 0; i < indent; i++) printf("  ");
-            printf(")");
-            break;
-    }
-}
-
-// Wrapper function for cleaner output
-void print_ast(t_ast_node *root) {
-    print_ast_node(root, 0);
-    printf("\n");
 }
