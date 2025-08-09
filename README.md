@@ -1,6 +1,3 @@
-# 42_minishell
-minishell - Project at 42 school (42 Wolfsburg)
-
 ![Bonus Completed](https://img.shields.io/badge/bonus-completed-brightgreen)
 
 <h1 align="center">
