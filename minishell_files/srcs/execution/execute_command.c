@@ -1,0 +1,89 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_command.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 15:18:11 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 19:22:34 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "includes/execution.h"
+
+int	get_child_exit_status(pid_t fork_pid)
+{
+	int	status;
+
+	waitpid(fork_pid, &status, 0);
+	if (WTERMSIG(status) == SIGQUIT)
+		printf("Quit (core dumped)\n");
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		printf("\n");
+	return (get_exit_status(status));
+}
+
+void	run_builtin(t_ast_node *ast_node, t_shell *shell)
+{
+	if (ast_node->u_data.s_cmd.exec_argv
+		&& builtin_check(ast_node->u_data.s_cmd.exec_argv[0]))
+	{
+		execute_builtin(ast_node->u_data.s_cmd.exec_argv, shell);
+		exit (0);
+	}
+}
+
+int	handle_builtins_or_create_fork(pid_t *fork_pid,
+	t_ast_node *ast_node, t_shell *shell)
+{
+	int	n;
+
+	n = 0;
+	if (ast_node->u_data.s_cmd.exec_argv
+		&& ft_strcmp(ast_node->u_data.s_cmd.exec_argv[0], "exit") == 0)
+		n = ft_exit(ast_node->u_data.s_cmd.exec_argv);
+	else if (ast_node->u_data.s_cmd.exec_argv
+		&& ft_strcmp(ast_node->u_data.s_cmd.exec_argv[0], "export") == 0)
+		n = ft_export(ast_node->u_data.s_cmd.exec_argv, shell);
+	else if (ast_node->u_data.s_cmd.exec_argv
+		&& ft_strcmp(ast_node->u_data.s_cmd.exec_argv[0], "unset") == 0)
+		n = ft_unset(ast_node->u_data.s_cmd.exec_argv, shell);
+	if (n != 0)
+		return (n);
+	*fork_pid = fork();
+	if (*fork_pid == -1)
+	{
+		perror("fork");
+		return (-1);
+	}
+	return (0);
+}
+
+int	execute_cmd(t_ast_node *ast_node, int in_fd, int out_fd, t_shell *shell)
+{
+	pid_t	fork_pid;
+	int		n;
+
+	if (preprocess_heredocs(ast_node, shell) == -1)
+		return (130);
+	if (ast_node->u_data.s_cmd.exec_argv
+		&& ft_strcmp(ast_node->u_data.s_cmd.exec_argv[0], "cd") == 0)
+		return (ft_cd(ast_node->u_data.s_cmd.exec_argv, shell));
+	n = handle_builtins_or_create_fork(&fork_pid, ast_node, shell);
+	if (n != 0)
+		return (n);
+	if (fork_pid == 0)
+	{
+		setup_redirections_in_child(ast_node, &in_fd);
+		redirect_child_stdio(in_fd, out_fd);
+		run_builtin(ast_node, shell);
+		exec_external_command(ast_node, shell);
+		exit(1);
+	}
+	if (in_fd != -1)
+		close(in_fd);
+	if (out_fd != -1)
+		close(out_fd);
+	return (get_child_exit_status(fork_pid));
+}

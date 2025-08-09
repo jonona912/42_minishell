@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer_helper_1.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 11:05:16 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/08 10:26:08 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	ft_isblank(int c)
@@ -37,11 +49,16 @@ int	handle_unmatched_quotes(t_tokenize_struct *vars, t_token_lst **token_lst)
 	return (0);
 }
 
+int	is_not_special_char(char c)
+{
+	return (c && !ft_isblank(c) && ft_strchr("<>|&()\"\'", c) == NULL);
+}
+
 int	initialize_tokenize_struct(t_tokenize_struct *vars, char *line)
 {
 	int	line_len;
 
-	line_len = strlen(line);
+	line_len = ft_strlen(line);
 	vars->current_token = (char *)malloc((line_len + 1) * sizeof(char));
 	if (!vars->current_token)
 	{

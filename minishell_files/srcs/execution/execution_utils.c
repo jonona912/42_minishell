@@ -1,57 +1,54 @@
-#include "../../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opopov <opopov@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 15:15:16 by opopov            #+#    #+#             */
+/*   Updated: 2025/05/07 19:29:10 by opopov           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// int	dup2_fd(int fd, int std_fd_fileno)
-// {
-// 	if (fd == -1)
-// 	{
-// 		perror("open redirection in");
-// 		return (-1);
-// 	}
-// 	if (dup2(fd, std_fd_fileno) == -1)
-// 	{
-// 		perror("dup2 redirection in");
-// 		return (-1);
-// 	}
-// 	return (0);
-// }
+#include "includes/execution.h"
 
-// int	ms_strcmp_until(char *s1, char *s2, char c)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	if (!s1 || !s2)
-// 		return (-1);
-// 	while (*(s1 + i) && *(s2 + i) && *(s1 + i) != c && *(s1 + i) == *(s2 + i))
-// 		i++;
-// 	return (*(s1 + i) - *(s2 + i));
-// }
-
-int	builtin_check(char *cmd)
+void	exec_subshell_with_redirections(t_ast_node *ast_head, int in_fd,
+		int out_fd, t_shell *shell)
 {
-	if (!cmd)
-		return (0);
-	return (ft_strcmp(cmd, "echo") == 0 || ft_strcmp(cmd, "cd") == 0 ||
-			ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "export") == 0 ||
-			ft_strcmp(cmd, "unset") == 0 || ft_strcmp(cmd, "env") == 0 ||
-			ft_strcmp(cmd, "exit") == 0);
+	int	status;
+
+	if (handle_redirection_fd
+		(ast_head->u_data.s_sub_shell.sub_shell_redir, &in_fd))
+		exit(1);
+	if (in_fd != -1)
+	{
+		dup2(in_fd, STDIN_FILENO);
+		close(in_fd);
+	}
+	if (out_fd != -1)
+	{
+		dup2(out_fd, STDOUT_FILENO);
+		close(out_fd);
+	}
+	status = ex(ast_head->u_data.s_sub_shell.subshell, -1, -1, shell);
+	exit(status);
 }
 
-int	execute_builtin(char **argv, t_shell *shell)
+void	cleanup_after_left_fork_failure(int *pipe_fd)
 {
-	if (ft_strcmp(argv[0], "echo") == 0)
-		ft_echo(argv);
-	// else if (ft_strcmp(argv[0], "cd") == 0)
-	// 	return (ft_cd(argv, shell));
-	else if (ft_strcmp(argv[0], "pwd") == 0)
-		ft_pwd(shell);
-	else if (ft_strcmp(argv[0], "export") == 0)
-		return (ft_export(argv, shell));
-	else if (ft_strcmp(argv[0], "unset") == 0)
-		return(ft_unset(argv, shell));
-	else if (ft_strcmp(argv[0], "env") == 0)
-		ft_env(shell);
-	else if (ft_strcmp(argv[0], "exit") == 0)
-		return (ft_exit(argv));
-	return (0);
+	perror("fork");
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+}
+
+void	exec_left_pipe_command(int *pipe_fd, t_ast_node *ast_head,
+	int in_fd, t_shell *shell)
+{
+	int	status;
+
+	close(pipe_fd[0]);
+	dup2(pipe_fd[1], STDOUT_FILENO);
+	close(pipe_fd[1]);
+	status = ex(ast_head->u_data.s_binary_op.left, in_fd, -1, shell);
+	exit(status);
 }
